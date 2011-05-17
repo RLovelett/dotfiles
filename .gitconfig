@@ -1,0 +1,5 @@
+[user]
+	name = Ryan Lovelett
+	email = ryan@wahvee.com
+[diff]
+	external = $HOME/diff.py
