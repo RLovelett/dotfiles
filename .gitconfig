@@ -1,7 +1,6 @@
 [user]
 	name = Ryan Lovelett
 	email = ryan@wahvee.com
-	email = ryan.a.lovelett@saic.com
 [core]
 	autocrlf = input
 	safecrlf = true
