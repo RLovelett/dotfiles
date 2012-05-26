@@ -4,6 +4,7 @@
 [core]
   autocrlf = input
   safecrlf = true
+  editor = "/Users/ryan/bin/mvim -f"
 [alias]
   co = checkout
   ci = commit
@@ -13,5 +14,6 @@
   type = cat-file -t
   dump = cat-file -p
   tagcommit = !sh -c 'git rev-list $0 | head -n 1'
+  unstage = reset HEAD
 [color]
   ui = true
