@@ -15,5 +15,6 @@
   dump = cat-file -p
   tagcommit = !sh -c 'git rev-list $0 | head -n 1'
   unstage = reset HEAD
+  lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
 [color]
   ui = true
