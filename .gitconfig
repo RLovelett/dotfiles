@@ -1,9 +1,9 @@
 [user]
   name = Ryan Lovelett
-  email = ryan@wahvee.com
+  email = ryan@lovelett.me
 [core]
-  autocrlf = input
-  safecrlf = true
+  ;autocrlf = input
+  ;safecrlf = true
   editor = "/Users/ryan/bin/mvim -f"
 [alias]
   co = checkout
