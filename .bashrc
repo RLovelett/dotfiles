@@ -5,7 +5,8 @@
 export PHONE_GAP="$HOME/src/phonegap-android/bin"
 export ANDROID_SDK="$HOME/src/android-sdk-mac_86"
 export MY_BIN="$HOME/bin"
-export PATH="/usr/local/bin:$PHONE_GAP:$ANDROID_SDK/tools:$ANDROID_SDK/platform-tools:$MY_BIN:$PATH"
+export MYSQL_PATH="/usr/local/mysql/bin"
+export PATH="$MYSQL_PATH:/usr/local/bin:$PHONE_GAP:$ANDROID_SDK/tools:$ANDROID_SDK/platform-tools:$MY_BIN:$PATH"
 
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
