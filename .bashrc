@@ -8,6 +8,11 @@ export MY_BIN="$HOME/bin"
 export MYSQL_PATH="/usr/local/mysql/bin"
 export PATH="$MYSQL_PATH:/usr/local/bin:$PHONE_GAP:$ANDROID_SDK/tools:$ANDROID_SDK/platform-tools:$MY_BIN:$PATH"
 
+# For mysql2 gem on Mac OS X
+if [ `uname -s` == "Darwin" ]; then
+  export DYLD_LIBRARY_PATH="/usr/local/mysql/lib:$DYLD_LIBRARY_PATH"
+fi
+
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
@@ -71,7 +76,9 @@ fi
 
 # set a fancy prompt (non-color, unless we know we "want" color)
 case "$TERM" in
-    xterm|xterm-*|cygwin) color_prompt=yes;;
+    xterm-256color) color_prompt=yes;;
+    xterm-color)    color_prompt=yes;;
+    cygwin)         color_prompt=yes;;
 esac
 
 if [ "$color_prompt" = yes ]; then

@@ -1,3 +1,4 @@
+# Git related aliases
 alias gs='git status '
 alias ga='git add '
 alias gap='git add -p'
@@ -7,6 +8,17 @@ alias gd='git diff'
 alias go='git checkout '
 alias gk='gitk --all&'
 alias gx='gitx --all'
+
+# Experimental Git Aliases
+# Suggested from Huffshell
+alias gr='git rebase'
+alias gri='git rebase -i'
+alias gri='git rebase -i'
+alias grim='git rebase -i master'
+alias grim='git rebase -i master'
+alias gr-='git rebase --continue'
+alias gst='git stash'
+alias gc-='git commit --amend'
 
 alias got='git '
 alias get='git '
