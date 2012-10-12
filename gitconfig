@@ -4,7 +4,6 @@
 [core]
   ;autocrlf = input
   ;safecrlf = true
-  editor = "/Users/ryan/bin/mvim -f"
 [alias]
   co = checkout
   ci = commit
