@@ -1,4 +1,4 @@
-MANIFEST=bash_aliases bash_login bash_profile bashrc gitconfig gvimrc.after rvmrc vimrc.after
+MANIFEST=bash_aliases bash_login bash_profile bashrc gitconfig gvimrc.after rvmrc vimrc.after conkyrc draw_bg.lua conkyForecast.config
 
 all: link
 	@@echo "Build completed:"
