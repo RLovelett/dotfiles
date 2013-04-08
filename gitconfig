@@ -15,6 +15,7 @@
   tagcommit = !sh -c 'git rev-list $0 | head -n 1'
   unstage = reset HEAD
   lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
+  snapshot = !git stash save "snapshot: $(date)" && git stash apply "stash@{0}"
 [color]
   ui = true
 [filter "rcs-keywords"]
