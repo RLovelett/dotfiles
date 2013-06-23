@@ -42,3 +42,7 @@ fi
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
+
+# Copy with progress
+# http://fauxzen.com/add-a-progress-bar-to-copy-command-in-linux/
+alias cpp='rsync --progress -ah'
