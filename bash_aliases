@@ -46,3 +46,8 @@ alias l='ls -CF'
 # Copy with progress
 # http://fauxzen.com/add-a-progress-bar-to-copy-command-in-linux/
 alias cpp='rsync --progress -ah'
+
+# sshuttle
+# http://elasticdog.com/2011/12/use-sshuttle-to-keep-safe-on-insecure-wi-fi/
+alias tunnel='sshuttle --dns --daemon --pidfile=/tmp/sshuttle.pid --remote=lovelett.me 0/0'
+alias tunnelx='[[ -f /tmp/sshuttle.pid ]] && kill $(cat /tmp/sshuttle.pid) && echo "Disconnected."'
