@@ -3,12 +3,7 @@
 # for examples
 
 export MY_BIN="$HOME/bin"
-export PATH="$MY_BIN:$PATH"
-
-# For mysql2 gem on Mac OS X
-if [ `uname -s` == "Darwin" ]; then
-  export DYLD_LIBRARY_PATH="/usr/local/mysql/lib:$DYLD_LIBRARY_PATH"
-fi
+export PATH="$MY_BIN:/usr/local/bin:$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
