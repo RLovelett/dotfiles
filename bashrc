@@ -8,12 +8,6 @@ export PATH="$MY_BIN:/usr/local/bin:/usr/local/sbin:$PATH:$HOME/.rvm/bin" # Add 
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
-# Enables colorization of the ls command on Mac OSX
-if [ `uname -s` == "Darwin" ]; then
-export CLICOLOR=1
-export LSCOLORS=ExFxCxDxBxEgedabagacad
-fi
-
 # Gets the current branch from Git
 parse_git_branch()
 {
