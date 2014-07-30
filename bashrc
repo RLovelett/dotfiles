@@ -3,7 +3,7 @@
 # for examples
 
 export MY_BIN="$HOME/bin"
-export PATH="$MY_BIN:/usr/local/bin:$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+export PATH="$MY_BIN:/usr/local/bin:/usr/local/sbin:$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
