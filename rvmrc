@@ -1,5 +1,2 @@
 # Have RVM install rubies when used instead of only displaying a warning and exiting.
 rvm_install_on_use_flag=1
-
-# Have RVM compile using 4 compile threads
-rvm_make_flags="-j3"
