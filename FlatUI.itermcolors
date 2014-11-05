@@ -238,22 +238,22 @@
 		<key>Color Space</key>
 		<string>sRGB</string>
 		<key>Blue Component</key>
-		<real>0.9450980392156862</real>
+		<real>0.3137254901960784</real>
 		<key>Green Component</key>
-		<real>0.9411764705882353</real>
+		<real>0.24313725490196078</real>
 		<key>Red Component</key>
-		<real>0.9254901960784314</real>
+		<real>0.17254901960784313</real>
 	</dict>
 	<key>Selection Color</key>
 	<dict>
 		<key>Color Space</key>
 		<string>sRGB</string>
 		<key>Blue Component</key>
-		<real>0.3137254901960784</real>
+		<real>0.5215686274509804</real>
 		<key>Green Component</key>
-		<real>0.24313725490196078</real>
+		<real>0.6274509803921569</real>
 		<key>Red Component</key>
-		<real>0.17254901960784313</real>
+		<real>0.08627450980392157</real>
 	</dict>
 </dict>
 </plist>
