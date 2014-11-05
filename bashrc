@@ -2,8 +2,8 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
-export MY_BIN="$HOME/bin"
-export PATH="$MY_BIN:/usr/local/bin:/usr/local/sbin:$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+#export PATH="$MY_BIN:/usr/local/bin:/usr/local/sbin:$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
@@ -121,7 +121,3 @@ fi
 if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
-
-# Load RVM if it available to be loaded
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm" # Load RVM function
