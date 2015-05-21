@@ -1,4 +1,8 @@
-source ~/.antigen/antigen.zsh
+# Load aliases
+source $HOME/.aliases
+
+# Load Antigen
+source $HOME/.antigen/antigen.zsh
 
 # Support for colors
 export TERM="xterm-256color"
@@ -21,14 +25,19 @@ antigen bundle bundler
 # Generic bundles
 antigen bundle command-not-found
 
-if [[ $CURRENT_OS == 'OS X' ]]; then
-    antigen bundle brew
-    antigen bundle brew-cask
-    antigen bundle osx
-fi
+#if [[ $CURRENT_OS == 'OS X' ]]; then
+antigen bundle brew
+antigen bundle brew-cask
+antigen bundle osx
+
+export EDITOR=$(which vim)
+#fi
 
 # Syntax highlighting bundle.
 antigen bundle zsh-users/zsh-syntax-highlighting
+
+# History Substring Search
+antigen bundle zsh-users/zsh-history-substring-search
 
 # Load the theme.
 antigen theme https://github.com/RLovelett/bullet-train-oh-my-zsh-theme bullet-train
