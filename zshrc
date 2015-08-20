@@ -39,11 +39,10 @@ antigen bundle zsh-users/zsh-syntax-highlighting
 # History Substring Search
 antigen bundle zsh-users/zsh-history-substring-search
 
-# Load the theme.
-antigen theme https://github.com/RLovelett/bullet-train-oh-my-zsh-theme bullet-train
-
-# Configure Bullet-Train
-BULLETTRAIN_PROMPT_CHAR="👾 "
+# Load Powerline Status
+export PATH=$PATH:$HOME/Library/Python/2.7/bin
+POWERLINE_ROOT=$HOME/Library/Python/2.7/lib/python/site-packages
+. $POWERLINE_ROOT/powerline/bindings/zsh/powerline.zsh
 
 # Tell antigen that you're done.
 antigen apply
