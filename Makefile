@@ -1,4 +1,4 @@
-MANIFEST=bash_aliases bash_login bash_profile profile bashrc gitconfig gvimrc.after rvmrc vimrc.after zshrc aliases
+MANIFEST=bash_aliases bash_login bash_profile profile bashrc gitconfig gvimrc.after rvmrc vimrc.after zshrc aliases tigrc
 
 all: link
 	@@echo "Build completed:"
