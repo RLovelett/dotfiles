@@ -26,3 +26,5 @@
 	smudge = .git_filters/rcs-keywords.smudge %f
 [diff]
 	algorithm = patience
+[core]
+	pager = less --raw-control-chars
