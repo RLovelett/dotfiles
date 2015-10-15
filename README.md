@@ -17,3 +17,9 @@
     git clone https://github.com/powerline/fonts.git
     cd fonts
     ./install.sh
+
+    # Install Powerline
+    # First install PIP
+    sudo easy_install pip
+    # Now install powerline
+    pip install --user powerline-status
