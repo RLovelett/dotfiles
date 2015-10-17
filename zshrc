@@ -40,10 +40,10 @@ antigen bundle zsh-users/zsh-syntax-highlighting
 # History Substring Search
 antigen bundle zsh-users/zsh-history-substring-search
 
-# Load Powerline Status
-export PATH=$PATH:$HOME/Library/Python/2.7/bin
-POWERLINE_ROOT=$HOME/Library/Python/2.7/lib/python/site-packages
-. $POWERLINE_ROOT/powerline/bindings/zsh/powerline.zsh
+# Load my custom agnoster theme
+antigen theme https://gist.github.com/8b6cd39dfe1fe8b52517.git agnoster
+# Comment line above and uncomment below when developing
+# antigen theme $HOME/Source/agnoster agnoster --no-local-clone
 
 # Tell antigen that you're done.
 antigen apply
