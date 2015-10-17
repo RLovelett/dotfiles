@@ -29,6 +29,7 @@ antigen bundle command-not-found
 antigen bundle brew
 antigen bundle brew-cask
 antigen bundle osx
+antigen bundle robbyrussell/oh-my-zsh plugins/xcode
 
 export EDITOR=$(which vim)
 #fi
