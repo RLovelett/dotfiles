@@ -47,3 +47,7 @@ antigen theme https://gist.github.com/8b6cd39dfe1fe8b52517.git agnoster
 
 # Tell antigen that you're done.
 antigen apply
+
+export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+
+test -e ${HOME}/.iterm2_shell_integration.zsh && source ${HOME}/.iterm2_shell_integration.zsh
