@@ -1,6 +1,9 @@
 # Load aliases
 source $HOME/.aliases
 
+# Make LESS/git aware of Emoji!
+export LESSCHARSET=utf-8
+
 # Load Antigen
 source $HOME/.antigen/antigen.zsh
 

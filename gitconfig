@@ -1,6 +1,9 @@
 [user]
   name = Ryan Lovelett
   email = ryan@lovelett.me
+  ;signingkey = 3A9F41EF
+[commit]
+  ;gpgsign = true
 [core]
   ;autocrlf = input
   ;safecrlf = true
