@@ -33,3 +33,5 @@
 	pager = less --raw-control-chars
 [tar "tar.xz"]
 	command = xz -c
+[gpg]
+	program = gpg2
