@@ -54,3 +54,7 @@ antigen apply
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 
 test -e ${HOME}/.iterm2_shell_integration.zsh && source ${HOME}/.iterm2_shell_integration.zsh
+
+if [[ $TERMINIX_ID ]]; then
+  source /etc/profile.d/vte.sh
+fi
