@@ -3,7 +3,7 @@
   email = ryan@lovelett.me
   signingkey = 3A9F41EF
 [commit]
-  ;gpgsign = true
+  gpgsign = true
 [core]
   ;autocrlf = input
   ;safecrlf = true
@@ -35,3 +35,5 @@
 	command = xz -c
 [gpg]
 	program = gpg2
+[fetch]
+	recurseSubmodules = false
