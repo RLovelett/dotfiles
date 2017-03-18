@@ -1,3 +1,19 @@
+# Add RVM to PATH for scripting
+export PATH="$PATH:$HOME/.rvm/bin"
+
+# Use Swift Preview
+#export PATH=$HOME/Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin:"${PATH}"
+
+# Configure GO
+export GOPATH=$HOME/Source/go
+export PATH="${PATH}":$GOPATH/bin
+
+test -e ${HOME}/.iterm2_shell_integration.zsh && source ${HOME}/.iterm2_shell_integration.zsh
+
+if [[ $TERMINIX_ID ]]; then
+  source /etc/profile.d/vte.sh
+fi
+
 # Load aliases
 source $HOME/.aliases
 
@@ -5,7 +21,11 @@ source $HOME/.aliases
 export LESSCHARSET=utf-8
 
 # Load Antigen
-source $HOME/.antigen/antigen.zsh
+if [[ -a /usr/local/share/antigen/antigen.zsh ]] ; then
+  source /usr/local/share/antigen/antigen.zsh
+else
+  source $HOME/.antigen/antigen.zsh
+fi
 
 # Support for colors
 export TERM="xterm-256color"
@@ -31,10 +51,9 @@ antigen bundle command-not-found
 case "$OSTYPE" in
   darwin*)
     antigen bundle brew
-    antigen bundle brew-cask
-    antigen bundle brew
     antigen bundle osx
     antigen bundle robbyrussell/oh-my-zsh plugins/xcode
+    antigen bundle robbyrussell/oh-my-zsh plugins/docker
     export EDITOR=$(which vim)
     ;;
 esac
@@ -52,11 +71,3 @@ antigen theme https://gist.github.com/8b6cd39dfe1fe8b52517.git agnoster
 
 # Tell antigen that you're done.
 antigen apply
-
-export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
-
-test -e ${HOME}/.iterm2_shell_integration.zsh && source ${HOME}/.iterm2_shell_integration.zsh
-
-if [[ $TERMINIX_ID ]]; then
-  source /etc/profile.d/vte.sh
-fi
