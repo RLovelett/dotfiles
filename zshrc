@@ -65,9 +65,9 @@ antigen bundle zsh-users/zsh-syntax-highlighting
 antigen bundle zsh-users/zsh-history-substring-search
 
 # Load my custom agnoster theme
-antigen theme https://gist.github.com/8b6cd39dfe1fe8b52517.git agnoster
+antigen theme https://github.com/RLovelett/agnoster-zsh-theme.git agnoster
 # Comment line above and uncomment below when developing
-# antigen theme $HOME/Source/agnoster agnoster --no-local-clone
+# antigen theme $HOME/Source/agnoster-zsh-theme agnoster --no-local-clone
 
 # Tell antigen that you're done.
 antigen apply
