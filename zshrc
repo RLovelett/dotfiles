@@ -28,14 +28,16 @@ antigen bundle bundler
 # Generic bundles
 antigen bundle command-not-found
 
-#if [[ $CURRENT_OS == 'OS X' ]]; then
-antigen bundle brew
-antigen bundle brew-cask
-antigen bundle osx
-antigen bundle robbyrussell/oh-my-zsh plugins/xcode
-
-export EDITOR=$(which vim)
-#fi
+case "$OSTYPE" in
+  darwin*)
+    antigen bundle brew
+    antigen bundle brew-cask
+    antigen bundle brew
+    antigen bundle osx
+    antigen bundle robbyrussell/oh-my-zsh plugins/xcode
+    export EDITOR=$(which vim)
+    ;;
+esac
 
 # Syntax highlighting bundle.
 antigen bundle zsh-users/zsh-syntax-highlighting
