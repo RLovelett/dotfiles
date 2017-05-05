@@ -1,7 +1,7 @@
 [user]
   name = Ryan Lovelett
-  email = ryan@lovelett.me
-  signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN3DMlDirKrj64NN3ULz/4ymvKDoXZ8gdOlYxZVmuFxu
+  email = RYAN.A.LOVELETT@saic.com
+  ;signingkey = /Users/lovelettr/.ssh/id_ecdsa_sk.pub
 [alias]
   unstage = reset HEAD
   snapshot = !git stash save "snapshot: $(date)" && git stash apply "stash@{0}"
@@ -12,7 +12,7 @@
 [column]
   ui = auto
 [commit]
-  gpgsign = true
+  ;gpgsign = true
   verbose = true
 [core]
   safecrlf = true
@@ -20,7 +20,7 @@
   pager = less --raw-control-chars
   excludesfile = ~/.gitignore
 [credential]
-  helper = /usr/lib/git-core/git-credential-libsecret
+  helper = osxkeychain
 [diff]
   algorithm = histogram
   colorMoved = plain
@@ -39,10 +39,6 @@
 [filter "rcs-keywords"]
   clean  = .git_filters/rcs-keywords.clean
   smudge = .git_filters/rcs-keywords.smudge %f
-[gpg]
-  format = ssh
-[gpg "ssh"]
-  program = "/opt/1Password/op-ssh-sign"
 [help]
   autocorrect = prompt
 [init]
