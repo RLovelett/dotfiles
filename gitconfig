@@ -1,9 +1,9 @@
 [user]
   name = Ryan Lovelett
-  email = ryan@lovelett.me
-  signingkey = B1BAB34A8015192F
+  email = RYAN.A.LOVELETT@saic.com
+  signingkey = A69A8C55AC979432
 [commit]
-  gpgsign = true
+  ;gpgsign = true
 [core]
   ;autocrlf = input
   ;safecrlf = true

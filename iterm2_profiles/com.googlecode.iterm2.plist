@@ -30237,12 +30237,16 @@
 		<key>TB Is Shown</key>
 		<integer>1</integer>
 	</dict>
-	<key>NSWindow Frame NSColorPanel</key>
-	<string>0 163 224 275 0 0 1920 1177 </string>
+	<key>NSWindow Frame NSFontPanel</key>
+	<string>3329 110 445 205 1920 0 1920 1200 </string>
 	<key>NSWindow Frame SUUpdateAlert</key>
-	<string>650 608 620 392 0 0 1920 1177 </string>
+	<string>610 278 700 622 0 0 1920 1177 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>2882 1 1090 1176 1920 0 1920 1177 </string>
+	<string>0 0 1920 1177 0 0 1920 1177 </string>
+	<key>NSWindow Frame iTerm Window 1</key>
+	<string>247 132 650 513 0 0 1920 1200 </string>
+	<key>NSWindow Frame iTerm Window 2</key>
+	<string>2188 109 650 513 1920 0 1920 1200 </string>
 	<key>NeverWarnAboutShortLivedSessions_4716A1B9-8F56-4695-9F31-1E23262E9ED1</key>
 	<true/>
 	<key>New Bookmarks</key>
