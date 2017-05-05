@@ -1,3 +1,7 @@
+# Use GPG for SSH
+export GPG_TTY="$(tty)"
+export SSH_AUTH_SOCK="${HOME}/.gnupg/S.gpg-agent.ssh"
+
 # Add RVM to PATH for scripting
 export PATH="$PATH:$HOME/.rvm/bin"
 
