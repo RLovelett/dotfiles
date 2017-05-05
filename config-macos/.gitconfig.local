@@ -1,2 +1,14 @@
+[user]
+  name = Ryan Lovelett
+  email = RYAN.A.LOVELETT@saic.com
+  ;signingkey = /Users/lovelettr/.ssh/id_ecdsa_sk.pub
+[commit]
+  gpgsign = false
+[core]
+  autocrlf = false
 [credential]
   helper = osxkeychain
+[url "https://github.com/"]
+  insteadOf = git@github.com:
+[url "https://gitlab.devops.saicwebhost.net/"]
+  insteadOf = git@gitlab.devops.saicwebhost.net:

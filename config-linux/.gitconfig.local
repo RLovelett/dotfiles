@@ -1,3 +1,11 @@
+[user]
+  name = Ryan Lovelett
+  email = ryan@lovelett.me
+  signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN3DMlDirKrj64NN3ULz/4ymvKDoXZ8gdOlYxZVmuFxu
+[commit]
+  gpgsign = true
+[core]
+  safecrlf = true
 [credential]
   helper = /usr/lib/git-core/git-credential-libsecret
 [gpg "ssh"]

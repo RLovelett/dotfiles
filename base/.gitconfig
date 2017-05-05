@@ -1,7 +1,3 @@
-[user]
-  name = Ryan Lovelett
-  email = ryan@lovelett.me
-  signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN3DMlDirKrj64NN3ULz/4ymvKDoXZ8gdOlYxZVmuFxu
 [alias]
   unstage = reset HEAD
   snapshot = !git stash save "snapshot: $(date)" && git stash apply "stash@{0}"
@@ -12,10 +8,8 @@
 [column]
   ui = auto
 [commit]
-  gpgsign = true
   verbose = true
 [core]
-  safecrlf = true
   ignorecase = false
   pager = less --raw-control-chars
   excludesfile = ~/.gitignore
