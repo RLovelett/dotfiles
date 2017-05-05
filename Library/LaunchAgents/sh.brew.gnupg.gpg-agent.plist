@@ -9,12 +9,22 @@
 	<!-- Set a command to run and its arguments -->
 	<key>ProgramArguments</key>
 	<array>
-		<string>/usr/local/bin/gpgconf</string>
+		<string>/opt/homebrew/bin/gpgconf</string>
 		<string>--launch</string>
 		<string>gpg-agent</string>
 	</array>
 	<!-- Tells the task to run once the XML is loaded -->
 	<key>RunAtLoad</key>
 	<true />
+	<!-- <key>Sockets</key>
+	<dict>
+		<key>Listeners</key>
+		<dict>
+			<key>SecureSocketWithKey</key>
+			<string>SSH_AUTH_SOCK</string>
+		</dict>
+	</dict>
+	<key>EnableTransactions</key>
+	<true/> -->
 </dict>
 </plist>

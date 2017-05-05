@@ -30182,6 +30182,8 @@
 	<integer>2</integer>
 	<key>MaxVertically</key>
 	<false/>
+	<key>NeverBlockSystemShutdown</key>
+	<true/>
 	<key>NeverWarnAboutShortLivedSessions_4716A1B9-8F56-4695-9F31-1E23262E9ED1</key>
 	<true/>
 	<key>New Bookmarks</key>
@@ -30776,11 +30778,11 @@
 			<key>Name</key>
 			<string>Default</string>
 			<key>Non Ascii Font</key>
-			<string>MesloLGLDZNFM-Regular 14</string>
+			<string>MesloLGLDZNFM-Regular 16</string>
 			<key>Non-ASCII Anti Aliased</key>
 			<true/>
 			<key>Normal Font</key>
-			<string>MesloLGLDZNFM-Regular 14</string>
+			<string>MesloLGLDZNFM-Regular 16</string>
 			<key>Option Key Sends</key>
 			<integer>0</integer>
 			<key>Prompt Before Closing 2</key>
@@ -31292,6 +31294,8 @@
 	<key>PromptOnQuit</key>
 	<true/>
 	<key>QuitWhenAllWindowsClosed</key>
+	<true/>
+	<key>RestoreWindowsToSameSpaces</key>
 	<true/>
 	<key>RightCommand</key>
 	<integer>8</integer>
