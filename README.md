@@ -4,6 +4,19 @@
     git clone https://github.com/zsh-users/antigen.git .antigen
     make link
 
+# Fedora
+
+    dnf install -y util-linux-user
+    chsh --shell /bin/zsh
+
+    git clone https://github.com/arcticicestudio/nord-tilix.git
+    cd nord-tilix
+    ./install.sh
+
+## Setup Yubikey
+
+[ssh-gpg-smartcard-config for YubiKey 4 and YubiKey NEO](https://github.com/fedora-infra/ssh-gpg-smartcard-config/blob/d50a352eaa1dd047b00c296e607d75acb73e2adb/YubiKey.rst)
+
 # Configuration
 
     mkdir -p $HOME/Source

@@ -18,6 +18,14 @@ if [[ $TERMINIX_ID ]]; then
   source /etc/profile.d/vte.sh
 fi
 
+## Run my GPG-Agent
+## https://github.com/fedora-infra/ssh-gpg-smartcard-config/blob/master/YubiKey.rst
+if [ ! -f /run/user/$(id -u)/gpg-agent.env ]; then
+    killall gpg-agent;
+    eval $(gpg-agent --daemon --enable-ssh-support > /run/user/$(id -u)/gpg-agent.env);
+fi
+. /run/user/$(id -u)/gpg-agent.env
+
 # Load aliases
 source $HOME/.aliases
 
