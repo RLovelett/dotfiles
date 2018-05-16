@@ -1,4 +1,4 @@
-MANIFEST=bash_aliases bash_login bash_profile profile bashrc gitconfig gvimrc.after rvmrc vimrc.after zlogin zshrc aliases tigrc
+MANIFEST=bash_aliases bash_login bash_profile profile bashrc gitconfig gvimrc.after rvmrc vimrc.after zshenv zshrc aliases tigrc
 
 all: link
 	@@echo "Build completed:"
@@ -11,5 +11,5 @@ link:
 
 clean:
 	@@for file in ${MANIFEST}; do \
-		rm ~/.$$file; \
+		rm -f ~/.$$file; \
 	done;

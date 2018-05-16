@@ -1,7 +1,7 @@
 [user]
   name = Ryan Lovelett
   email = ryan@lovelett.me
-  signingkey = BDF6AC403A9F41EF
+  signingkey = B1BAB34A8015192F
 [commit]
   gpgsign = true
 [core]
