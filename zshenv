@@ -34,6 +34,10 @@ case "$OSTYPE" in
       killall --quiet gpg-agent
       eval $(gpg-agent --daemon --enable-ssh-support > "$GPG_AGENT_ENV");
     fi
-    source "$GPG_AGENT_ENV"
+    if [[ -z "$SSH_AUTH_SOCK" ]]
+    then
+      ## Handle the case that SSH_AUTH_SOCK comes from SSH agent forwarding
+      source "$GPG_AGENT_ENV"
+    fi
     ;;
 esac
