@@ -8,36 +8,21 @@ then
   source "$HOME/.iterm2_shell_integration.zsh"
 fi
 
-# Support for colors
-export TERM="xterm-256color"
-
 # Make LESS/git aware of Emoji!
 export LESSCHARSET=utf-8
 
 # Load aliases
 source $HOME/.aliases
 
-## Use GPG for SSH
-## Run my GPG-Agent
-## https://github.com/fedora-infra/ssh-gpg-smartcard-config/blob/master/YubiKey.rst
-## https://stackoverflow.com/a/26759734
-if [[ -x "$(command -v gconftool-2)" && "$(gconftool-2 --get /apps/gnome-keyring/daemon-components/ssh)" != "false" ]]
+## Use GPG for SSH on Linux
+## Run gpg-agent using Systemd as described in this post
+## https://eklitzke.org/using-gpg-agent-effectively
+if [[ -S "$XDG_RUNTIME_DIR/gnupg/S.gpg-agent.ssh" && -z "$SSH_AUTH_SOCK" ]]
 then
-  gconftool-2 --type bool --set /apps/gnome-keyring/daemon-components/ssh false
+  export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/gnupg/S.gpg-agent.ssh"
 fi
 
-case "$OSTYPE" in
-  linux*)
-    GPG_AGENT_ENV=/run/user/$(id -u)/gpg-agent.env
-    if [[ ! -f "$GPG_AGENT_ENV" ]]
-    then
-      killall --quiet gpg-agent
-      eval $(gpg-agent --daemon --enable-ssh-support > "$GPG_AGENT_ENV");
-    fi
-    if [[ -z "$SSH_AUTH_SOCK" ]]
-    then
-      ## Handle the case that SSH_AUTH_SOCK comes from SSH agent forwarding
-      source "$GPG_AGENT_ENV"
-    fi
-    ;;
-esac
+if [[ -z "$DISPLAY" ]]
+then
+  export GPG_TTY=$(tty)
+fi
