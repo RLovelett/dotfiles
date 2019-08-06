@@ -579,9 +579,9 @@
     "Alpha Component" : 1,
     "Green Component" : 0.19692185521125793
   },
-  "Cursor Type" : 1,
+  "Cursor Type" : 2,
   "Blur" : false,
-  "Normal Font" : "SauceCodePowerline-Regular 14",
+  "Normal Font" : "SourceCodeProForPowerline-Regular 14",
   "Vertical Spacing" : 1,
   "Disable Printing" : false,
   "Ansi 7 Color" : {
@@ -628,7 +628,7 @@
     "Green Component" : 0.15255947411060333
   },
   "Screen" : -1,
-  "Non Ascii Font" : "SauceCodePowerline-Regular 14",
+  "Non Ascii Font" : "SourceCodeProForPowerline-Regular 14",
   "Ansi 13 Color" : {
     "Red Component" : 0.64283657073974609,
     "Color Space" : "Calibrated",
@@ -638,7 +638,7 @@
   },
   "Columns" : 80,
   "Visual Bell" : true,
-  "Custom Directory" : "No",
+  "Custom Directory" : "Recycle",
   "Ansi 5 Color" : {
     "Red Component" : 0.64283657073974609,
     "Color Space" : "Calibrated",
