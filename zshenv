@@ -1,15 +1,13 @@
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+export JAVA_HOME=$(/usr/libexec/java_home --version 1.8)
 
 if [[ -v TILIX_ID && -f /etc/profile.d/vte.sh ]]
 then
   source /etc/profile.d/vte.sh
 fi
 
-if [[ -e "$HOME/.iterm2_shell_integration.zsh" ]]
+if [[ -e "${HOME}/.iterm2_shell_integration.zsh" ]]
 then
-  source "$HOME/.iterm2_shell_integration.zsh"
+  source "${HOME}/.iterm2_shell_integration.zsh"
 fi
 
 # Make LESS/git aware of Emoji!
@@ -18,8 +16,18 @@ export LESSCHARSET=utf-8
 # Load aliases
 source $HOME/.aliases
 
+# Load NPM
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# IDK About These
+export PATH="/usr/local/lib/ruby/gems/2.6.0/bin:$PATH"
+export PATH="/usr/local/opt/terraform@0.11/bin:$PATH"
+
 case "$OSTYPE" in
   darwin*)
+    export PATH="/usr/local/sbin:$PATH"
     export GPG_TTY=$(tty)
     export SSH_AUTH_SOCK="$HOME/.gnupg/S.gpg-agent.ssh"
     ## macOS GPG Keychain

@@ -26,3 +26,7 @@ alias get='git '
 
 # Oh toodles!
 alias oh='ssh'
+
+# Syntax highlight and cat a source file
+# https://stackoverflow.com/questions/7851134/syntax-highlighting-colorizing-cat
+alias ccat='highlight -O ansi --force -n'
