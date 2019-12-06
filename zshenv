@@ -1,3 +1,6 @@
+export HOMEBREW_ANALYTICS_DEBUG=1
+export HOMEBREW_NO_ANALYTICS=1
+
 export JAVA_HOME=$(/usr/libexec/java_home --version 1.8)
 
 if [[ -v TILIX_ID && -f /etc/profile.d/vte.sh ]]
