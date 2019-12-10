@@ -7,21 +7,25 @@ function existing {
 	for file in "${array[@]}"
 	do
 		echo "Checking $HOME/.$file"
-		if [[ -f "$HOME/.$file" ]]
+		if [[ "$HOME/.$file" -ef "$PWD/$file" ]]
 		then
-			echo "$HOME/file already existed."
-			mv "$HOME/file" "$HOME/file.orig"
+			echo "$HOME/.$file already has the correct symlink."
+		elif [[ -f "$HOME/.$file" ]]
+		then
+			echo "$HOME/.$file is a regular file"
+			echo "Renaming $HOME/.$file to $HOME/.$file.orig"
+			mv "$HOME/.$file" "$HOME/.$file.orig"
+			link "$file"
+		else
+			echo "$HOME/.$file does not exist"
+			link "$file"
 		fi
 	done
 }
 
 function link {
-	local array=("$@")
-	for file in "${array[@]}"
-	do
-		echo "Linking $HOME/.$file"
-		ln -s "$PWD/$file" "$HOME/.$file"
-	done
+	echo "Linking $HOME/.$file"
+	ln -s "$PWD/$file" "$HOME/.$file"
 }
 
 function clean {
@@ -34,5 +38,4 @@ function clean {
 }
 
 existing "${MANIFEST[@]}"
-link "${MANIFEST[@]}"
 # clean "${MANIFEST[@]}"
