@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-MANIFEST=(bash_aliases bash_login bash_profile profile bashrc gitconfig gvimrc.after rvmrc vimrc.after zshenv zshrc aliases tigrc)
+MANIFEST=(bash_aliases bash_login bash_profile profile bashrc gitconfig gvimrc.after rvmrc vimrc.after zshenv zshrc aliases tigrc p10k.zsh)
 
 function existing {
 	local array=("$@")
