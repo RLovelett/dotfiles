@@ -24,9 +24,17 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-# IDK About These
-export PATH="/usr/local/lib/ruby/gems/2.6.0/bin:$PATH"
-export PATH="/usr/local/opt/terraform@0.11/bin:$PATH"
+# Set PATH so it includes user's private bin if it exists
+if [[ -d "$HOME/bin" ]]
+then
+    PATH="$HOME/bin:$PATH"
+fi
+
+# Set PATH so it includes user's private bin if it exists
+if [[ -d "$HOME/.local/bin" ]]
+then
+    PATH="$HOME/.local/bin:$PATH"
+fi
 
 case "$OSTYPE" in
   darwin*)
