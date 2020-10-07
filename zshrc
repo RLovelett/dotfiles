@@ -82,3 +82,13 @@ antigen apply
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# Add pyenv init to my shell
+if command -v pyenv 1>/dev/null 2>&1; then
+  eval "$(pyenv init -)"
+fi
+
+# Add pyenv virtualenv-init to enable auto-activation of virtualenvs
+if command -v pyenv-virtualenv-init 1>/dev/null 2>&1; then
+  eval "$(pyenv virtualenv-init -)"
+fi
