@@ -1,0 +1,16 @@
+{
+  "editor.minimap.enabled": false,
+  "editor.fontSize": 14,
+  "workbench.colorTheme": "Dracula",
+  "workbench.editor.enablePreviewFromQuickOpen": false,
+  "workbench.startupEditor": "newUntitledFile",
+  "markdown-pdf.displayHeaderFooter": false,
+  "editor.rulers": [80, 120],
+  "editor.suggestSelection": "first",
+  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+  "terminal.integrated.fontFamily": "SauceCodePro Nerd Font",
+  "terminal.integrated.fontSize": 14,
+  "sourcekit-lsp.serverPath": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/sourcekit-lsp",
+  "files.insertFinalNewline": true,
+  "window.zoomLevel": 0,
+}
