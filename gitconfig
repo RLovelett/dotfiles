@@ -45,3 +45,5 @@
 	process = git-lfs filter-process
 [protocol]
 	version = 2
+[init]
+	defaultBranch = main
