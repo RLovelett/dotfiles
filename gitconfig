@@ -34,7 +34,7 @@
 [tar "tar.xz"]
 	command = xz -c
 [gpg]
-	program = gpg2
+	program = gpg
 [fetch]
 	recurseSubmodules = false
 [filter "lfs"]
