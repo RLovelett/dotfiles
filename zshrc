@@ -8,6 +8,8 @@ fi
 # Load Antigen
 if [[ -a /usr/local/share/antigen/antigen.zsh ]] ; then
   source /usr/local/share/antigen/antigen.zsh
+elif [[ -a /usr/share/zsh-antigen/antigen.zsh ]] ; then
+  source /usr/share/zsh-antigen/antigen.zsh
 else
   source $HOME/.antigen/antigen.zsh
 fi
