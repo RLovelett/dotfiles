@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- man launchd -->
+	<!-- Set the name of the Launchd task -->
+	<key>Label</key>
+	<string>sh.brew.gnupg.link-ssh-auth-sock</string>
+	<!-- Set a command to run and its arguments -->
+	<key>ProgramArguments</key>
+	<array>
+		<string>/bin/sh</string>
+		<string>-c</string>
+		<string>/bin/ln -sf $HOME/.gnupg/S.gpg-agent.ssh $SSH_AUTH_SOCK</string>
+	</array>
+	<!-- Tells the task to run once the XML is loaded -->
+	<key>RunAtLoad</key>
+	<true />
+</dict>
+</plist>
