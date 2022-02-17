@@ -47,5 +47,9 @@
 	version = 2
 [init]
 	defaultBranch = main
+[credential]
+	helper = osxkeychain
 [pager]
 	branch = false
+[pull]
+        ff = only
