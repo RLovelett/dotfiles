@@ -10,7 +10,17 @@ export HOMEBREW_NO_ANALYTICS=1
 # Make LESS/git aware of Emoji!
 export LESSCHARSET=utf-8
 
-export JAVA_HOME=$(/usr/libexec/java_home --version 1.8)
+# Only try and use Java Home if it can be found
+if [[ -x /usr/libexec/java_home ]]
+then
+  export JAVA_HOME=$(/usr/libexec/java_home --version 1.8)
+fi
+
+# Set EDITOR
+if command -v editor 1>/dev/null 2>&1
+then
+  export EDITOR=$(command -v editor)
+fi
 
 # Load NPM
 export NVM_DIR="$HOME/.nvm"
