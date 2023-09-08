@@ -1,7 +1,7 @@
 [user]
   name = Ryan Lovelett
   email = ryan@lovelett.me
-  signingkey = B1BAB34A8015192F
+  signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN3DMlDirKrj64NN3ULz/4ymvKDoXZ8gdOlYxZVmuFxu
 [commit]
   gpgsign = true
 [core]
@@ -35,7 +35,9 @@
 [tar "tar.xz"]
 	command = xz -c
 [gpg]
-	program = gpg
+	format = ssh
+[gpg "ssh"]
+  program = "/opt/1Password/op-ssh-sign"
 [fetch]
 	recurseSubmodules = false
 [filter "lfs"]
