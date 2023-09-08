@@ -50,6 +50,12 @@ then
   export PATH="$HOME/.local/bin:$PATH"
 fi
 
+# Use 1Passwords SSH Agent; if it is setup
+if [[ -S "$HOME/.1password/agent.sock" ]]
+then
+  export SSH_AUTH_SOCK="$HOME/.1password/agent.sock"
+fi
+
 case "$OSTYPE" in
   linux*)
     ## Use GPG for SSH on Linux
