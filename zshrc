@@ -9,16 +9,6 @@
 #   5. Set up completion, et cetera.
 #   6. Set any variables that are only used in the interactive shell (e.g. $LS_COLORS).
 
-# https://www.soberkoder.com/better-zsh-history/
-setopt INC_APPEND_HISTORY
-setopt EXTENDED_HISTORY
-setopt HIST_FIND_NO_DUPS
-setopt HIST_IGNORE_ALL_DUPS
-export HISTTIMEFORMAT="[%F %T] "
-export HISTFILE="${HOME}/.zsh_history"
-export HISTFILESIZE=1000000000
-export HISTSIZE=1000000000
-
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block, everything else may go below.
@@ -48,7 +38,7 @@ ZPLUGINDIR=${ZPLUGINDIR:-${ZDOTDIR:-$HOME/.config/zsh}/plugins}
 if [[ ! -d $ZPLUGINDIR/zsh_unplugged ]]; then
   git clone --quiet https://github.com/mattmc3/zsh_unplugged $ZPLUGINDIR/zsh_unplugged
 fi
-source $ZPLUGINDIR/zsh_unplugged/zsh_unplugged.zsh
+source $ZPLUGINDIR/zsh_unplugged/antidote.lite.zsh
 
 # List of the Oh-My-Zsh plugins
 # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins
@@ -57,29 +47,38 @@ source $ZPLUGINDIR/zsh_unplugged/zsh_unplugged.zsh
 # OMZ expects a list named 'plugins' so we can't use that variable name for
 # repos, it can only contain the names of actual OMZ plugins.
 plugins=(
-  # The git plugin provides many aliases and a few useful functions.
-  # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/git
-  git
-  # This plugin provides a few utilities to make it more enjoyable on macOS.
-  # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/macos
-  macos
-  # This plugin provides a few utilities that can help you on your daily use of Xcode and iOS development.
-  # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/xcode
-  xcode
-  # This plugin adds auto-completion for docker.
-  # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/docker
-  docker
-)
+  # A Zsh framework as nice as a cool summer breeze
+  # https://github.com/mattmc3/zephyr
+  mattmc3/zephyr/plugins/color
+  mattmc3/zephyr/plugins/completion
+  mattmc3/zephyr/plugins/directory
+  mattmc3/zephyr/plugins/editor
+  mattmc3/zephyr/plugins/environment
+  mattmc3/zephyr/plugins/history
+  mattmc3/zephyr/plugins/utility
+  mattmc3/zephyr/plugins/prompt
 
-# List of the Zsh plugins I use
-repos=(
   # Oh My Zsh - an open source, community-driven framework for managing zsh
   # https://github.com/ohmyzsh/ohmyzsh
-  ohmyzsh/ohmyzsh
+  ohmyzsh/ohmyzsh/lib/clipboard.zsh
+  ohmyzsh/ohmyzsh/plugins/colored-man-pages
+  ohmyzsh/ohmyzsh/plugins/magic-enter
+  # The git plugin provides many aliases and a few useful functions.
+  # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/git
+  ohmyzsh/ohmyzsh/plugins/git
+  # This plugin provides a few utilities to make it more enjoyable on macOS.
+  # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/macos
+  ohmyzsh/ohmyzsh/plugins/macos
+  # This plugin provides a few utilities that can help you on your daily use of Xcode and iOS development.
+  # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/xcode
+  ohmyzsh/ohmyzsh/plugins/xcode
+  # This plugin adds auto-completion for docker.
+  # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/docker
+  ohmyzsh/ohmyzsh/plugins/docker
 
-  # Load Powerlevel10k theme
-  # https://github.com/romkatv/powerlevel10k
-  romkatv/powerlevel10k
+  # Additional completion definitions for Zsh
+  # https://github.com/zsh-users/zsh-completions
+  zsh-users/zsh-completions
 
   # Fish-like autosuggestions for zsh
   # https://github.com/zsh-users/zsh-autosuggestions
@@ -92,22 +91,19 @@ repos=(
   # 🐠 ZSH port of Fish history search (up arrow)
   # https://github.com/zsh-users/zsh-history-substring-search
   zsh-users/zsh-history-substring-search
+)
 
-  # A good set of Zsh keybindings, many of which are shamelessly borrowed from Prezto.
-  # https://github.com/zshzoo/keybindings
-  zshzoo/keybindings
-
-  # A better Zsh history configuration
-  # https://github.com/zshzoo/history
-  zshzoo/history
-
-  # Enable great Zsh options, because Zsh defaults are meh.
-  # https://github.com/zshzoo/setopts
-  zshzoo/setopts
+# List of the Zsh plugins I use
+prompts=(
+  # Load Powerlevel10k theme
+  # https://github.com/romkatv/powerlevel10k
+  romkatv/powerlevel10k
 )
 
 # now load your plugins
-plugin-load $repos
+plugin-clone $plugins $prompts
+plugin-load --kind fpath $prompts
+plugin-load $plugins
 
 # Modified from https://news.ycombinator.com/item?id=16242955
 # Also from https://stackoverflow.com/q/81272/247730
@@ -135,4 +131,6 @@ function shortcuts() {
 shortcuts
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+prompt powerlevel10k
+[[ ! -f ${ZDOTDIR:-$HOME}/.p10k.zsh ]] || source ${ZDOTDIR:-$HOME}/.p10k.zsh
+typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
