@@ -20,6 +20,7 @@ fi
 if command -v editor 1>/dev/null 2>&1
 then
   export EDITOR=$(command -v editor)
+  export VISUAL=$EDITOR
 fi
 
 # Load NPM
