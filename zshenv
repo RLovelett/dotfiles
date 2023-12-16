@@ -23,6 +23,9 @@ then
   export VISUAL=$EDITOR
 fi
 
+# Need to do this better...
+export GIT_EDITOR=$(which vim)
+
 # Load NPM
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
