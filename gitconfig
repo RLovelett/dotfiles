@@ -1,7 +1,7 @@
 [user]
   name = Ryan Lovelett
   email = RYAN.A.LOVELETT@saic.com
-  signingkey = A69A8C55AC979432
+  signingkey = /Users/lovelettr/.ssh/id_ecdsa_sk.pub
 [commit]
   ;gpgsign = true
 [core]
@@ -35,6 +35,8 @@
 	command = xz -c
 [gpg]
 	format = ssh
+[gpg "ssh"]
+	allowedSignersFile = /Users/lovelettr/.ssh/allowed_signers
 [fetch]
 	recurseSubmodules = false
 [filter "lfs"]
