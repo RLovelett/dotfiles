@@ -16,12 +16,29 @@ then
   export JAVA_HOME=$(/usr/libexec/java_home --version 1.8)
 fi
 
-# Set EDITOR
-if command -v editor 1>/dev/null 2>&1
+# Set the default text editor for various applications.
+# First, try to find a command named 'editor'. This is typically managed by 'update-alternatives' on Debian-based systems
+# where multiple text editors are installed and one is configured as the default using the 'update-alternatives' tool.
+if command -v editor >/dev/null 2>&1
 then
   export EDITOR=$(command -v editor)
-  export VISUAL=$EDITOR
+  # If 'editor' is found, set it as the EDITOR, VISUAL, and GIT_EDITOR for consistent usage across applications.
+elif command -v nvim >/dev/null 2>&1
+then
+  # If 'editor' is not found, check for 'nvim' (NeoVim).
+  export EDITOR=$(command -v nvim)
+elif [ -x "/opt/homebrew/bin/nvim" ]
+then
+  # If neither 'editor' nor 'nvim' in PATH, specifically check for 'nvim' installed via Homebrew on macOS.
+  export EDITOR="/opt/homebrew/bin/nvim"
+else
+  # If none of the editors are found, output a reminder to install an editor.
+  echo "No suitable editor found. Please install 'editor' or 'nvim'."
 fi
+
+# Set VISUAL and GIT_EDITOR to the same value as EDITOR.
+export VISUAL=$EDITOR
+export GIT_EDITOR=$EDITOR
 
 # Load NPM
 export NVM_DIR="$HOME/.nvm"
