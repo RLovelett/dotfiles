@@ -5,8 +5,7 @@
 [commit]
   ;gpgsign = true
 [core]
-  ;autocrlf = input
-  ;safecrlf = true
+  safecrlf = true
   ignorecase = false
 [alias]
   co = checkout
@@ -54,3 +53,5 @@
 [credential]
 	helper = cache --timeout 7200
 	helper = oauth
+[credential "https://gitlab.sif.saicdevops.com"]
+	oauthClientId = 17d1d0f7c0809f83d0704a6a83bc8c7f68dfad3d180ea9a72c4b41f68729f854
