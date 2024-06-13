@@ -135,7 +135,7 @@ parse_commandline "$@"
 shopt -s extglob
 set -euo pipefail
 
-MANIFEST=(gitconfig gvimrc.after rvmrc vimrc.after tigrc p10k.zsh zprofile zshenv zshrc aliases)
+MANIFEST=(gitconfig tigrc p10k.zsh zprofile zshenv zshrc aliases)
 
 function is_dry_run {
 	[ "$_arg_dry_run" = "on" ]

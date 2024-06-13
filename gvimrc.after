@@ -1,4 +1,0 @@
-colorscheme base16-tomorrow
-
-" Quick and Dirty XML Pretty Print in Vim
-nmap <F9> :%s/>\s*</>\r</g<CR>gg=G
