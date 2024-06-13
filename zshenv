@@ -55,6 +55,12 @@ if command -v pyenv-virtualenv-init 1>/dev/null 2>&1; then
   eval "$(pyenv virtualenv-init -)"
 fi
 
+# Set PATH so it includes Homebrew's bin if it exists
+if [[ -d "/opt/homebrew/bin" ]]
+then
+  export PATH="/opt/homebrew/bin:$PATH"
+fi
+
 # Set PATH so it includes user's private bin if it exists
 if [[ -d "$HOME/bin" ]]
 then
@@ -71,6 +77,12 @@ fi
 if [[ -S "$HOME/.1password/agent.sock" ]]
 then
   export SSH_AUTH_SOCK="$HOME/.1password/agent.sock"
+fi
+
+# Set PATH so it includes user's private bin if it exists
+if [[ -d "$HOME/.mint/bin" ]]
+then
+  export PATH="$HOME/.mint/bin:$PATH"
 fi
 
 case "$OSTYPE" in
