@@ -27,6 +27,13 @@ alias get='git '
 # Oh toodles!
 alias oh='ssh'
 
+# Prefer NeoVim over Vi/m
+if command -v nvim >/dev/null 2>&1
+then
+  alias vim="nvim"
+  alias vi="nvim"
+fi
+
 # Syntax highlight and cat a source file
 # https://stackoverflow.com/questions/7851134/syntax-highlighting-colorizing-cat
 alias ccat='highlight -O ansi --force -n'
