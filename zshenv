@@ -45,14 +45,19 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-# Add pyenv init to my shell
-if command -v pyenv 1>/dev/null 2>&1; then
-  eval "$(pyenv init -)"
+# This section sets the PYENV_ROOT environment variable to point to the
+# installation directory of pyenv.
+export PYENV_ROOT="$HOME/.pyenv"
+
+# Checks if the pyenv binary directory exists before adding it to the PATH.
+if [[ -d $PYENV_ROOT/bin ]]; then
+  export PATH="$PYENV_ROOT/bin:$PATH"
 fi
 
-# Add pyenv virtualenv-init to enable auto-activation of virtualenvs
-if command -v pyenv-virtualenv-init 1>/dev/null 2>&1; then
-  eval "$(pyenv virtualenv-init -)"
+# The second condition checks if the pyenv command is available (i.e., correctly
+# added to PATH) and then initializes pyenv.
+if command -v pyenv 1>/dev/null 2>&1; then
+  eval "$(pyenv init -)"
 fi
 
 # Set PATH so it includes Homebrew's bin if it exists
