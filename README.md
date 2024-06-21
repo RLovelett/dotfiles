@@ -9,6 +9,7 @@ dotfiles in order.
 
 - [macOS Setup Guide](https://github.com/RLovelett/dotfiles/wiki/macOS)
 - [Linux Setup Guide (Ubuntu & Fedora)](https://github.com/RLovelett/dotfiles/wiki/Linux)
+- [![Stow has forever changed the way I manage my dotfiles](https://img.youtube.com/vi/y6XCebnB9gs/0.jpg)](https://www.youtube.com/watch?v=y6XCebnB9gs)
 
 ## Using GNU Stow for Dotfile Management
 
