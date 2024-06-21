@@ -11,7 +11,7 @@ dotfiles in order.
 - [Linux Setup Guide (Ubuntu & Fedora)](https://github.com/RLovelett/dotfiles/wiki/Linux)
 - [![Stow has forever changed the way I manage my dotfiles](https://img.youtube.com/vi/y6XCebnB9gs/0.jpg)](https://www.youtube.com/watch?v=y6XCebnB9gs)
 
-## Using GNU Stow for Dotfile Management
+## Install Configuration using Stow
 
 GNU Stow is used to manage the dotfiles in this repository. It creates symlinks
 from a cloned copy of the repository to a specified directory, making it easy
@@ -20,11 +20,14 @@ to manage and version control configuration files.
 To "install" the configuration files in this repository using Stow, I typically
 run the following command:
 
-    ```bash
-    stow --target $HOME --verbose .
-    ```
+```bash
+stow --target $HOME --verbose .
+```
 
-    This command tells Stow to create symlinks in the `$HOME` directory for all configuration files located in the current directory. For more detailed information about GNU Stow and its capabilities, see the [GNU Stow documentation](https://www.gnu.org/software/stow/manual/stow.html).
+This command tells Stow to create symlinks in the `$HOME` directory for all
+configuration files located in the current directory. For more detailed
+information about GNU Stow and its capabilities, see the [GNU Stow
+documentation](https://www.gnu.org/software/stow/manual/stow.html).
 
 ## YubiKey, SSH, GnuPG Configuration on macOS
 
