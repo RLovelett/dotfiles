@@ -1,35 +1,60 @@
-# See Wiki
+# Dotfiles Repository
 
-* [macOS](https://github.com/RLovelett/dotfiles/wiki/macOS)
-* [Ubuntu | Fedora | Linux](https://github.com/RLovelett/dotfiles/wiki/Linux)
+This repository contains configuration files and scripts for configuring my
+desktop environment on macOS and Linux. The configurations are easily managed
+using GNU Stow, a symlink farm manager that simplifies the process of keeping
+dotfiles in order.
 
-## YubiKey, SSH, GnuPG, macOS
+## Quick Links
 
-Most of this is lifted from Kirill Kuznetsov's article [Stick with security:
-YubiKey, SSH, GnuPG, macOS](https://evilmartians.com/chronicles/stick-with-security-yubikey-ssh-gnupg-macos) from June 11, 2018.
+- [macOS Setup Guide](https://github.com/RLovelett/dotfiles/wiki/macOS)
+- [Linux Setup Guide (Ubuntu & Fedora)](https://github.com/RLovelett/dotfiles/wiki/Linux)
 
-See [Script management with launchd in Terminal on Mac](https://support.apple.com/guide/terminal/script-management-with-launchd-apdc6c1077b-5d5d-4d35-9c19-60f2397b2369/mac) for more information about `launchctl`.
+## Using GNU Stow for Dotfile Management
+
+GNU Stow is used to manage the dotfiles in this repository. It creates symlinks
+from a cloned copy of the repository to a specified directory, making it easy
+to manage and version control configuration files.
+
+To "install" the configuration files in this repository using Stow, I typically
+run the following command:
+
+    ```bash
+    stow --target $HOME --verbose .
+    ```
+
+    This command tells Stow to create symlinks in the `$HOME` directory for all configuration files located in the current directory. For more detailed information about GNU Stow and its capabilities, see the [GNU Stow documentation](https://www.gnu.org/software/stow/manual/stow.html).
+
+## YubiKey, SSH, GnuPG Configuration on macOS
+
+This section is primarily derived from Kirill Kuznetsov's article on [securing
+macOS with YubiKey, SSH, and
+GnuPG](https://evilmartians.com/chronicles/stick-with-security-yubikey-ssh-gnupg-macos).
+The setup involves using `launchctl` to manage background services critical for
+secure operations. Below are the commands used to setup and verify the
+configuration:
+
+### Setup Commands
 
 ```bash
-cp sh.brew.gnupg.gpg-agent.plist sh.brew.gnupg.link-ssh-auth-socket.plist $HOME/Library/LaunchAgents
 launchctl load -F $HOME/Library/LaunchAgents/sh.brew.gnupg.gpg-agent.plist
 launchctl load -F $HOME/Library/LaunchAgents/sh.brew.gnupg.link-ssh-auth-socket.plist
 ```
 
-Verify everything is working:
+### Verification Commands
 
 ```bash
 $ launchctl list | grep sh.brew.gnupg
 -	0	sh.brew.gnupg.gpg-agent
 -	0	sh.brew.gnupg.link-ssh-auth-sock
-```
 
-```bash
 $ pgrep -fl gpg-agent
 50890 gpg-agent --homedir /Users/lovelettr/.gnupg --use-standard-socket --daemon
-```
 
-```bash
 $ ssh-add -L
 ssh-rsa AAAAB3NzaC...5UNE54ZNTQ== cardno:5413447
 ```
+
+For additional script management tips using `launchd` on macOS, visit [Apple's
+guide on script management with
+launchd](https://support.apple.com/guide/terminal/script-management-with-launchd-apdc6c1077b-5d5d-4d35-9c19-60f2397b2369/mac).
