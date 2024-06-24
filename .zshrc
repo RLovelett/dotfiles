@@ -27,27 +27,20 @@ source $HOME/.aliases
 # where do you want to store your plugins?
 ZPLUGINDIR=${ZPLUGINDIR:-${ZDOTDIR:-$HOME/.config/zsh}/plugins}
 
-# get zsh_unplugged and store it with your other plugins
-if [[ ! -d $ZPLUGINDIR/zsh_unplugged ]]; then
-  git clone --quiet https://github.com/mattmc3/zsh_unplugged $ZPLUGINDIR/zsh_unplugged
-fi
-source $ZPLUGINDIR/zsh_unplugged/antidote.lite.zsh
+# Source the plugin-load function
+source "${ZPLUGINDIR}/rlovelett/plugin-load.zsh"
 
-# List of the Oh-My-Zsh plugins
-# https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins
-#
-# From https://github.com/mattmc3/zsh_unplugged/issues/8
-# OMZ expects a list named 'plugins' so we can't use that variable name for
-# repos, it can only contain the names of actual OMZ plugins.
 plugins=(
+  # Ensure oh-my-posh is installed and configure the prompt accordingly
+  rlovelett/oh-my-posh
+
   # A Zsh framework as nice as a cool summer breeze
   # https://github.com/mattmc3/zephyr
   mattmc3/zephyr/plugins/color
   mattmc3/zephyr/plugins/completion
   mattmc3/zephyr/plugins/directory
-  mattmc3/zephyr/plugins/editor
   mattmc3/zephyr/plugins/environment
-  mattmc3/zephyr/plugins/history
+  rlovelett/history
   mattmc3/zephyr/plugins/utility
 
   # Oh My Zsh - an open source, community-driven framework for managing zsh
@@ -72,11 +65,17 @@ plugins=(
   # https://github.com/zsh-users/zsh-completions
   zsh-users/zsh-completions
 
-  # Fish-like autosuggestions for zsh
+  # 🐠 Fish-like autosuggestions for zsh
   # https://github.com/zsh-users/zsh-autosuggestions
   zsh-users/zsh-autosuggestions
 
-  # Fish shell like syntax highlighting for zsh
+  rlovelett/fzf
+
+  # Replace ZSH's default completion selection menu with fzf
+  # https://github.com/aloxaf/FZF-tab
+  Aloxaf/fzf-tab
+
+  # 🐠 Fish shell like syntax highlighting for zsh
   # https://github.com/zsh-users/zsh-syntax-highlighting
   zsh-users/zsh-syntax-highlighting
 
@@ -85,33 +84,45 @@ plugins=(
   zsh-users/zsh-history-substring-search
 )
 
-# now load your plugins
-plugin-clone $plugins
 plugin-load $plugins
 
-# Modified from https://news.ycombinator.com/item?id=16242955
-# Also from https://stackoverflow.com/q/81272/247730
-# Also from https://www.iterm2.com/faq.html - Q: How do I make the option/alt key act like Meta or send escape codes?
-function echo_color() {
-  local color="$1"
-  printf "${color}$2\033[0m\n"
-}
-function shortcuts() {
-  echo_color "\033[1;90m" "***Moving***"
-  echo_color "\033[0;90m" "Ctrl-A — Backwards by line"
-  echo_color "\033[0;90m" " Alt-B — Backwards by word"
-  echo_color "\033[0;90m" "Ctrl-B — Backwards by character"
-  echo_color "\033[0;90m" "Ctrl-E — Forwards by line"
-  echo_color "\033[0;90m" " Alt-F — Forwards by word"
-  echo_color "\033[0;90m" "Ctrl-F — Forwards by character"
-  echo_color "\033[1;90m" "***Erasing***"
-  echo_color "\033[0;90m" "Ctrl-W — Backwards by word"
-  echo_color "\033[0;90m" "Ctrl-U — Backwards by line"
-  echo_color "\033[0;90m" " Alt-D — Forwards by word"
-  echo_color "\033[0;90m" "Ctrl-K — Forwards by line"
-  echo_color "\033[1;90m" "***Miscellaneous***"
-  echo_color "\033[0;90m" "Ctrl-T — Swap chars (useful for correcting typos)"
-}
-shortcuts
+autoload -Uz compinit && compinit
 
-eval "$(oh-my-posh init zsh --config ${XDG_CONFIG_HOME:-${HOME}/.config}/ohmyposh/base.toml)"
+# Keybindings
+# Set the keymap to emacs
+bindkey -e
+
+# TODO: This does not seem to work...
+#bindkey -M emacs '^y' autosuggest-accept
+
+# Check if history-substring-search functions are available
+# history-substring-search-up/down is provided by zsh-users/zsh-history-substring-search
+if (( ${+functions[history-substring-search-up]} && ${+functions[history-substring-search-down]} )); then
+    # Bind keys if the substring search plugin is loaded
+    bindkey '^[[A' history-substring-search-up
+    bindkey -M emacs '^P' history-substring-search-up
+    bindkey '^[[B' history-substring-search-down
+    bindkey -M emacs '^N' history-substring-search-down
+else
+    # Default bindings if the plugin is not loaded
+    bindkey '^[[A' history-search-backward
+    bindkey -M emacs '^P' history-search-backward
+    bindkey '^[[B' history-search-forward
+    bindkey -M emacs '^N' history-search-forward
+fi
+
+# Completion styling
+# disable sort when completing `git checkout`
+zstyle ':completion:*:git-checkout:*' sort false
+# set descriptions format to enable group support
+# NOTE: don't use escape sequences here, fzf-tab will ignore them
+zstyle ':completion:*:descriptions' format '[%d]'
+# set list-colors to enable filename colorizing
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+# force zsh not to show completion menu, which allows fzf-tab to capture the unambiguous prefix
+zstyle ':completion:*' menu no
+# preview directory's content with ls when completing cd
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls -1 --color=always $realpath'
+# switch group using `<` and `>`
+zstyle ':fzf-tab:*' switch-group '<' '>'
+#zstyle ':completion:*' matcher-list "m:{a-z}={A-Za-z}"
