@@ -1,0 +1,101 @@
+#:schema https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json
+
+version = 2
+final_space = true
+console_title_template = "{{ .Shell }} in {{ .Folder }}"
+
+# Colors: default, black, red, green, yellow, blue, magenta, cyan, white
+
+[[blocks]]
+  type = "prompt"
+  alignment = "left"
+  newline = true
+
+  [[blocks.segments]]
+    type = "os"
+    style = "plain"
+    background = "transparent"
+    foreground = "lightGray"
+    template = "{{ if .WSL }}WSL at {{ end }}{{.Icon}}"
+
+  [[blocks.segments]]
+    type = "path"
+    style = "plain"
+    background = "transparent"
+    foreground = "blue"
+
+    [blocks.segments.properties]
+      style = "full"
+
+  [[blocks.segments]]
+    type = "git"
+    style = "plain"
+    background = "transparent"
+    foreground = "darkGray"
+    foreground_templates = [
+      "{{ if or (.Staging.Changed) (gt .Working.Modified 0) }}lightYellow{{end}}"
+    ]
+    # nf-fa-code_branch - \uF126
+    # nf-fa-code_commit - \uF172
+    # nf-fa-tag - \uF02B
+    templates = [
+      "{{ if and .Detached (eq .Ref \"(detached)\") }}\uF172 {{ substr 0 8 .Commit.Sha }}{{ else if .Detached }}\uF02B {{ .Ref }}{{ else }}\uF126 {{ .Ref }}{{ end }}",
+      "{{ if gt .Behind 0 }} <cyan>⇣{{ .Behind }}</>{{end}}",
+      "{{ if gt .Ahead 0 }}{{ if eq .Behind 0}} {{end}}<cyan>⇡{{ .Ahead }}</>{{end}}",
+      "{{ if gt .StashCount 0 }} *{{ .StashCount }}{{end}}",
+      # TODO: VCS_STATUS_ACTION (in red)
+      "{{ if .Merge }} <red>merge</>{{ end }}",
+      "{{ if .Rebase }} <red>rebase</>{{ end }}",
+      "{{ if .CherryPick }} <red>cherry</>{{ end }}",
+      "{{ if .Revert }} <red>cherry</>{{ end }}",
+      "{{ if gt .Working.Unmerged 0 }} <red>~{{ .Working.Unmerged }}</>{{end}}",
+      "{{ if .Staging.Changed }} +{{ add .Staging.Added .Staging.Deleted .Staging.Modified }}{{end}}",
+      "{{ if gt (add .Working.Modified .Working.Deleted) 0 }} !{{ add .Working.Modified .Working.Deleted }}{{end}}",
+      "{{ if gt .Working.Untracked 0 }} ?{{ .Working.Untracked }}{{end}}",
+    ]
+
+    [blocks.segments.properties]
+      fetch_status =  true
+
+[[blocks]]
+  type = "rprompt"
+  overflow = "hidden"
+
+  [[blocks.segments]]
+    type = "executiontime"
+    style = "plain"
+    foreground = "yellow"
+    background = "transparent"
+    template = "{{ .FormattedMs }}"
+
+    [blocks.segments.properties]
+      threshold = 5000
+      style = "roundrock"
+
+[[blocks]]
+  type = "prompt"
+  alignment = "left"
+  newline = true
+
+  [[blocks.segments]]
+    type = "text"
+    style = "plain"
+    background = "transparent"
+    foreground_templates = [
+      "{{if gt .Code 0}}red{{end}}",
+      "{{if eq .Code 0}}green{{end}}",
+    ]
+    template = "❯"
+
+[transient_prompt]
+  background = "transparent"
+  foreground_templates = [
+    "{{if gt .Code 0}}red{{end}}",
+    "{{if eq .Code 0}}green{{end}}",
+  ]
+  template = "❯ "
+
+[secondary_prompt]
+  background = "transparent"
+  foreground = "green"
+  template = "❯❯ "

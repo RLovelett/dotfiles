@@ -9,13 +9,6 @@
 #   5. Set up completion, et cetera.
 #   6. Set any variables that are only used in the interactive shell (e.g. $LS_COLORS).
 
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block, everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
 if [[ -v TILIX_ID && -f /etc/profile.d/vte.sh ]]
 then
   source /etc/profile.d/vte.sh
@@ -56,7 +49,6 @@ plugins=(
   mattmc3/zephyr/plugins/environment
   mattmc3/zephyr/plugins/history
   mattmc3/zephyr/plugins/utility
-  mattmc3/zephyr/plugins/prompt
 
   # Oh My Zsh - an open source, community-driven framework for managing zsh
   # https://github.com/ohmyzsh/ohmyzsh
@@ -93,16 +85,8 @@ plugins=(
   zsh-users/zsh-history-substring-search
 )
 
-# List of the Zsh plugins I use
-prompts=(
-  # Load Powerlevel10k theme
-  # https://github.com/romkatv/powerlevel10k
-  romkatv/powerlevel10k
-)
-
 # now load your plugins
-plugin-clone $plugins $prompts
-plugin-load --kind fpath $prompts
+plugin-clone $plugins
 plugin-load $plugins
 
 # Modified from https://news.ycombinator.com/item?id=16242955
@@ -130,7 +114,4 @@ function shortcuts() {
 }
 shortcuts
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-prompt powerlevel10k
-[[ ! -f ${ZDOTDIR:-$HOME}/.p10k.zsh ]] || source ${ZDOTDIR:-$HOME}/.p10k.zsh
-typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
+eval "$(oh-my-posh init zsh --config ${XDG_CONFIG_HOME:-${HOME}/.config}/ohmyposh/base.toml)"
