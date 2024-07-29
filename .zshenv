@@ -4,8 +4,18 @@
 #
 #   1. For example, $PATH, $EDITOR, and $PAGER are often set in .zshenv.
 
-export HOMEBREW_ANALYTICS_DEBUG=1
-export HOMEBREW_NO_ANALYTICS=1
+# Set HOMEBREW_PREFIX with a default value if not already set
+: ${HOMEBREW_PREFIX:=/opt/homebrew}
+
+# Check if Homebrew's brew executable exists and is executable
+if [[ -x "$HOMEBREW_PREFIX/bin/brew" ]]; then
+    # Set Homebrew-specific environment variables
+    export HOMEBREW_ANALYTICS_DEBUG=1
+    export HOMEBREW_NO_ANALYTICS=1
+
+    # Evaluate and execute the output of `brew shellenv`
+    eval "$($HOMEBREW_PREFIX/bin/brew shellenv)"
+fi
 
 # Make LESS/git aware of Emoji!
 export LESSCHARSET=utf-8
@@ -58,12 +68,6 @@ fi
 # added to PATH) and then initializes pyenv.
 if command -v pyenv 1>/dev/null 2>&1; then
   eval "$(pyenv init -)"
-fi
-
-# Set PATH so it includes Homebrew's bin if it exists
-if [[ -d "/opt/homebrew/bin" ]]
-then
-  export PATH="/opt/homebrew/bin:$PATH"
 fi
 
 # Set PATH so it includes user's private bin if it exists
