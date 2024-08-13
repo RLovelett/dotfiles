@@ -12,17 +12,11 @@ console_title_template = "{{ .Shell }} in {{ .Folder }}"
   newline = true
 
   [[blocks.segments]]
-    type = "os"
-    style = "plain"
-    background = "transparent"
-    foreground = "lightGray"
-    template = "{{ if .WSL }}WSL at {{ end }}{{.Icon}}"
-
-  [[blocks.segments]]
     type = "path"
     style = "plain"
     background = "transparent"
     foreground = "blue"
+    template = "{{ .Path }}"
 
     [blocks.segments.properties]
       style = "full"
@@ -71,6 +65,15 @@ console_title_template = "{{ .Shell }} in {{ .Folder }}"
     [blocks.segments.properties]
       threshold = 5000
       style = "roundrock"
+
+  [[blocks.segments]]
+    type = "session"
+    style = "diamond"
+    leading_diamond = "\uE0B6"
+    trailing_diamond = "\uE0B4 "
+    background = "blue"
+    foreground = "transparent"
+    template = "{{ if .SSHSession }}\uEBA9 {{ .UserName }}@{{ .HostName }}{{ end }}"
 
 [[blocks]]
   type = "prompt"
