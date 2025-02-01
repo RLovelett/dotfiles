@@ -33,7 +33,7 @@ console_title_template = "{{ .Shell }} in {{ .Folder }}"
     # nf-fa-code_commit - \uF172
     # nf-fa-tag - \uF02B
     templates = [
-      "{{ if and .Detached (eq .Ref \"(detached)\") }}\uF172 {{ substr 0 8 .Commit.Sha }}{{ else if .Detached }}\uF02B {{ .Ref }}{{ else }}\uF126 {{ .Ref }}{{ end }}",
+      " {{ if and .Detached (eq .Ref \"(detached)\") }}\uF172 {{ substr 0 8 .Commit.Sha }}{{ else if .Detached }}\uF02B {{ .Ref }}{{ else }}\uF126 {{ .Ref }}{{ end }}",
       "{{ if gt .Behind 0 }} <cyan>⇣{{ .Behind }}</>{{end}}",
       "{{ if gt .Ahead 0 }}{{ if eq .Behind 0}} {{end}}<cyan>⇡{{ .Ahead }}</>{{end}}",
       "{{ if gt .StashCount 0 }} *{{ .StashCount }}{{end}}",
@@ -50,6 +50,20 @@ console_title_template = "{{ .Shell }} in {{ .Folder }}"
 
     [blocks.segments.properties]
       fetch_status =  true
+
+  # nf-fa-python - \uED1B
+  [[blocks.segments]]
+    type = "python"
+    style = "plain"
+    background = "transparent"
+    foreground = "green"
+    templates = [
+      "  {{ if .Error }}{{ .Error }}{{ else }}\uED1B {{ .Full }} {{ if .Venv }}({{ .Venv }}){{ end }}{{ end }}"
+    ]
+
+    [blocks.segments.properties]
+      display_mode = "context"
+      foler_name_fallback = false
 
 [[blocks]]
   type = "rprompt"
