@@ -2,56 +2,74 @@
   name = Ryan Lovelett
   email = ryan@lovelett.me
   signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN3DMlDirKrj64NN3ULz/4ymvKDoXZ8gdOlYxZVmuFxu
+[alias]
+  unstage = reset HEAD
+  snapshot = !git stash save "snapshot: $(date)" && git stash apply "stash@{0}"
+[branch]
+  sort = -committerdate
+[color]
+  ui = true
+[column]
+  ui = auto
 [commit]
   gpgsign = true
+  verbose = true
 [core]
   safecrlf = true
   ignorecase = false
-[alias]
-  co = checkout
-  ci = commit
-  st = status
-  br = branch
-  hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
-  type = cat-file -t
-  dump = cat-file -p
-  tagcommit = !sh -c 'git rev-list $0 | head -n 1'
-  unstage = reset HEAD
-  lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
-  snapshot = !git stash save "snapshot: $(date)" && git stash apply "stash@{0}"
-  lg1 = log --graph --abbrev-commit --decorate --date=relative --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all
-  lg2 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all
-  ;lg = !"git lg1"
-[color]
-  ui = true
-[filter "rcs-keywords"]
-	clean  = .git_filters/rcs-keywords.clean
-	smudge = .git_filters/rcs-keywords.smudge %f
+  pager = less --raw-control-chars
+  excludesfile = ~/.gitignore
+[credential]
+  helper = cache --timeout 7200
+  helper = oauth
 [diff]
-	algorithm = patience
-[core]
-	pager = less --raw-control-chars
-[tar "tar.xz"]
-	command = xz -c
+  algorithm = histogram
+  colorMoved = plain
+  mnemonicPrefix = true
+  renames = true
+[fetch]
+  recurseSubmodules = false
+  prune = true
+  pruneTags = true
+  all = true
+[filter "lfs"]
+  required = true
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
+  process = git-lfs filter-process
+[filter "rcs-keywords"]
+  clean  = .git_filters/rcs-keywords.clean
+  smudge = .git_filters/rcs-keywords.smudge %f
 [gpg]
-	format = ssh
+  format = ssh
 [gpg "ssh"]
   program = "/opt/1Password/op-ssh-sign"
-[fetch]
-	recurseSubmodules = false
-[filter "lfs"]
-	required = true
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
-	process = git-lfs filter-process
-[protocol]
-	version = 2
+[help]
+  autocorrect = prompt
 [init]
-	defaultBranch = main
+  defaultBranch = main
+;[merge]
+;  conflictstyle = zdiff3
 [pager]
-	branch = false
+  branch = false
+  diff = false
+  show = false
+[protocol]
+  version = 2
 [pull]
   ff = only
-[credential]
-	helper = cache --timeout 7200
-	helper = oauth
+[push]
+  default = simple
+  autoSetupRemote = true
+  followTags = true
+[rebase]
+  ;autoSquash = true
+  autoStash = true
+  updateRefs = true
+[rerere]
+  enabled = true
+  autoupdate = true
+[tag]
+  sort = version:refname
+[tar "tar.xz"]
+  command = xz -c
