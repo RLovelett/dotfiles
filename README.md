@@ -11,6 +11,29 @@ dotfiles in order.
 - [Linux Setup Guide (Ubuntu & Fedora)](https://github.com/RLovelett/dotfiles/wiki/Linux)
 - [![Stow has forever changed the way I manage my dotfiles](https://img.youtube.com/vi/y6XCebnB9gs/0.jpg)](https://www.youtube.com/watch?v=y6XCebnB9gs)
 
+## Clone and Prepare Repository
+
+The repository uses GNU Stow to manage configuration files. Before installing the dotfiles, the following tools must be present:
+
+- `git`
+- `stow`
+- `zsh`
+
+Install them with:
+
+```bash
+apt install --yes git stow zsh
+```
+
+Clone the repository:
+
+```bash
+mkdir -p $HOME/Source
+cd $HOME/Source
+git clone --recurse-submodules --jobs $(nproc) https://github.com/RLovelett/dotfiles.git
+cd dotfiles
+```
+
 ## Install Configuration using Stow
 
 GNU Stow is used to manage the dotfiles in this repository. It creates symlinks
