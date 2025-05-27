@@ -392,6 +392,14 @@ require('lazy').setup({
         })
       end, { desc = '[/] Fuzzily search in current buffer' })
 
+      vim.keymap.set('n', '<C-p>', function()
+        local themes = require 'telescope.themes'
+        builtin.find_files(themes.get_dropdown {
+          winblend = 10,
+          previewer = false,
+        })
+      end, { desc = '[S]earch [F]iles' })
+
       -- It's also possible to pass additional configuration options.
       --  See `:help telescope.builtin.live_grep()` for information about particular keys
       vim.keymap.set('n', '<leader>s/', function()
@@ -606,7 +614,6 @@ require('lazy').setup({
       -- for you, so that they are available from within Neovim.
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
-        'clangd',
         'stylua', -- Used to format Lua code
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
