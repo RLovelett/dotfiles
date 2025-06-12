@@ -435,7 +435,7 @@
   },
   "theme.bar.buttons.workspaces.enableBorder": false,
   "bar.workspaces.show_icons": false,
-  "bar.workspaces.show_numbered": false,
+  "bar.workspaces.show_numbered": true,
   "bar.workspaces.workspaceMask": false,
   "bar.workspaces.showWsIcons": false,
   "bar.workspaces.showApplicationIcons": false,
@@ -447,5 +447,7 @@
   "bar.windowtitle.label": true,
   "bar.windowtitle.icon": true,
   "notifications.position": "top right",
-  "scalingPriority": "hyprland"
+  "scalingPriority": "hyprland",
+  "bar.workspaces.monitorSpecific": true,
+  "bar.workspaces.numbered_active_indicator": "underline"
 }
