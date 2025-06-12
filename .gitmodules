@@ -25,3 +25,6 @@
 [submodule ".config/fzf"]
 	path = .config/fzf
 	url = https://github.com/junegunn/fzf.git
+[submodule ".pyenv"]
+	path = .pyenv
+	url = https://github.com/pyenv/pyenv.git
