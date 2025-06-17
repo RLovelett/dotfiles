@@ -388,9 +388,11 @@ require('lazy').setup({
 
       vim.keymap.set('n', '<C-p>', function()
         local themes = require 'telescope.themes'
+        local builtin = require 'telescope.builtin'
         builtin.find_files(themes.get_dropdown {
           winblend = 10,
           previewer = false,
+          hidden = true,
         })
       end, { desc = '[S]earch [F]iles' })
 
