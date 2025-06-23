@@ -9,16 +9,6 @@
 #   5. Set up completion, et cetera.
 #   6. Set any variables that are only used in the interactive shell (e.g. $LS_COLORS).
 
-if [[ -v TILIX_ID && -f /etc/profile.d/vte.sh ]]
-then
-  source /etc/profile.d/vte.sh
-fi
-
-if [[ -e "${HOME}/.iterm2_shell_integration.zsh" ]]
-then
-  source "${HOME}/.iterm2_shell_integration.zsh"
-fi
-
 # Load aliases
 source $HOME/.aliases
 
@@ -39,7 +29,7 @@ plugins=(
   mattmc3/zephyr/plugins/color
   mattmc3/zephyr/plugins/completion
   mattmc3/zephyr/plugins/directory
-  mattmc3/zephyr/plugins/environment
+  rlovelett/environment
   rlovelett/history
   mattmc3/zephyr/plugins/utility
 
@@ -57,9 +47,6 @@ plugins=(
   # This plugin provides a few utilities that can help you on your daily use of Xcode and iOS development.
   # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/xcode
   ohmyzsh/ohmyzsh/plugins/xcode
-  # This plugin adds auto-completion for docker.
-  # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/docker
-  ohmyzsh/ohmyzsh/plugins/docker
 
   # Additional completion definitions for Zsh
   # https://github.com/zsh-users/zsh-completions
@@ -126,3 +113,10 @@ zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls -1 --color=always $realpath'
 # switch group using `<` and `>`
 zstyle ':fzf-tab:*' switch-group '<' '>'
 #zstyle ':completion:*' matcher-list "m:{a-z}={A-Za-z}"
+
+# Launch tmux by default
+#if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
+#  tmux a -t default || exec tmux new -s default && exit;
+#fi
+
+bindkey "^[[3~" delete-char

@@ -34,6 +34,18 @@ git clone --recurse-submodules --jobs $(nproc) https://github.com/RLovelett/dotf
 cd dotfiles
 ```
 
+## Make the XDG folder spec
+
+XDG Base Directory specification folders are used by applications to organize configuration, cache, data, and state files. The following command creates the standard directories with default values if the environment variables are not already set:
+
+```bash
+XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config}
+XDG_CACHE_HOME=${XDG_CACHE_HOME:-$HOME/.cache}
+XDG_DATA_HOME=${XDG_DATA_HOME:-$HOME/.local/share}
+XDG_STATE_HOME=${XDG_STATE_HOME:-$HOME/.local/state}
+mkdir -p $XDG_CONFIG_HOME $XDG_CACHE_HOME $XDG_DATA_HOME $XDG_STATE_HOME $HOME/.local/{,s}bin
+```
+
 ## Install Configuration using Stow
 
 GNU Stow is used to manage the dotfiles in this repository. It creates symlinks
