@@ -28,3 +28,6 @@
 [submodule "config-common/.config/.pyenv"]
 	path = config-common/.config/.pyenv
 	url = https://github.com/pyenv/pyenv.git
+[submodule "config-common/.config/nvm"]
+	path = config-common/.config/nvm
+	url = https://github.com/nvm-sh/nvm.git
