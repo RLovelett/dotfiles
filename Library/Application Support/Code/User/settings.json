@@ -95,5 +95,6 @@
   "shellcheck.disableVersionCheck": true,
 
   // === Updates and Notifications ===
-  "update.showReleaseNotes": false
+  "update.showReleaseNotes": false,
+  "python.analysis.typeCheckingMode": "strict"
 }

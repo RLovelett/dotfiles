@@ -15,7 +15,8 @@
   ;gpgsign = true
   verbose = true
 [core]
-  safecrlf = true
+  autocrlf = false
+  ;safecrlf = true
   ignorecase = false
   pager = less --raw-control-chars
   excludesfile = ~/.gitignore
