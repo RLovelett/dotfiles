@@ -5,3 +5,4 @@ if [[ -x "$HOMEBREW_PREFIX/bin/brew" ]]; then
   export HOMEBREW_NO_ANALYTICS=1
   eval "$($HOMEBREW_PREFIX/bin/brew shellenv)"
 fi
+echo $PATH

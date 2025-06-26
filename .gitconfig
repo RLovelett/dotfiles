@@ -15,10 +15,13 @@
   ;gpgsign = true
   verbose = true
 [core]
-  safecrlf = true
+  autocrlf = false
+  ;safecrlf = true
   ignorecase = false
   pager = less --raw-control-chars
   excludesfile = ~/.gitignore
+[credential]
+  helper = osxkeychain
 [diff]
   algorithm = histogram
   colorMoved = plain
@@ -66,3 +69,5 @@
   sort = version:refname
 [tar "tar.xz"]
   command = xz -c
+[url "https://gitlab.devops.saicwebhost.net/"]
+  insteadOf = git@gitlab.devops.saicwebhost.net:

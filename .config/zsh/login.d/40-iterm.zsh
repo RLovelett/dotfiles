@@ -1,0 +1,7 @@
+XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config}
+CONFIG_DIR=${XDG_CONFIG_HOME}/iterm2
+INTEGRATION_FILE=${CONFIG_DIR}/integration.zsh
+if [[ -d "${CONFIG_DIR}" && -r "${INTEGRATION_FILE}" ]]
+then
+  source "${INTEGRATION_FILE}"
+fi

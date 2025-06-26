@@ -3,3 +3,4 @@
 if [[ -d "$MINT_ROOT/bin" ]]; then
   path=("$MINT_ROOT/bin" $path)
 fi
+echo $PATH
