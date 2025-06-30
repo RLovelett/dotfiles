@@ -68,3 +68,7 @@
   sort = version:refname
 [tar "tar.xz"]
   command = xz -c
+[url "https://github.com/"]
+  insteadOf = git@github.com:
+[url "https://gitlab.devops.saicwebhost.net/"]
+  insteadOf = git@gitlab.devops.saicwebhost.net:
