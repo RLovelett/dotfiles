@@ -20,8 +20,7 @@
   pager = less --raw-control-chars
   excludesfile = ~/.gitignore
 [credential]
-  helper = cache --timeout 7200
-  helper = oauth
+  helper = /usr/lib/git-core/git-credential-libsecret
 [diff]
   algorithm = histogram
   colorMoved = plain
