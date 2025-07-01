@@ -9,7 +9,7 @@
 
 # Append fzf bin directory to the PATH if it exists and is not already included
 if [[ -d "$FZF_BIN" && ":$PATH:" != *":$FZF_BIN:"* ]]; then
-    export PATH="$PATH:$FZF_BIN"
+  export PATH="$PATH:$FZF_BIN"
 fi
 
 # Ensure FZF is installed

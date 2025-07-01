@@ -22,16 +22,16 @@ download_file() {
 determine_arch() {
   local arch=$(uname -m)
   case $arch in
-    x86_64)
-      echo "amd64"
-      ;;
-    arm64 | aarch64)
-      echo "arm64"
-      ;;
-    *)
-      echo "Unsupported architecture: $arch"
-      return 1
-      ;;
+  x86_64)
+    echo "amd64"
+    ;;
+  arm64 | aarch64)
+    echo "arm64"
+    ;;
+  *)
+    echo "Unsupported architecture: $arch"
+    return 1
+    ;;
   esac
 }
 

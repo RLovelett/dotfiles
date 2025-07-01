@@ -20,38 +20,38 @@ function plugin-load {
   : ${ZPLUGINDIR:=${ZDOTDIR:-$HOME/.config/zsh}/plugins}
 
   for repo in $@; do
-    # Check if the path is fully qualified and ends with a known plugin extension
-    if [[ "$repo" == *.* && "$repo" =~ \.(zsh|sh|zsh-theme|plugin.zsh)$ ]]; then
-      initfile=$ZPLUGINDIR/$repo
-      if [[ ! -e $initfile ]]; then
-        echo >&2 "Error: Plugin file '$initfile' not found."
-        continue
-      fi
-    else
-      name=${repo:t}
-      plugindir=$ZPLUGINDIR/$repo
-      initfile=$plugindir/$name.plugin.zsh
+  # Check if the path is fully qualified and ends with a known plugin extension
+  if [[ "$repo" == *.* && "$repo" =~ \.(zsh|sh|zsh-theme|plugin.zsh)$ ]]; then
+  initfile=$ZPLUGINDIR/$repo
+  if [[ ! -e $initfile ]]; then
+  echo >&2 "Error: Plugin file '$initfile' not found."
+  continue
+  fi
+  else
+  name=${repo:t}
+  plugindir=$ZPLUGINDIR/$repo
+  initfile=$plugindir/$name.plugin.zsh
 
-      if [[ ! -d $plugindir ]]; then
-        echo >&2 "Error: '$plugindir' not found."
-        continue
-      fi
+  if [[ ! -d $plugindir ]]; then
+  echo >&2 "Error: '$plugindir' not found."
+  continue
+  fi
 
-      if [[ ! -e $initfile ]]; then
-        initfiles=($plugindir/*.{plugin.zsh,zsh-theme,zsh,sh}(N))
-        if (( $#initfiles == 0 )); then
-          echo >&2 "Error: No ZSH plugin files found in '$plugindir'."
-          continue
-        fi
-        initfile=$initfiles[1] # Set initfile to the first found init file
-      fi
-    fi
+  if [[ ! -e $initfile ]]; then
+  initfiles=($plugindir/*.{plugin.zsh,zsh-theme,zsh,sh}(N))
+  if (( $#initfiles == 0 )); then
+  echo >&2 "Error: No ZSH plugin files found in '$plugindir'."
+  continue
+  fi
+  initfile=$initfiles[1] # Set initfile to the first found init file
+  fi
+  fi
 
-    # Check for zsh-defer availability and source accordingly
-    if (( $+functions[zsh-defer] )); then
-      zsh-defer . $initfile
-    else
-      . $initfile
-    fi
+  # Check for zsh-defer availability and source accordingly
+  if (( $+functions[zsh-defer] )); then
+  zsh-defer . $initfile
+  else
+  . $initfile
+  fi
   done
 }
