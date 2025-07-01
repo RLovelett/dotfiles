@@ -1,6 +1,6 @@
 # Detect default editor for EDITOR, VISUAL, and GIT_EDITOR
 detect_editor() {
-  local candidates=(editor nvim "$HOMEBREW_PREFIX/bin/nvim")
+  local candidates=(editor nvim "$HOMEBREW_PREFIX/bin/nvim" vim vi nano)
   for e in "${candidates[@]}"; do
     if [[ -x $e ]] || command -v $e &>/dev/null; then
       echo $e
