@@ -66,7 +66,9 @@ documentation](https://www.gnu.org/software/stow/manual/stow.html).
 
 ### Unstow
 
-```
+To remove the symlinks created by Stow, use the `--delete` flag:
+
+```bash
 stow --delete --target $HOME --verbose .
 ```
 
