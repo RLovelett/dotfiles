@@ -1,11 +1,10 @@
 # Set XDG base dirs.
 # https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
-LOCAL_HOME=${LOCAL_HOME:-$HOME/.local}
 export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config}
 export XDG_CACHE_HOME=${XDG_CACHE_HOME:-$HOME/.cache}
-export XDG_DATA_HOME=${XDG_DATA_HOME:-$LOCAL_HOME/share}
-export XDG_STATE_HOME=${XDG_STATE_HOME:-$LOCAL_HOME/state}
-mkdir -p $XDG_CONFIG_HOME $XDG_CACHE_HOME $XDG_DATA_HOME $XDG_STATE_HOME $LOCAL_HOME/{,s}bin
+export XDG_DATA_HOME=${XDG_DATA_HOME:-$HOME/.local/share}
+export XDG_STATE_HOME=${XDG_STATE_HOME:-$HOME/.local/state}
+mkdir -p $XDG_CONFIG_HOME $XDG_CACHE_HOME $XDG_DATA_HOME $XDG_STATE_HOME $HOME/.local/{,s}bin
 
 # Add /usr/local/bin to path.
 path=(/usr/local/{,s}bin(N) $path)
