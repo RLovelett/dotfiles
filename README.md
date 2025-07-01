@@ -34,6 +34,17 @@ git clone --recurse-submodules --jobs $(nproc) https://github.com/RLovelett/dotf
 cd dotfiles
 ```
 
+## Make the XDG folder spec
+
+```bash
+LOCAL_HOME=${LOCAL_HOME:-$HOME/.local}
+XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config}
+XDG_CACHE_HOME=${XDG_CACHE_HOME:-$HOME/.cache}
+XDG_DATA_HOME=${XDG_DATA_HOME:-$LOCAL_HOME/share}
+XDG_STATE_HOME=${XDG_STATE_HOME:-$LOCAL_HOME/state}
+mkdir -p $XDG_CONFIG_HOME $XDG_CACHE_HOME $XDG_DATA_HOME $XDG_STATE_HOME $LOCAL_HOME/{,s}bin
+```
+
 ## Install Configuration using Stow
 
 GNU Stow is used to manage the dotfiles in this repository. It creates symlinks
@@ -51,6 +62,12 @@ This command tells Stow to create symlinks in the `$HOME` directory for all
 configuration files located in the current directory. For more detailed
 information about GNU Stow and its capabilities, see the [GNU Stow
 documentation](https://www.gnu.org/software/stow/manual/stow.html).
+
+### Unstow
+
+```
+stow --delete --target $HOME --verbose .
+```
 
 ## YubiKey, SSH, GnuPG Configuration on macOS
 

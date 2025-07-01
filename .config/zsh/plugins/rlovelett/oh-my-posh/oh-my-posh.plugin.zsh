@@ -3,12 +3,6 @@ command_exists() {
   command -v "$1" >/dev/null 2>&1
 }
 
-# Function to install oh-my-posh using Homebrew
-install_with_brew() {
-  echo "Installing oh-my-posh using Homebrew..."
-  brew install oh-my-posh
-}
-
 # Function to download file using cURL or wget
 download_file() {
   local url=$1
@@ -66,13 +60,9 @@ install_from_github() {
 
 # Main installation logic
 if ! command_exists oh-my-posh; then
-  if command_exists brew; then
-    install_with_brew
-  else
-    if ! install_from_github; then
-      echo "Failed to install oh-my-posh."
-      exit 1
-    fi
+  if ! install_from_github; then
+    echo "Failed to install oh-my-posh."
+    exit 1
   fi
 fi
 
