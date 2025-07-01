@@ -52,6 +52,14 @@ configuration files located in the current directory. For more detailed
 information about GNU Stow and its capabilities, see the [GNU Stow
 documentation](https://www.gnu.org/software/stow/manual/stow.html).
 
+### Unstow
+
+To remove the symlinks created by Stow, use the `--delete` flag:
+
+```bash
+stow --delete --target $HOME --verbose .
+```
+
 ## YubiKey, SSH, GnuPG Configuration on macOS
 
 This section is primarily derived from Kirill Kuznetsov's article on [securing
