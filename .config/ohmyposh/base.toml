@@ -4,6 +4,12 @@ console_title_template = '{{ .Shell }} in {{ .Folder }}'
 version = 3
 final_space = true
 
+[upgrade]
+notice = true
+interval = "168h"
+auto = false
+source = "github"
+
 # Colors: default, black, red, green, yellow, blue, magenta, cyan, white
 [secondary_prompt]
   template = '❯❯ '
