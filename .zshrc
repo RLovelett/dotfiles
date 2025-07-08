@@ -8,6 +8,11 @@
 #   4. Change the prompt
 #   5. Set up completion, et cetera.
 #   6. Set any variables that are only used in the interactive shell (e.g. $LS_COLORS).
+for f in "${ZDOTDIR:-$HOME}/.config/zsh/init.d/"*.zsh; do
+  if [[ -r $f ]]; then
+    source "$f"
+  fi
+done
 
 # Load aliases
 source $HOME/.aliases
