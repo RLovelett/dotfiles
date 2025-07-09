@@ -14,7 +14,7 @@
   "theme.osd.enableShadow": false,
   "menus.clock.weather.location": "Los Angeles",
   "menus.dashboard.stats.enable_gpu": false,
-  "wallpaper.image": "",
+  "wallpaper.image": "/home/rlovelett/.local/share/backgrounds/retro-futuristic-dracula-themed-cityscape-with-hovercraft_3840x2160.jpg",
   "theme.bar.menus.menu.notifications.scrollbar.color": "#bd93f9",
   "theme.bar.menus.menu.notifications.pager.label": "#6272a4",
   "theme.bar.menus.menu.notifications.pager.button": "#bd93f9",
@@ -449,5 +449,6 @@
   "notifications.position": "top right",
   "scalingPriority": "hyprland",
   "bar.workspaces.monitorSpecific": true,
-  "bar.workspaces.numbered_active_indicator": "underline"
+  "bar.workspaces.numbered_active_indicator": "underline",
+  "wallpaper.enable": false
 }
