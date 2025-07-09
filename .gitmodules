@@ -1,30 +1,30 @@
-[submodule ".tmux/plugins/tpm"]
-	path = .tmux/plugins/tpm
+[submodule "config-common/.config/.tmux/plugins/tpm"]
+	path = config-common/.config/.tmux/plugins/tpm
 	url = https://github.com/tmux-plugins/tpm
-[submodule ".config/zsh/plugins/zsh-users/zsh-syntax-highlighting"]
-	path = .config/zsh/plugins/zsh-users/zsh-syntax-highlighting
+[submodule "config-common/.config/zsh/plugins/zsh-users/zsh-syntax-highlighting"]
+	path = config-common/.config/zsh/plugins/zsh-users/zsh-syntax-highlighting
 	url = https://github.com/zsh-users/zsh-syntax-highlighting.git
-[submodule ".config/zsh/plugins/zsh-users/zsh-history-substring-search"]
-	path = .config/zsh/plugins/zsh-users/zsh-history-substring-search
+[submodule "config-common/.config/zsh/plugins/zsh-users/zsh-history-substring-search"]
+	path = config-common/.config/zsh/plugins/zsh-users/zsh-history-substring-search
 	url = https://github.com/zsh-users/zsh-history-substring-search.git
-[submodule ".config/zsh/plugins/zsh-users/zsh-completions"]
-	path = .config/zsh/plugins/zsh-users/zsh-completions
+[submodule "config-common/.config/zsh/plugins/zsh-users/zsh-completions"]
+	path = config-common/.config/zsh/plugins/zsh-users/zsh-completions
 	url = https://github.com/zsh-users/zsh-completions.git
-[submodule ".config/zsh/plugins/zsh-users/zsh-autosuggestions"]
-	path = .config/zsh/plugins/zsh-users/zsh-autosuggestions
+[submodule "config-common/.config/zsh/plugins/zsh-users/zsh-autosuggestions"]
+	path = config-common/.config/zsh/plugins/zsh-users/zsh-autosuggestions
 	url = https://github.com/zsh-users/zsh-autosuggestions.git
-[submodule ".config/zsh/plugins/mattmc3/zephyr"]
-	path = .config/zsh/plugins/mattmc3/zephyr
+[submodule "config-common/.config/zsh/plugins/mattmc3/zephyr"]
+	path = config-common/.config/zsh/plugins/mattmc3/zephyr
 	url = https://github.com/mattmc3/zephyr.git
-[submodule ".config/zsh/plugins/ohmyzsh/ohmyzsh"]
-	path = .config/zsh/plugins/ohmyzsh/ohmyzsh
+[submodule "config-common/.config/zsh/plugins/ohmyzsh/ohmyzsh"]
+	path = config-common/.config/zsh/plugins/ohmyzsh/ohmyzsh
 	url = https://github.com/ohmyzsh/ohmyzsh.git
-[submodule ".config/zsh/plugins/Aloxaf/fzf-tab"]
-	path = .config/zsh/plugins/Aloxaf/fzf-tab
+[submodule "config-common/.config/zsh/plugins/Aloxaf/fzf-tab"]
+	path = config-common/.config/zsh/plugins/Aloxaf/fzf-tab
 	url = https://github.com/Aloxaf/fzf-tab.git
-[submodule ".config/fzf"]
-	path = .config/fzf
+[submodule "config-common/.config/fzf"]
+	path = config-common/.config/fzf
 	url = https://github.com/junegunn/fzf.git
-[submodule ".pyenv"]
-	path = .pyenv
+[submodule "config-common/.config/.pyenv"]
+	path = config-common/.config/.pyenv
 	url = https://github.com/pyenv/pyenv.git

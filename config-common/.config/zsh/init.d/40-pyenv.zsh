@@ -1,5 +1,5 @@
 # Pyenv (Python version manager)
-export PYENV_ROOT="$HOME/.pyenv"
+export PYENV_ROOT="$XDG_CONFIG_HOME/.pyenv"
 if [[ -d "$PYENV_ROOT/bin" ]]; then
   path=("$PYENV_ROOT/bin" $path)
 fi

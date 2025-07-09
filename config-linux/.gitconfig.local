@@ -1,0 +1,4 @@
+[credential]
+  helper = /usr/lib/git-core/git-credential-libsecret
+[gpg "ssh"]
+  program = /opt/1Password/op-ssh-sign

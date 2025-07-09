@@ -21,8 +21,19 @@ The repository uses GNU Stow to manage configuration files. Before installing th
 
 Install them with:
 
+**Ubuntu/Debian:**
 ```bash
 apt install --yes git stow zsh
+```
+
+**Arch Linux:**
+```bash
+pacman -S git stow zsh
+```
+
+**macOS (Homebrew):**
+```bash
+brew install git stow zsh
 ```
 
 Clone the repository:
@@ -48,29 +59,61 @@ mkdir -p $XDG_CONFIG_HOME $XDG_CACHE_HOME $XDG_DATA_HOME $XDG_STATE_HOME $HOME/.
 
 ## Install Configuration using Stow
 
-GNU Stow is used to manage the dotfiles in this repository. It creates symlinks
-from a cloned copy of the repository to a specified directory, making it easy
-to manage and version control configuration files.
+This repository uses GNU Stow with platform-specific packages for cross-platform compatibility. The dotfiles are organized into packages that handle different aspects of the configuration.
 
-To "install" the configuration files in this repository using Stow, I typically
-run the following command:
+### Package Structure
 
+The repository is organized into the following packages:
+
+- **base/** - Core shell configurations (`.aliases`, `.zshrc`, `.zshenv`, `.gitconfig`, etc.)
+- **config-common/** - Cross-platform XDG configurations (`.config/nvim/`, `.config/tmux/`, `.config/pyenv/`, `.config/Code/`, etc.)
+- **config-linux/** - Linux-specific configurations (Hyprland, Waybar, Rofi, Tilix, `.gitconfig.local`)
+- **config-macos/** - macOS-specific configurations (iTerm2, `.gitconfig.local`)
+- **vscode-macos/** - macOS VS Code path (`Library/Application Support/Code/`)
+- **macos-services/** - macOS system services (`Library/LaunchAgents/`)
+- **ssh/** - SSH configuration (`.ssh/`)
+- **local/** - Local user data (`.local/`)
+
+### Installation
+
+**For macOS:**
 ```bash
-stow --target $HOME --verbose .
+stow --target $HOME --verbose base config-common config-macos local ssh macos-services vscode-macos
 ```
 
-This command tells Stow to create symlinks in the `$HOME` directory for all
-configuration files located in the current directory. For more detailed
-information about GNU Stow and its capabilities, see the [GNU Stow
-documentation](https://www.gnu.org/software/stow/manual/stow.html).
-
-### Unstow
-
-To remove the symlinks created by Stow, use the `--delete` flag:
-
+**For Linux:**
 ```bash
-stow --delete --target $HOME --verbose .
+stow --target $HOME --verbose base config-common config-linux ssh local
 ```
+
+### Uninstall
+
+**For macOS:**
+```bash
+stow --delete --target $HOME --verbose base config-common config-macos local ssh macos-services vscode-macos
+```
+
+**For Linux:**
+```bash
+stow --delete --target $HOME --verbose base config-common config-linux ssh local
+```
+
+### Cross-Platform Considerations
+
+The main `.gitconfig` includes platform-specific overrides via:
+```ini
+[include]
+    path = ~/.gitconfig.local
+```
+
+Platform-specific configurations are handled by:
+- **Git credentials**: Linux uses `git-credential-libsecret`, macOS uses `osxkeychain`
+- **SSH signing**: Linux uses 1Password, macOS uses keychain only
+- **Application paths**: Different paths for VS Code, development tools, etc.
+- **Window managers**: Linux includes Hyprland/Waybar configs, macOS includes iTerm2
+- **Development tools**: Platform-aware detection in ZSH configurations
+
+For more detailed information about GNU Stow and its capabilities, see the [GNU Stow documentation](https://www.gnu.org/software/stow/manual/stow.html).
 
 ## YubiKey, SSH, GnuPG Configuration on macOS
 

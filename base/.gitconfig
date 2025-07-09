@@ -19,8 +19,8 @@
   ignorecase = false
   pager = less --raw-control-chars
   excludesfile = ~/.gitignore
-[credential]
-  helper = /usr/lib/git-core/git-credential-libsecret
+[include]
+  path = ~/.gitconfig.local
 [diff]
   algorithm = histogram
   colorMoved = plain
@@ -41,8 +41,6 @@
   smudge = .git_filters/rcs-keywords.smudge %f
 [gpg]
   format = ssh
-[gpg "ssh"]
-  program = "/opt/1Password/op-ssh-sign"
 [help]
   autocorrect = prompt
 [init]

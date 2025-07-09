@@ -1,0 +1,100 @@
+{
+  // === General Editor Behavior ===
+  "editor.fontSize": 16,
+  "editor.minimap.enabled": false,
+  "editor.renderWhitespace": "all",
+  "editor.rulers": [80, 120, 160],
+  "editor.suggestSelection": "first",
+  "editor.unicodeHighlight.invisibleCharacters": false,
+  "editor.unicodeHighlight.ambiguousCharacters": false,
+  "files.insertFinalNewline": true,
+
+  // === UI / UX Preferences ===
+  "workbench.colorTheme": "Dracula Theme",
+  "workbench.editor.enablePreviewFromQuickOpen": false,
+  "workbench.startupEditor": "newUntitledFile",
+  "workbench.welcomePage.walkthroughs.openOnInstall": false,
+
+  // === Telemetry / Analytics (Disabled) ===
+  "telemetry.enableCrashReporter": false,
+  "telemetry.enableTelemetry": false,
+  "telemetry.telemetryLevel": "off",
+  "Lua.telemetry.enable": false,
+  "code-runner.enableAppInsights": false,
+  "docker-explorer.enableTelemetry": false,
+  "julia.enableTelemetry": false,
+  "kite.showWelcomeNotificationOnStartup": false,
+  "material-icon-theme.showWelcomeMessage": false,
+  "pros.useGoogleAnalytics": false,
+  "redhat.telemetry.enabled": false,
+  "sonarlint.disableTelemetry": true,
+  "terraform.telemetry.enabled": false,
+
+  // === Extension Behavior ===
+  "gitlens.showWelcomeOnInstall": false,
+  "gitlens.showWhatsNewAfterUpgrades": false,
+  "vsicons.dontShowNewVersionMessage": true,
+  "java.help.firstView": "none",
+  "java.help.showReleaseNotes": false,
+  "liveServer.settings.donotShowInfoMsg": true,
+  "markdown-pdf.displayHeaderFooter": false,
+  "pros.showWelcomeOnStartup": false,
+  "rpcServer.showStartupMessage": false,
+  "chat.commandCenter.enabled": false,
+
+  // === Extension Configuration ===
+  "extensions.ignoreRecommendations": true,
+
+  // === Dotfiles ===
+  "dotfiles.installCommand": "install.sh --skip gitconfig",
+  "dotfiles.repository": "https://github.com/RLovelett/dotfiles.git",
+  "dotfiles.targetPath": "~/dotfiles",
+
+  // === Terminal ===
+  "terminal.integrated.fontFamily": "SauceCodePro Nerd Font",
+  "terminal.integrated.fontSize": 16,
+  "terminal.integrated.shellIntegration.enabled": false,
+  "terminal.integrated.allowedLinkSchemes": [
+    "file",
+    "http",
+    "https",
+    "mailto",
+    "vscode",
+    "vscode-insiders",
+    "man"
+  ],
+
+  // === Git ===
+  "git.autofetch": true,
+
+  // === IntelliCode ===
+  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+
+  // === Language-Specific: C/C++ ===
+  "clangd.checkUpdates": false,
+
+  // === Language-Specific: CMake ===
+  "cmake.configureOnOpen": true,
+  "cmake.showOptionsMovedNotification": false,
+  "cmake.pinnedCommands": [
+    "workbench.action.tasks.configureTaskRunner",
+    "workbench.action.tasks.runTask"
+  ],
+  "cmake.buildToolArgs": ["-v"],
+  "cmake.configureArgs": ["-DCMAKE_CXX_FLAGS=-fuse-ld=mold"],
+
+  // === Language-Specific: Go ===
+  "go.toolsManagement.autoUpdate": true,
+
+  // === Language-Specific: Swift ===
+  "sde.languageServerMode": "sourcekit-lsp",
+  "sourcekit-lsp.serverPath": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/sourcekit-lsp",
+  "sourcekit-lsp.trace.server": "verbose",
+
+  // === Language-Specific: Shell ===
+  "shellcheck.disableVersionCheck": true,
+
+  // === Updates and Notifications ===
+  "update.showReleaseNotes": false,
+  "python.analysis.typeCheckingMode": "strict"
+}
