@@ -5,13 +5,20 @@ desktop environment on macOS and Linux. The configurations are easily managed
 using GNU Stow, a symlink farm manager that simplifies the process of keeping
 dotfiles in order.
 
-## Quick Links
+## Package Structure
 
-- [macOS Setup Guide](https://github.com/RLovelett/dotfiles/wiki/macOS)
-- [Linux Setup Guide (Ubuntu & Fedora)](https://github.com/RLovelett/dotfiles/wiki/Linux)
-- [![Stow has forever changed the way I manage my dotfiles](https://img.youtube.com/vi/y6XCebnB9gs/0.jpg)](https://www.youtube.com/watch?v=y6XCebnB9gs)
+The repository is organized into the following packages:
 
-## Clone and Prepare Repository
+- **base/** - Core shell configurations (`.aliases`, `.zshrc`, `.zshenv`, `.gitconfig`, etc.)
+- **config-common/** - Cross-platform XDG configurations (`.config/nvim/`, `.config/tmux/`, `.config/pyenv/`, `.config/Code/`, etc.)
+- **config-linux/** - Linux-specific configurations (Hyprland, Waybar, Rofi, Tilix, `.gitconfig.local`)
+- **config-macos/** - macOS-specific configurations (iTerm2, `.gitconfig.local`)
+- **vscode-macos/** - macOS VS Code path (`Library/Application Support/Code/`)
+- **macos-services/** - macOS system services (`Library/LaunchAgents/`)
+- **ssh/** - SSH configuration (`.ssh/`)
+- **local/** - Local user data (`.local/`)
+
+## Requirements
 
 The repository uses GNU Stow to manage configuration files. Before installing the dotfiles, the following tools must be present:
 
@@ -36,6 +43,8 @@ pacman -S git stow zsh
 brew install git stow zsh
 ```
 
+## Clone Repository
+
 Clone the repository:
 
 ```bash
@@ -45,7 +54,7 @@ git clone --recurse-submodules --jobs $(nproc) https://github.com/RLovelett/dotf
 cd dotfiles
 ```
 
-## Make the XDG folder spec
+## Prepare XDG Base Directory
 
 XDG Base Directory specification folders are used by applications to organize configuration, cache, data, and state files. The following command creates the standard directories with default values if the environment variables are not already set:
 
@@ -59,22 +68,7 @@ mkdir -p $XDG_CONFIG_HOME $XDG_CACHE_HOME $XDG_DATA_HOME $XDG_STATE_HOME $HOME/.
 
 ## Install Configuration using Stow
 
-This repository uses GNU Stow with platform-specific packages for cross-platform compatibility. The dotfiles are organized into packages that handle different aspects of the configuration.
-
-### Package Structure
-
-The repository is organized into the following packages:
-
-- **base/** - Core shell configurations (`.aliases`, `.zshrc`, `.zshenv`, `.gitconfig`, etc.)
-- **config-common/** - Cross-platform XDG configurations (`.config/nvim/`, `.config/tmux/`, `.config/pyenv/`, `.config/Code/`, etc.)
-- **config-linux/** - Linux-specific configurations (Hyprland, Waybar, Rofi, Tilix, `.gitconfig.local`)
-- **config-macos/** - macOS-specific configurations (iTerm2, `.gitconfig.local`)
-- **vscode-macos/** - macOS VS Code path (`Library/Application Support/Code/`)
-- **macos-services/** - macOS system services (`Library/LaunchAgents/`)
-- **ssh/** - SSH configuration (`.ssh/`)
-- **local/** - Local user data (`.local/`)
-
-### Installation
+This repository uses GNU Stow with platform-specific packages for cross-platform compatibility.
 
 **For macOS:**
 ```bash
@@ -86,7 +80,7 @@ stow --target $HOME --verbose base config-common config-macos local ssh macos-se
 stow --target $HOME --verbose base config-common config-linux ssh local
 ```
 
-### Uninstall
+## Uninstall Configuration
 
 **For macOS:**
 ```bash
@@ -98,22 +92,13 @@ stow --delete --target $HOME --verbose base config-common config-macos local ssh
 stow --delete --target $HOME --verbose base config-common config-linux ssh local
 ```
 
-### Cross-Platform Considerations
+## Configuration Details
 
 The main `.gitconfig` includes platform-specific overrides via:
 ```ini
 [include]
     path = ~/.gitconfig.local
 ```
-
-Platform-specific configurations are handled by:
-- **Git credentials**: Linux uses `git-credential-libsecret`, macOS uses `osxkeychain`
-- **SSH signing**: Linux uses 1Password, macOS uses keychain only
-- **Application paths**: Different paths for VS Code, development tools, etc.
-- **Window managers**: Linux includes Hyprland/Waybar configs, macOS includes iTerm2
-- **Development tools**: Platform-aware detection in ZSH configurations
-
-For more detailed information about GNU Stow and its capabilities, see the [GNU Stow documentation](https://www.gnu.org/software/stow/manual/stow.html).
 
 ## YubiKey, SSH, GnuPG Configuration on macOS
 
@@ -148,3 +133,10 @@ ssh-rsa AAAAB3NzaC...5UNE54ZNTQ== cardno:5413447
 For additional script management tips using `launchd` on macOS, visit [Apple's
 guide on script management with
 launchd](https://support.apple.com/guide/terminal/script-management-with-launchd-apdc6c1077b-5d5d-4d35-9c19-60f2397b2369/mac).
+
+## Quick Links
+
+- [macOS Setup Guide](https://github.com/RLovelett/dotfiles/wiki/macOS)
+- [Linux Setup Guide (Ubuntu & Fedora)](https://github.com/RLovelett/dotfiles/wiki/Linux)
+- [GNU Stow documentation](https://www.gnu.org/software/stow/manual/stow.html)
+- [![Stow has forever changed the way I manage my dotfiles](https://img.youtube.com/vi/y6XCebnB9gs/0.jpg)](https://www.youtube.com/watch?v=y6XCebnB9gs)
