@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hyprland Keybindings Cheat Sheet</title>
+    <style>
+            /*src: local('MesloLGS NF'), local('MesloLGS-NF-Regular'),
+                 local('MesloLGS NF Medium'), local('MesloLGS-NF-Medium'),
+                 local('MesloLGS NF Bold'), local('MesloLGS-NF-Bold');*/
+        @font-face {
+            font-family: 'MesloLGS NF';
+            src: local('MesloLGS-NF-Regular'),
+                 local('MesloLGS-NF-Medium'),
+                 local('MesloLGS-NF-Bold');
+            font-weight: 400 600;
+            font-style: normal;
+        }
+
+        /* CSS Variables for Dracula Theme */
+        :root {
+            --bg-primary: #282a36;
+            --bg-secondary: #44475a;
+            --bg-tertiary: #6272a4;
+            --fg-primary: #f8f8f2;
+            --fg-secondary: #8be9fd;
+            --fg-accent: #bd93f9;
+            --pink: #ff79c6;
+            --green: #50fa7b;
+            --yellow: #f1fa8c;
+            --orange: #ffb86c;
+            --red: #ff5555;
+            --purple: #bd93f9;
+
+            /* Responsive variables */
+            --base-font-size: 16px;
+            --header-size: 28px;
+            --section-header-size: 18px;
+            --key-font-size: 14px;
+            --action-font-size: 14px;
+            --note-font-size: 12px;
+            --container-padding: 24px;
+            --section-padding: 16px;
+            --grid-gap: 16px;
+            --element-spacing: 8px;
+        }
+
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'MesloLGS NF', 'JetBrains Mono', monospace;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            color: var(--fg-primary);
+            padding: 20px;
+            min-height: 100vh;
+            font-size: var(--base-font-size);
+            line-height: 1.4;
+        }
+
+        .container {
+            max-width: 95vw;
+            width: 100%;
+            margin: 0 auto;
+            background: rgba(68, 71, 90, 0.95);
+            border-radius: 12px;
+            padding: var(--container-padding);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--purple);
+        }
+
+        /* Header Styles */
+        .header {
+            text-align: center;
+            margin-bottom: var(--element-spacing);
+            padding-bottom: var(--element-spacing);
+            border-bottom: 2px solid var(--purple);
+        }
+
+        .header h1 {
+            font-size: var(--header-size);
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--purple);
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: calc(var(--base-font-size) * 0.9);
+            color: var(--fg-secondary);
+            font-weight: 400;
+        }
+
+        /* Grid Layout */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--grid-gap);
+            margin-bottom: var(--element-spacing);
+        }
+
+        /* Section Styles */
+        .section {
+            background: rgba(40, 42, 54, 0.8);
+            border-radius: 8px;
+            padding: var(--section-padding);
+            border: 1px solid #44475a;
+            transition: all 0.3s ease;
+        }
+
+        .section:hover {
+            border-color: #bd93f9;
+            box-shadow: 0 4px 12px rgba(189, 147, 249, 0.1);
+        }
+
+        .section h2 {
+            font-size: var(--section-header-size);
+            font-weight: 600;
+            margin-bottom: calc(var(--element-spacing) * 0.75);
+            color: var(--purple);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .section h2::before {
+            content: '';
+            width: 4px;
+            height: 16px;
+            background: linear-gradient(180deg, var(--purple), var(--pink));
+            border-radius: 2px;
+        }
+
+        /* Keybind Styles */
+        .keybind {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: calc(var(--element-spacing) * 0.5);
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .keybind:hover {
+            background: rgba(189, 147, 249, 0.08);
+        }
+
+        .key-combo {
+            font-family: 'MesloLGS NF', 'JetBrains Mono', monospace;
+            font-size: var(--key-font-size);
+            font-weight: 500;
+            color: var(--yellow);
+            background: rgba(241, 250, 140, 0.1);
+            padding: 3px 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(241, 250, 140, 0.2);
+            white-space: nowrap;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .action {
+            color: var(--fg-primary);
+            font-size: var(--action-font-size);
+            font-weight: 400;
+            text-align: right;
+            flex: 1;
+            margin-left: 12px;
+        }
+
+        /* Special Key Styles */
+        .super-key {
+            color: var(--pink);
+            font-weight: 600;
+        }
+
+        .modifier {
+            color: var(--pink);
+            font-weight: 600;
+        }
+
+        .special-keys {
+            color: var(--green);
+        }
+
+        /* Utility Classes */
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--purple), transparent);
+            margin: var(--element-spacing) 0;
+        }
+
+        .note {
+            font-size: var(--note-font-size);
+            color: var(--bg-secondary);
+            text-align: center;
+            margin-top: var(--element-spacing);
+            font-style: italic;
+        }
+
+        /* Print Styles */
+        @media print {
+            :root {
+                --base-font-size: 9px;
+                --header-size: 16px;
+                --section-header-size: 11px;
+                --key-font-size: 8px;
+                --action-font-size: 8px;
+                --note-font-size: 7px;
+                --container-padding: 12px;
+                --section-padding: 8px;
+                --grid-gap: 8px;
+                --element-spacing: 6px;
+
+                /* Print-specific color overrides */
+                --print-bg: white;
+                --print-fg: #333;
+                --print-border: #333;
+                --print-section-bg: #f8f9fa;
+                --print-section-border: #dee2e6;
+                --print-key-bg: #e9ecef;
+                --print-key-border: #ced4da;
+                --print-key-text: #495057;
+                --print-muted: #666;
+                --print-header: #495057;
+            }
+
+            @page {
+                size: 8.5in 11in;
+                margin: 0.5in;
+            }
+
+            body {
+                background: var(--print-bg);
+                color: var(--print-fg);
+                padding: 0;
+                font-size: var(--base-font-size);
+            }
+
+            .container {
+                background: var(--print-bg);
+                box-shadow: none;
+                border: 2px solid var(--print-border);
+                max-width: none;
+                width: 100%;
+            }
+
+            .header h1 {
+                color: var(--print-fg);
+            }
+
+            .header p {
+                color: var(--print-muted);
+            }
+
+            .section {
+                background: var(--print-section-bg);
+                border: 1px solid var(--print-section-border);
+                break-inside: avoid;
+            }
+
+            .section h2 {
+                color: var(--print-header);
+            }
+
+            .key-combo {
+                background: var(--print-key-bg);
+                border: 1px solid var(--print-key-border);
+                color: var(--print-key-text);
+            }
+
+            .action {
+                color: var(--print-fg);
+            }
+
+            .super-key,
+            .modifier {
+                color: var(--print-muted);
+            }
+
+            .special-keys {
+                color: var(--print-fg);
+            }
+
+            .note {
+                color: var(--print-muted);
+            }
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            :root {
+                --base-font-size: 12px;
+                --header-size: 20px;
+                --section-header-size: 14px;
+                --key-font-size: 10px;
+                --action-font-size: 10px;
+                --container-padding: 16px;
+                --section-padding: 12px;
+                --grid-gap: 12px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .key-combo {
+                min-width: 80px;
+            }
+        }
+
+        /* High DPI / Retina Display Support */
+        @media screen and (min-resolution: 2dppx) {
+            body {
+                font-size: calc(var(--base-font-size) * 1.1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Hyprland Keybinding Reference</h1>
+            <p>Quick reference for all your Hyprland shortcuts</p>
+        </div>
+
+        <div class="grid">
+            <div class="section">
+                <h2>Applications</h2>
+                <div class="keybind">
+                    <span class="key-combo"><span class="super-key">⊞</span> + Enter</span>
+                    <span class="action">Terminal (kitty)</span>
+                </div>
+                <div class="keybind">
+                    <span class="key-combo"><span class="super-key">⊞</span> + F</span>
+                    <span class="action">File Manager</span>
+                </div>
+                <div class="keybind">
+                    <span class="key-combo"><span class="super-key">⊞</span> + B</span>
+                    <span class="action">Firefox Browser</span>
+                </div>
+                <div class="keybind">
+                    <span class="key-combo"><span class="super-key">⊞</span> + /</span>
+                    <span class="action">1Password</span>
+                </div>
+                <div class="keybind">
+                    <span class="key-combo"><span class="super-key">⊞</span> + Space</span>
+                    <span class="action">App Menu (rofi)</span>
+                </div>
+                <div class="keybind">
+                    <span class="key-combo"><span class="super-key">⊞</span> + C</span>
+                    <span class="action">Clipboard Manager</span>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Window Navigation</h2>
+                <div class="keybind">
+                    <span class="key-combo"><span class="super-key">⊞</span> + H/J/K/L</span>
+                    <span class="action">Move Focus</span>
+                </div>
+                <div class="keybind">
+                    <span class="key-combo"><span class="super-key">⊞</span> + <span class="modifier">⇧</span> + H/J/K/L</span>
+                    <span class="action">Swap Windows</span>
+                </div>
+                <div class="keybind">
+                    <span class="key-combo"><span class="super-key">⊞</span> + Tab</span>
+                    <span class="action">Cycle Windows</span>
+                </div>
+                <div class="keybind">
+                    <span class="key-combo"><span class="super-key">⊞</span> + Q</span>
+                    <span class="action">Close Window</span>
+                </div>
+                <div class="keybind">
+                    <span class="key-combo"><span class="super-key">⊞</span> + V</span>
+                    <span class="action">Toggle Float</span>
+                </div>
+                <div class="keybind">
+                    <span class="key-combo"><span class="super-key">⊞</span> + Z</span>
+                    <span class="action">Fullscreen</span>
+                </div>
+                <div class="keybind">
+                    <span class="key-combo"><span class="super-key">⊞</span> + S</span>
+                    <span class="action">Toggle Split</span>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Window Resizing</h2>
+                <div class="keybind">
+                    <span class="key-combo"><span class="super-key">⊞</span> + -</span>
+                    <span class="action">Resize Width (-100)</span>
+                </div>
+                <div class="keybind">
+                    <span class="key-combo"><span class="super-key">⊞</span> + =</span>
+                    <span class="action">Resize Width (+100)</span>
+                </div>
+                <div class="keybind">
+                    <span class="key-combo"><span class="super-key">⊞</span> + <span class="modifier">⇧</span> + -</span>
+                    <span class="action">Resize Height (-100)</span>
+                </div>
+                <div class="keybind">
+                    <span class="key-combo"><span class="super-key">⊞</span> + <span class="modifier">⇧</span> + =</span>
+                    <span class="action">Resize Height (+100)</span>
+                </div>
+                <div class="keybind">
+                    <span class="key-combo"><span class="super-key">⊞</span> + LMB</span>
+                    <span class="action">Drag Window</span>
+                </div>
+                <div class="keybind">
+                    <span class="key-combo"><span class="super-key">⊞</span> + RMB</span>
+                    <span class="action">Resize Window</span>
+                </div>
+            </div>
+
+            <div class="section workspace-section">
+                <h2>Workspaces</h2>
+                <div class="keybind">
+                    <span class="key-combo"><span class="super-key">⊞</span> + 1-9,0</span>
+                    <span class="action">Switch to Workspace</span>
+                </div>
+                <div class="keybind">
+                    <span class="key-combo"><span class="super-key">⊞</span> + <span class="modifier">⇧</span> + 1-9,0</span>
+                    <span class="action">Move Window to WS</span>
+                </div>
+                <div class="keybind">
+                    <span class="key-combo"><span class="super-key">⊞</span> + <span class="special-keys">Scroll ↑</span></span>
+                    <span class="action">Previous Workspace</span>
+                </div>
+                <div class="keybind">
+                    <span class="key-combo"><span class="super-key">⊞</span> + <span class="special-keys">Scroll ↓</span></span>
+                    <span class="action">Next Workspace</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="grid">
+            <div class="section system-section">
+                <h2>System & Power</h2>
+                <div class="keybind">
+                    <span class="key-combo"><span class="super-key">⊞</span> + Esc</span>
+                    <span class="action">Lock Screen</span>
+                </div>
+                <div class="keybind">
+                    <span class="key-combo"><span class="super-key">⊞</span> + <span class="modifier">⇧</span> + Esc</span>
+                    <span class="action">Suspend</span>
+                </div>
+                <div class="keybind">
+                    <span class="key-combo"><span class="super-key">⊞</span> + <span class="modifier">Alt</span> + Esc</span>
+                    <span class="action">Exit Hyprland</span>
+                </div>
+                <div class="keybind">
+                    <span class="key-combo"><span class="super-key">⊞</span> + <span class="modifier">Ctrl</span> + Esc</span>
+                    <span class="action">Reboot</span>
+                </div>
+                <div class="keybind">
+                    <span class="key-combo"><span class="super-key">⊞</span> + <span class="modifier">⇧</span> + <span class="modifier">Ctrl</span> + Esc</span>
+                    <span class="action">Shutdown</span>
+                </div>
+            </div>
+
+            <div class="section media-section">
+                <h2>Media & Volume</h2>
+                <div class="keybind">
+                    <span class="key-combo"><span class="special-keys">🔊</span></span>
+                    <span class="action">Volume Up 5%</span>
+                </div>
+                <div class="keybind">
+                    <span class="key-combo"><span class="special-keys">🔉</span></span>
+                    <span class="action">Volume Down 5%</span>
+                </div>
+                <div class="keybind">
+                    <span class="key-combo"><span class="special-keys">🔇</span></span>
+                    <span class="action">Toggle Mute</span>
+                </div>
+                <div class="keybind">
+                    <span class="key-combo"><span class="special-keys">🎤</span></span>
+                    <span class="action">Toggle Mic Mute</span>
+                </div>
+                <div class="keybind">
+                    <span class="key-combo"><span class="special-keys">⏯</span></span>
+                    <span class="action">Play/Pause</span>
+                </div>
+                <div class="keybind">
+                    <span class="key-combo"><span class="special-keys">⏭</span>/<span class="special-keys">⏮</span></span>
+                    <span class="action">Next/Previous</span>
+                </div>
+            </div>
+
+            <div class="section media-section">
+                <h2>Brightness</h2>
+                <div class="keybind">
+                    <span class="key-combo"><span class="special-keys">🔆</span></span>
+                    <span class="action">Brightness Up 5%</span>
+                </div>
+                <div class="keybind">
+                    <span class="key-combo"><span class="special-keys">🔅</span></span>
+                    <span class="action">Brightness Down 5%</span>
+                </div>
+            </div>
+
+            <div class="section screenshot-section">
+                <h2>Screenshots</h2>
+                <div class="keybind">
+                    <span class="key-combo">Print</span>
+                    <span class="action">Region Screenshot</span>
+                </div>
+                <div class="keybind">
+                    <span class="key-combo"><span class="modifier">⇧</span> + Print</span>
+                    <span class="action">Window Screenshot</span>
+                </div>
+                <div class="keybind">
+                    <span class="key-combo"><span class="modifier">Ctrl</span> + Print</span>
+                    <span class="action">Output Screenshot</span>
+                </div>
+                <div class="keybind">
+                    <span class="key-combo"><span class="super-key">⊞</span> + Print</span>
+                    <span class="action">Color Picker</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="note">
+            <strong>Legend:</strong> ⊞ = Super/Windows Key | ⇧ = Shift | Alt = Alt Key | Ctrl = Control Key<br>
+            H/J/K/L = Vim-style direction keys (Left/Down/Up/Right)
+        </div>
+    </div>
+</body>
+</html>
