@@ -4,6 +4,7 @@ image/jpeg=org.gnome.Loupe.desktop
 inode/directory=org.gnome.Nautilus.desktop
 x-scheme-handler/http=firefox-esr.desktop
 x-scheme-handler/https=firefox-esr.desktop
+text/html=firefox-esr.desktop
 
 [Added Associations]
 image/png=org.gnome.Loupe.desktop;
