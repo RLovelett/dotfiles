@@ -1,0 +1,25 @@
+# Ghostty Configuration - equivalent to Kitty setup
+# Font configuration
+font-family = "MesloLGSDZ Nerd Font Mono"
+font-size = 14
+
+# Shell
+shell-integration = zsh
+shell-integration-features = cursor,sudo,title
+
+# Window appearance
+window-padding-x = 5
+window-padding-y = 5
+window-decoration = false
+background-opacity = 0.9
+
+# Mouse configuration
+mouse-hide-while-typing = true
+copy-on-select = true
+
+# Dracula Theme
+theme = light:Dracula,dark:Dracula
+
+# Keybindings for copy/paste
+keybind = ctrl+shift+c=copy_to_clipboard
+keybind = ctrl+shift+v=paste_from_clipboard
