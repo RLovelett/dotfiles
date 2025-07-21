@@ -1,0 +1,8 @@
+[Unit]
+Description=Clean up old files from Downloads and Screenshots
+Documentation=man:find(1)
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/find %h/Downloads -type f -mtime +30 -delete
+ExecStart=/usr/bin/find %h/Pictures/screenshots -type f -mtime +30 -delete

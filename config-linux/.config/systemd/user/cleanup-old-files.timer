@@ -1,0 +1,10 @@
+[Unit]
+Description=Clean up old files daily
+Requires=cleanup-old-files.service
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+
+[Install]
+WantedBy=timers.target
