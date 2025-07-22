@@ -1,11 +1,22 @@
+# Default applications for specific MIME types
 [Default Applications]
-image/png=org.gnome.Loupe.desktop
+# Images
 image/jpeg=org.gnome.Loupe.desktop
+image/png=org.gnome.Loupe.desktop
+
+# File manager
 inode/directory=org.gnome.Nautilus.desktop
+
+# Web content - Zen Browser
 x-scheme-handler/http=zen.desktop
 x-scheme-handler/https=zen.desktop
 text/html=zen.desktop
+application/xhtml+xml=zen.desktop
 
-[Added Associations]
-image/png=org.gnome.Loupe.desktop;
-image/jpeg=org.gnome.Loupe.desktop;
+# Web-related file extensions
+application/x-extension-htm=zen.desktop
+application/x-extension-html=zen.desktop
+application/x-extension-shtml=zen.desktop
+application/x-extension-xht=zen.desktop
+application/x-extension-xhtml=zen.desktop
+x-scheme-handler/chrome=zen.desktop
