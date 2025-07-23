@@ -15,7 +15,8 @@ The repository is organized into the following packages:
 - **config-macos/** - macOS-specific configurations (iTerm2, `.gitconfig.local`)
 - **vscode-macos/** - macOS VS Code path (`Library/Application Support/Code/`)
 - **macos-services/** - macOS system services (`Library/LaunchAgents/`)
-- **ssh/** - SSH configuration (`.ssh/`)
+- **ssh-linux/** - Linux-specific SSH configuration (`.ssh/`)
+- **ssh-macos/** - macOS-specific SSH configuration (`.ssh/`)
 - **local/** - Local user data (`.local/`)
 
 ## Requirements
@@ -72,24 +73,24 @@ This repository uses GNU Stow with platform-specific packages for cross-platform
 
 **For macOS:**
 ```bash
-stow --target $HOME --verbose base config-common config-macos local ssh macos-services vscode-macos
+stow --target $HOME --verbose base config-common config-macos local ssh-macos macos-services vscode-macos
 ```
 
 **For Linux:**
 ```bash
-stow --target $HOME --verbose base config-common config-linux ssh local
+stow --target $HOME --verbose base config-common config-linux ssh-linux local
 ```
 
 ## Uninstall Configuration
 
 **For macOS:**
 ```bash
-stow --delete --target $HOME --verbose base config-common config-macos local ssh macos-services vscode-macos
+stow --delete --target $HOME --verbose base config-common config-macos local ssh-macos macos-services vscode-macos
 ```
 
 **For Linux:**
 ```bash
-stow --delete --target $HOME --verbose base config-common config-linux ssh local
+stow --delete --target $HOME --verbose base config-common config-linux ssh-linux local
 ```
 
 ## Configuration Details
