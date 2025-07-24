@@ -20,3 +20,4 @@ application/x-extension-shtml=zen.desktop
 application/x-extension-xht=zen.desktop
 application/x-extension-xhtml=zen.desktop
 x-scheme-handler/chrome=zen.desktop
+application/pdf=zen.desktop
