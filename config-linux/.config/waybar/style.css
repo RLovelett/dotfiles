@@ -1,71 +1,270 @@
-@import url("./dracula.css");
+/* vim:fileencoding=utf-8:foldmethod=marker
+*/
 
+@define-color line-highlight rgba(68, 71, 90, 0.46); /*#44475A75;*/
+@define-color border rgba(68, 71, 90, 0.67); /*#44475AAA;*/
+@define-color non-text rgba(255, 255, 255, 0.102); /*#FFFFFF1A;*/
+
+@define-color background-lighter #424450;
+@define-color background-light #343746; /* HSV(230, 25.71, 27.45) */
+@define-color background #282a36;
+@define-color background-dark #21222c;  /* HSV(234.55, 25, 17.25) */
+@define-color background-darker #191a21;/* HSV(234.55, 25, 13) */
+
+@define-color foreground #f8f8f2;
+@define-color selection #44475a;
+@define-color comment #6272a4;
+@define-color cyan #8be9fd;
+@define-color green #50fa7b;
+@define-color orange #ffb86c;
+@define-color pink #ff79c6;
+@define-color purple #bd93f9;
+@define-color red #ff5555;
+@define-color yellow #f1fa8c;
+
+/* Define colors */ /* {{{ */
+/* @define-color background  rgba(21, 21, 32, 0.75); */
+/* @define-color background  #151520; */
+/* @define-color warning     #f38ba8; */
+/* @define-color caution     #45475a; */
+/* @define-color performance #f5c2e7; */
+/* @define-color audio       #cba6f7; */
+/* @define-color misc        #94e2d5; */
+/* @define-color date        #a6e3a1; */
+/* @define-color work        #b4befe; */
+/* @define-color window      #b4befe; */
+/* @define-color resize      #eba0ac; */
+/* @define-color process     #89b4fa; */
+/* }}} */
+
+/* Reset all styles */ /* {{{ */
 * {
+  border: none;
   border-radius: 0;
-  font-family: "SauceCodePro Nerd Font", monospace;
-  font-size: 16px;
-  padding: 0;
-  margin: 0;
   min-height: 0;
+  margin: 0;
+  padding: 0;
+  box-shadow: none;
+  text-shadow: none;
+} /* }}} */
+
+/* Main bar keyframes */ /* {{{ */
+/* Keyframes for main bar criticals */
+@keyframes blink-critical-text {
+  to {
+    color: @red;
+  }
 }
 
-window#waybar {
-  background: none;
-}
+/* Keyframes for main bar modifiers */
+@keyframes blink-modifier-text {
+  to {
+    color: @selection;
+  }
+} /* }}} */
 
-/* ======================= */
-/*      Workspaces UI      */
-/* ======================= */
-
-#workspaces {
+/* Main bar defaults */ /* {{{ */
+#waybar.main {
   background: @background;
-  border: 2px solid @non-text;
-  border-radius: 10px;
-  padding: 5px;
+  font-family: "MesloLGSDZ Nerd Font Mono";
+  font-size: 14pt;
+  font-weight: 500;
+  border-radius: 10pt;
+  border: 2px solid @border;
 }
 
-window box box widget box button label {
-  padding: 0 5px 0 0;
-  min-width: 24px;
-  border: 0px;
+#waybar.main button {
+  font-family: "MesloLGSDZ Nerd Font Mono";
+  font-size: 14pt;
+  font-weight: 500;
+  transition: all 0.15s ease-in-out;
+} /* }}} */
+
+/* Main bar modules */ /* {{{ */
+#waybar.main #network,
+#waybar.main #clock,
+#waybar.main #cpu,
+#waybar.main #memory.swap,
+#waybar.main #memory.ram,
+#waybar.main #submap,
+#waybar.main #pulseaudio,
+#waybar.main #temperature,
+#waybar.main #tray,
+#waybar.main #window,
+#waybar.main #disk {
+  padding-left: 8pt;
+  padding-right: 8pt;
+  padding-bottom: 4px;
+  padding-top: 4px;
+  background: transparent;
 }
 
-#workspaces button {
-  color: @comment;
+#waybar.main #tray {
+  padding-right: 6pt;
 }
 
-#workspaces button:hover,
-#workspaces button.active:hover,
-#workspaces button.urgent:hover {
-  background: none;
+/* }}} */
+
+/* Module colors */ /* {{{ */
+#waybar.main #cpu,
+#waybar.main #temperature,
+#waybar.main #memory.ram,
+#waybar.main #memory.swap,
+#waybar.main #disk,
+#waybar.main #network {
   color: @foreground;
 }
 
-#workspaces button.active {
+#waybar.main #pulseaudio {
   color: @purple;
 }
 
-#workspaces button.urgent {
-  color: @red;
+#waybar.main #clock {
+  color: @yellow;
 }
 
+#waybar.main #window {
+  color: @purple;
+  margin-top: -0px;
+}
+
+#waybar.main #network.info {
+  padding-right: 10px;
+  padding-left: 10px;
+  color: @selection;
+  background: transparent;
+}
+
+#waybar.main #network.info.wifi.normal,
+#waybar.main #network.info.ethernet {
+  color: @foreground;
+  padding-right: 15px;
+}
+
+#waybar.main #network.info.wifi {
+  color: @red;
+  padding-right: 15px;
+} /* }}} */
+
+/* Submap */ /* {{{ */
+#waybar.main #submap.󰲏 {
+  color: @pink;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  animation-name: blink-modifier-text;
+  animation-duration: 1s;
+  animation-timing-function: steps(15);
+}
+
+#waybar.main #submap. {
+  color: @yellow;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  animation-name: blink-modifier-text;
+  animation-duration: 1s;
+  animation-timing-function: steps(15);
+}
+/* }}} */
+
+/* Main bar criticals */ /* {{{ */
+#waybar.main #workspaces button.urgent,
+#waybar.main #workspaces button.special.urgent,
+#waybar.main #memory.swap.critical,
+#waybar.main #memory.ram.critical,
+#waybar.main #cpu.critical,
+#waybar.main #temperature.critical {
+  color: @selection;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  animation-name: blink-critical-text;
+  animation-duration: 1s;
+  animation-timing-function: steps(15);
+} /* }}} */
+
+/* Main bar warnings */ /* {{{ */
+#waybar.main #pulseaudio.output.muted,
+#waybar.main #pulseaudio.input.source-muted {
+  color: @selection;
+}
+
+/* Workspace */ /* {{{ */
+/* Default workspace settings */
+#waybar.main #workspaces button {
+  color: @selection;
+  background: transparent;
+  border: 1.5px solid transparent;
+  padding-left: 2pt;
+  padding-right: 2pt;
+  border-radius: 16px;
+  margin-bottom: 8px;
+  margin-top: 8px;
+  margin-left: 4px;
+  margin-right: 4px;
+  transition: all 0.25s ease;
+}
+
+/* Focused workspace */
+#waybar.main #workspaces button.visible {
+  color: @purple;
+}
+
+/* Focused workspace & monitor */
+#waybar.main #workspaces button.active {
+  color: @purple;
+  border: 1.5px solid @selection;
+}
+
+/* Style when cursor is on the button */
+#waybar.main #workspaces button:hover {
+  color: @purple;
+}
+
+/* Special workplace animation */
+#waybar.main #workspaces button.special.active {
+  border: 1.5px solid transparent;
+  color: @purple;
+  transition: all 0s ease;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  animation-name: blink-modifier-text;
+  animation-duration: 1s;
+  animation-timing-function: steps(15);
+} /* }}} */
+
+/* Custom slashes as spacers */ /* {{{ */
+#waybar.main #custom-spacer1,
+#waybar.main #custom-spacer2,
+#waybar.main #custom-spacer3 {
+  font-weight: bold;
+  color: @comment;
+  background: transparent;
+}
+/* }}} */
+
+/* Custom tray icon */ /* {{{ */
+#waybar.main #custom-trayicon {
+  font-size: 20pt;
+  font-weight: bold;
+  font-style: italic;
+  color: @cyan;
+  background: transparent;
+  /* padding-right: 6pt; */
+  /* padding-left: 2pt; */
+}
+/* }}} */
+
+/* Tooltip */ /* {{{ */
 tooltip {
   background: @background;
-  border: 2px solid @non-text;
-  border-radius: 10px;
-  margin: 10px;
-  padding: 10px;
+  border: 3px solid @purple;
+  border-radius: 8px;
+  font-weight: 500;
+  font-family: "MesloLGSDZ Nerd Font Mono";
 }
 
-/* ======================= */
-/*     Idle Inhibitor      */
-/* ======================= */
-
-#idle_inhibitor {
-  color: @foreground;
+#waybar.main #tray menu {
   background: @background;
-  border: 2px solid @non-text;
-  border-radius: 10px;
-  min-width: 24px;
-  padding: 5px;
-}
+  border: 3px solid @selection;
+  border-radius: 8px;
+} /* }}} */
+
