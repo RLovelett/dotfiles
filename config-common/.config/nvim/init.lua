@@ -407,11 +407,12 @@ require('lazy').setup({
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
         --
-        -- defaults = {
-        --   mappings = {
-        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-        --   },
-        -- },
+        defaults = {
+          file_ignore_patterns = { '%.git/' },
+          --   mappings = {
+          --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
+          --   },
+        },
         -- pickers = {}
         extensions = {
           ['ui-select'] = {
@@ -424,13 +425,39 @@ require('lazy').setup({
       pcall(require('telescope').load_extension, 'fzf')
       pcall(require('telescope').load_extension, 'ui-select')
 
+      -- Allow toggeling "hidden files" option via telescope action
+      -- See: https://github.com/nvim-telescope/telescope.nvim/issues/2874
+      local my_find_files
+      my_find_files = function(opts, no_ignore)
+        opts = opts or {}
+        no_ignore = vim.F.if_nil(no_ignore, false)
+        opts.attach_mappings = function(_, map)
+          map({ 'n', 'i' }, '<C-h>', function(prompt_bufnr) -- <C-h> to toggle modes
+            local prompt = require('telescope.actions.state').get_current_line()
+            require('telescope.actions').close(prompt_bufnr)
+            no_ignore = not no_ignore
+            my_find_files({ default_text = prompt }, no_ignore)
+          end)
+          return true
+        end
+
+        if no_ignore then
+          opts.no_ignore = true
+          opts.hidden = true
+          opts.prompt_title = 'Find Files <ALL>'
+          require('telescope.builtin').find_files(opts)
+        else
+          opts.prompt_title = 'Find Files'
+          require('telescope.builtin').find_files(opts)
+        end
+      end
+      vim.keymap.set('n', '<leader>smf', my_find_files, { desc = '[S]earch [M]y [F]iles' })
+
       -- See `:help telescope.builtin`
       local builtin = require 'telescope.builtin'
       vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
-      vim.keymap.set('n', '<leader>sf', function()
-        builtin.find_files { hidden = true, no_ignore = false }
-      end, { desc = '[S]earch [F]iles' })
+      vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
       vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
       vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
@@ -675,7 +702,13 @@ require('lazy').setup({
       local servers = {
         -- clangd = {},
         -- gopls = {},
-        -- pyright = {},
+        ruff = {
+          cmd = { 'ruff', 'server' },
+          on_attach = function(client, _)
+            client.server_capabilities.hoverProvider = false
+          end,
+        },
+        pyright = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
@@ -722,7 +755,10 @@ require('lazy').setup({
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
       require('mason-lspconfig').setup {
-        ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
+        ensure_installed = {
+          'ruff',
+          'pyright',
+        },
         automatic_installation = false,
         handlers = {
           function(server_name)
