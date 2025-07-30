@@ -81,26 +81,27 @@ plugin-load $plugins
 autoload -Uz compinit && compinit
 
 # Keybindings
-# Set the keymap to emacs
-bindkey -e
+# Set the keymap to vi
+bindkey -v
 
-# TODO: This does not seem to work...
-#bindkey -M emacs '^y' autosuggest-accept
+# Autosuggestion keybindings for vi mode
+bindkey -M viins '^E' autosuggest-accept
+bindkey -M viins '^F' autosuggest-accept
 
 # Check if history-substring-search functions are available
 # history-substring-search-up/down is provided by zsh-users/zsh-history-substring-search
 if (( ${+functions[history-substring-search-up]} && ${+functions[history-substring-search-down]} )); then
     # Bind keys if the substring search plugin is loaded
     bindkey '^[[A' history-substring-search-up
-    bindkey -M emacs '^P' history-substring-search-up
+    bindkey -M viins '^P' history-substring-search-up
     bindkey '^[[B' history-substring-search-down
-    bindkey -M emacs '^N' history-substring-search-down
+    bindkey -M viins '^N' history-substring-search-down
 else
     # Default bindings if the plugin is not loaded
     bindkey '^[[A' history-search-backward
-    bindkey -M emacs '^P' history-search-backward
+    bindkey -M viins '^P' history-search-backward
     bindkey '^[[B' history-search-forward
-    bindkey -M emacs '^N' history-search-forward
+    bindkey -M viins '^N' history-search-forward
 fi
 
 # Completion styling
