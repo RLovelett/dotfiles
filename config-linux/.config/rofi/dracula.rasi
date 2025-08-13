@@ -1,0 +1,32 @@
+/**
+ * Dracula Color Scheme
+ * Adapted for modern rofi styling
+ */
+
+* {
+    /* Dracula Colors */
+    background:     #282a36;
+    background-alt: #44475a;
+    foreground:     #f8f8f2;
+    selected:       #bd93f9;
+    comment:        #6272a4;
+    cyan:           #8be9fd;
+    green:          #50fa7b;
+    orange:         #ffb86c;
+    pink:           #ff79c6;
+    purple:         #bd93f9;
+    red:            #ff5555;
+    yellow:         #f1fa8c;
+
+    /* Rofi specific mappings */
+    active-background: #6272a4;
+    urgent-background: #ff5555;
+    urgent-foreground: #282a36;
+
+    selected-background: @purple;
+    selected-urgent-background: @red;
+    selected-active-background: @comment;
+
+    separatorcolor: @comment;
+    bordercolor: @purple;
+}
