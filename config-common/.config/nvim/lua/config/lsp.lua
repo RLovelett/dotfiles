@@ -6,7 +6,10 @@
 -- This actually just enables the LSP servers.
 -- The configuration is found in the LSP folder inside the nvim config folder,
 -- so in ~/.config/lsp/lua_ls.lua for lua_ls, for example.
-vim.lsp.enable('lua_ls')
+vim.lsp.enable({
+  'bashls',
+  'lua_ls'
+})
 
 vim.api.nvim_create_autocmd('LspAttach', {
   callback = function(ev)
@@ -23,12 +26,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
 -- Diagnostics
 vim.diagnostic.config({
-  -- Use the default configuration
-  -- virtual_lines = true
-
   -- Alternatively, customize specific options
-  virtual_lines = {
-    -- Only show virtual line diagnostics for the current cursor line
-    current_line = true,
-  }
+  virtual_lines = true,
+  update_in_insert = true,
 })
