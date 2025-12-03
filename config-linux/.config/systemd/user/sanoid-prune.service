@@ -1,0 +1,10 @@
+[Unit]
+Description=Prune ZFS snapshots (user service)
+
+[Service]
+Environment=TZ=UTC
+Type=oneshot
+ExecStart=/usr/bin/sanoid --configdir=%h/.config/sanoid --cache-dir=%C/sanoid --run-dir=%t/sanoid --prune-snapshots --verbose
+
+[Install]
+WantedBy=default.target

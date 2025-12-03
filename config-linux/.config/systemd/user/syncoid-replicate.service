@@ -1,0 +1,15 @@
+[Unit]
+Description=Replicate ZFS datasets to remote server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+Environment=SSH_AUTH_SOCK=%h/.1password/agent.sock
+ExecStart=syncoid --no-privilege-elevation --no-sync-snap --sendoptions=w zroot/HOME/arch ms-01:pond/zfs_replicas/HOME/arch
+ExecStart=syncoid --no-privilege-elevation --no-sync-snap --sendoptions=w zroot/HOME/debian ms-01:pond/zfs_replicas/HOME/debian
+ExecStart=syncoid --no-privilege-elevation --no-sync-snap --sendoptions=w zroot/ROOT/arch ms-01:pond/zfs_replicas/ROOT/arch
+ExecStart=syncoid --no-privilege-elevation --no-sync-snap --sendoptions=w zroot/ROOT/debian ms-01:pond/zfs_replicas/ROOT/debian
+
+[Install]
+WantedBy=default.target
