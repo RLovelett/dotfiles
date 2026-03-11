@@ -1,0 +1,100 @@
+preview = true
+preview_as_subtext = true
+
+# ── fzf (shell) ──────────────────────────────────────────────
+
+[[snippets]]
+keywords = ["fzf", "shell", "find", "file", "directory"]
+name = "fzf: Find file/directory"
+content = "Ctrl+T"
+
+[[snippets]]
+keywords = ["fzf", "shell", "cd", "directory", "navigate"]
+name = "fzf: CD into directory"
+content = "Alt-C"
+
+[[snippets]]
+keywords = ["fzf", "shell", "history", "search", "reverse"]
+name = "fzf: Search command history"
+content = "Ctrl-R"
+
+# ── Git ───────────────────────────────────────────────────────
+
+[[snippets]]
+keywords = ["git", "stash", "keep", "index", "staged"]
+name = "Git: Stash unstaged only"
+content = "git stash push --keep-index"
+
+[[snippets]]
+keywords = ["git", "stash", "keep", "index", "short"]
+name = "Git: Stash unstaged only (short)"
+content = "git stash -k"
+
+# ── Neovim ────────────────────────────────────────────────────
+
+[[snippets]]
+keywords = ["vim", "neovim", "indent", "fix", "format"]
+name = "Neovim: Fix indentation (entire file)"
+content = "gg=G"
+
+[[snippets]]
+keywords = ["vim", "neovim", "tab", "open", "file"]
+name = "Neovim: Open file in new tab"
+content = ":tabe ~/file.txt"
+
+[[snippets]]
+keywords = ["vim", "neovim", "tab", "switch", "next", "previous"]
+name = "Neovim: Switch tabs"
+content = "gt (next) / gT (previous)"
+
+[[snippets]]
+keywords = ["vim", "neovim", "split", "equal", "resize"]
+name = "Neovim: Equal splits"
+content = "<C-w>="
+
+[[snippets]]
+keywords = ["vim", "neovim", "split", "vertical", "horizontal", "convert"]
+name = "Neovim: Convert vertical to horizontal split"
+content = "<C-w>t <C-w>K"
+
+[[snippets]]
+keywords = ["vim", "neovim", "split", "horizontal", "vertical", "convert"]
+name = "Neovim: Convert horizontal to vertical split"
+content = "<C-w>t <C-w>H"
+
+[[snippets]]
+keywords = ["vim", "neovim", "split", "horizontal", "file"]
+name = "Neovim: Horizontal split with file"
+content = ":split ~/file.txt"
+
+[[snippets]]
+keywords = ["vim", "neovim", "split", "vertical", "file"]
+name = "Neovim: Vertical split with file"
+content = ":vsplit ~/file.txt"
+
+[[snippets]]
+keywords = ["vim", "neovim", "explore", "file", "browser", "netrw"]
+name = "Neovim: Open file explorer"
+content = ":Explore"
+
+[[snippets]]
+keywords = ["vim", "neovim", "new", "file", "create", "netrw"]
+name = "Neovim: Create new file (in netrw)"
+content = "%"
+
+# ── tmux ──────────────────────────────────────────────────────
+
+[[snippets]]
+keywords = ["tmux", "split", "vertical", "pane"]
+name = "tmux: Vertical split"
+content = "% (prefix + %)"
+
+[[snippets]]
+keywords = ["tmux", "split", "horizontal", "pane"]
+name = "tmux: Horizontal split"
+content = "\" (prefix + \")"
+
+[[snippets]]
+keywords = ["tmux", "window", "new", "create"]
+name = "tmux: New window"
+content = "c (prefix + c)"

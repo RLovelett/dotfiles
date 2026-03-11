@@ -21,3 +21,5 @@ application/x-extension-xht=zen.desktop
 application/x-extension-xhtml=zen.desktop
 x-scheme-handler/chrome=zen.desktop
 application/pdf=zen.desktop
+x-scheme-handler/sgnl=signal.desktop
+x-scheme-handler/signalcaptcha=signal.desktop
