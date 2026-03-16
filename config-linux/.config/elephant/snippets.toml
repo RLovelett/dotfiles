@@ -43,6 +43,36 @@ name = "Neovim: Open file in new tab"
 content = ":tabe ~/file.txt"
 
 [[snippets]]
+keywords = ["vim", "neovim", "nvimtree", "open", "buffer", "enter"]
+name = "NvimTree: Open file in buffer"
+content = "<CR> or o"
+
+[[snippets]]
+keywords = ["vim", "neovim", "nvimtree", "open", "tab", "new"]
+name = "NvimTree: Open file in new tab"
+content = "<C-t>"
+
+[[snippets]]
+keywords = ["vim", "neovim", "nvimtree", "open", "vertical", "split"]
+name = "NvimTree: Open in vertical split"
+content = "<C-v>"
+
+[[snippets]]
+keywords = ["vim", "neovim", "nvimtree", "open", "horizontal", "split"]
+name = "NvimTree: Open in horizontal split"
+content = "<C-x>"
+
+[[snippets]]
+keywords = ["vim", "neovim", "nvimtree", "preview", "existing", "buffer"]
+name = "NvimTree: Preview file (keep focus in tree)"
+content = "<Tab>"
+
+[[snippets]]
+keywords = ["vim", "neovim", "nvimtree", "help", "keymap", "keybinding"]
+name = "NvimTree: Show help / keymaps"
+content = "g?"
+
+[[snippets]]
 keywords = ["vim", "neovim", "tab", "switch", "next", "previous"]
 name = "Neovim: Switch tabs"
 content = "gt (next) / gT (previous)"
