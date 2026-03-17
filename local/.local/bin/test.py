@@ -4,7 +4,7 @@
 test.py - Natural movement simulator for macOS Tahoe (26.x)
 
 Moves the mouse in a human-like way using layered Perlin noise, variable speed,
-micro-jitter, and occasional pauses.
+micro-jitter, occasional pauses, scrolling, and app switching (Cmd+Tab).
 
 Requirements:
   pip3 install pyobjc-framework-Quartz
@@ -14,7 +14,7 @@ Usage:
   python3 test.py --bbox 100,200,1400,900 # constrain to a bbox
   python3 test.py --duration 90           # Run for 90 seconds, then stop
   python3 test.py --speed slow            # slow / normal / fast
-  python3 test.py --verbose               # print coords to stdout
+  python3 test.py --verbose               # print actions to stdout
 
 Stop anytime with Ctrl+C - the cursor is yours again instantly
 """
@@ -25,18 +25,25 @@ import random
 import signal
 import sys
 import time
+from abc import ABC, abstractmethod
+from dataclasses import dataclass
 
 try:
     from Quartz.CoreGraphics import (
-        CGEventCreateMouseEvent,
-        CGEventPost,
         CGEventCreate,
+        CGEventCreateKeyboardEvent,
+        CGEventCreateMouseEvent,
+        CGEventCreateScrollWheelEvent,
         CGEventGetLocation,
+        CGEventPost,
+        CGEventSetFlags,
         CGDisplayBounds,
         CGMainDisplayID,
+        kCGEventFlagMaskCommand,
         kCGEventMouseMoved,
-        kCGMouseButtonLeft,
         kCGHIDEventTap,
+        kCGMouseButtonLeft,
+        kCGScrollEventUnitPixel,
     )
 except ImportError:
     print(
@@ -45,6 +52,10 @@ except ImportError:
         "On macOS Tahoe you may also need:  pip3 install pyobjc-core"
     )
     sys.exit(1)
+
+# macOS virtual key codes
+_KEYCODE_TAB = 48
+_KEYCODE_COMMAND = 55  # Left Command — used to release the modifier after Cmd+Tab
 
 # ============================================================================
 # Perlin Noise - self-contained implementation (no external deps)
@@ -103,7 +114,7 @@ class PerlinNoise:
 
 
 # ============================================================================
-# Mouse helpers
+# Mouse / keyboard helpers
 # ============================================================================
 
 
@@ -128,6 +139,19 @@ def move_mouse(x: float, y: float) -> None:
     event = CGEventCreateMouseEvent(
         None, kCGEventMouseMoved, (x, y), kCGMouseButtonLeft
     )
+    CGEventPost(kCGHIDEventTap, event)
+
+
+def post_scroll(dy: int, dx: int = 0) -> None:
+    """Post a single scroll wheel event. dy > 0 = up, dy < 0 = down."""
+    if dx != 0:
+        event = CGEventCreateScrollWheelEvent(
+            None, kCGScrollEventUnitPixel, 2, dy, dx
+        )
+    else:
+        event = CGEventCreateScrollWheelEvent(
+            None, kCGScrollEventUnitPixel, 1, dy
+        )
     CGEventPost(kCGHIDEventTap, event)
 
 
@@ -204,6 +228,232 @@ def random_control_points(
 
 
 # ============================================================================
+# ScrollParams dataclass
+# ============================================================================
+
+
+@dataclass
+class ScrollParams:
+    dy: int           # vertical pixels total (positive = up, negative = down)
+    dx: int           # horizontal pixels total (0 = vertical only)
+    ticks: int        # number of individual scroll events to spread across
+    tick_delay: float # base seconds between ticks (Perlin-jittered at runtime)
+
+
+# ============================================================================
+# Actions
+# ============================================================================
+
+
+class Action(ABC):
+    @abstractmethod
+    def execute(self, engine: "NaturalMovementEngine") -> None: ...
+
+    @abstractmethod
+    def describe(self) -> str: ...
+
+
+class ScrollAction(Action):
+    def __init__(self, params: ScrollParams) -> None:
+        self._params = params
+
+    def describe(self) -> str:
+        direction = "up" if self._params.dy > 0 else "down"
+        axis = "" if self._params.dx == 0 else " + horizontal"
+        return (
+            f"scroll {direction}{axis}  "
+            f"{abs(self._params.dy)}px vertical over {self._params.ticks} ticks"
+        )
+
+    def execute(self, engine: "NaturalMovementEngine") -> None:
+        p = self._params
+        dy_per_tick = p.dy / p.ticks
+        dx_per_tick = p.dx / p.ticks
+        for _ in range(p.ticks):
+            noise = engine.noise_speed.noise(engine.t * 2.0) * 0.2
+            tick_dy = int(dy_per_tick * (1.0 + noise))
+            tick_dx = int(dx_per_tick * (1.0 + noise))
+            post_scroll(tick_dy, tick_dx)
+            jitter = 1.0 + engine.noise_speed.noise(engine.t * 1.5) * 0.3
+            delay = p.tick_delay * max(0.5, jitter)
+            engine.t += delay * 0.3
+            time.sleep(delay)
+
+
+class CmdTabAction(Action):
+    def __init__(self, n_tabs: int) -> None:
+        self._n_tabs = n_tabs
+
+    def describe(self) -> str:
+        return f"Cmd+Tab x{self._n_tabs}"
+
+    def execute(self, engine: "NaturalMovementEngine") -> None:
+        for i in range(self._n_tabs):
+            # Tab keydown with Command modifier held
+            down = CGEventCreateKeyboardEvent(None, _KEYCODE_TAB, True)
+            CGEventSetFlags(down, kCGEventFlagMaskCommand)
+            CGEventPost(kCGHIDEventTap, down)
+
+            time.sleep(engine._rng.uniform(0.05, 0.12))
+
+            # Tab keyup, still with Command modifier
+            up = CGEventCreateKeyboardEvent(None, _KEYCODE_TAB, False)
+            CGEventSetFlags(up, kCGEventFlagMaskCommand)
+            CGEventPost(kCGHIDEventTap, up)
+
+            if i < self._n_tabs - 1:
+                time.sleep(engine._rng.uniform(0.10, 0.25))
+
+        # Release the Command key to finalise the app switch
+        cmd_up = CGEventCreateKeyboardEvent(None, _KEYCODE_COMMAND, False)
+        CGEventPost(kCGHIDEventTap, cmd_up)
+
+
+class DwellAction(Action):
+    def __init__(self, seconds: float) -> None:
+        self._seconds = seconds
+
+    def describe(self) -> str:
+        return f"dwell {self._seconds:.2f}s"
+
+    def execute(self, engine: "NaturalMovementEngine") -> None:
+        engine._current_pos = engine._dwell(
+            engine._current_pos,
+            self._seconds,
+            engine._run_start,
+            engine._duration,
+        )
+
+
+# ============================================================================
+# Speed profiles
+# ============================================================================
+
+
+class SpeedProfile(ABC):
+    # Movement params — read directly by NaturalMovementEngine
+    px_per_sec: float
+    curve_spread: float
+    perturb_amp: float
+
+    # Independent per-action probabilities
+    p_scroll: float
+    p_cmd_tab: float
+    p_dwell: float
+
+    def pick_actions(self, rng: random.Random) -> list[Action]:
+        """
+        Independent Bernoulli roll for each action.
+        Order is fixed: scroll -> cmd_tab -> dwell (behaviorally sensible).
+        Result may be empty — that is a valid outcome.
+        """
+        actions: list[Action] = []
+        if rng.random() < self.p_scroll:
+            actions.append(ScrollAction(self.scroll_params(rng)))
+        if rng.random() < self.p_cmd_tab:
+            actions.append(CmdTabAction(self.cmd_tab_count(rng)))
+        if rng.random() < self.p_dwell:
+            actions.append(DwellAction(self.dwell_duration(rng)))
+        return actions
+
+    @abstractmethod
+    def dwell_duration(self, rng: random.Random) -> float: ...
+
+    @abstractmethod
+    def scroll_params(self, rng: random.Random) -> ScrollParams: ...
+
+    @abstractmethod
+    def cmd_tab_count(self, rng: random.Random) -> int: ...
+
+
+class SlowProfile(SpeedProfile):
+    """Reading / browsing behaviour: long dwells, frequent scrolling."""
+
+    px_per_sec   = 280
+    curve_spread = 120
+    perturb_amp  = 30
+    p_scroll     = 0.50
+    p_cmd_tab    = 0.10
+    p_dwell      = 0.80
+
+    def dwell_duration(self, rng: random.Random) -> float:
+        return rng.uniform(20.0, 45.0)
+
+    def scroll_params(self, rng: random.Random) -> ScrollParams:
+        direction = rng.choices([1, -1], weights=[30, 70])[0]  # bias downward
+        h_active = rng.choices([0, 1], weights=[85, 15])[0]
+        dx = h_active * rng.choice([-1, 1]) * rng.randint(40, 150)
+        return ScrollParams(
+            dy=direction * rng.randint(120, 600),
+            dx=dx,
+            ticks=rng.randint(8, 30),
+            tick_delay=0.035,
+        )
+
+    def cmd_tab_count(self, rng: random.Random) -> int:
+        return rng.choices([1, 2, 3], weights=[70, 20, 10])[0]
+
+
+class NormalProfile(SpeedProfile):
+    """Balanced general-purpose behaviour."""
+
+    px_per_sec   = 550
+    curve_spread = 180
+    perturb_amp  = 45
+    p_scroll     = 0.35
+    p_cmd_tab    = 0.15
+    p_dwell      = 0.65
+
+    def dwell_duration(self, rng: random.Random) -> float:
+        return rng.uniform(15.0, 30.0)
+
+    def scroll_params(self, rng: random.Random) -> ScrollParams:
+        direction = rng.choices([1, -1], weights=[35, 65])[0]
+        return ScrollParams(
+            dy=direction * rng.randint(80, 400),
+            dx=0,
+            ticks=rng.randint(5, 20),
+            tick_delay=0.025,
+        )
+
+    def cmd_tab_count(self, rng: random.Random) -> int:
+        return rng.choices([1, 2, 3], weights=[60, 30, 10])[0]
+
+
+class FastProfile(SpeedProfile):
+    """Task-switching behaviour: quick moves, more Cmd+Tab, shorter dwells."""
+
+    px_per_sec   = 1000
+    curve_spread = 220
+    perturb_amp  = 55
+    p_scroll     = 0.20
+    p_cmd_tab    = 0.25
+    p_dwell      = 0.40
+
+    def dwell_duration(self, rng: random.Random) -> float:
+        return rng.uniform(0.08, 15.0)
+
+    def scroll_params(self, rng: random.Random) -> ScrollParams:
+        direction = rng.choices([1, -1], weights=[40, 60])[0]
+        return ScrollParams(
+            dy=direction * rng.randint(40, 200),
+            dx=0,
+            ticks=rng.randint(3, 10),
+            tick_delay=0.015,
+        )
+
+    def cmd_tab_count(self, rng: random.Random) -> int:
+        return rng.choices([1, 2, 3, 4], weights=[50, 25, 15, 10])[0]
+
+
+PROFILES: dict[str, SpeedProfile] = {
+    "slow":   SlowProfile(),
+    "normal": NormalProfile(),
+    "fast":   FastProfile(),
+}
+
+
+# ============================================================================
 # Natural movement engine
 # ============================================================================
 
@@ -219,30 +469,9 @@ class NaturalMovementEngine:
       3. Walk the Bézier with eased speed + Perlin speed jitter.
       4. Layer Perlin perturbation that peaks mid-leg (organic wobble).
       5. Layer constant micro-tremor (tiny hand-shake).
-      6. On arrival, dwell with live micro-tremor (not frozen).
+      6. On arrival, run the action phase (scroll / Cmd+Tab / dwell / none).
       7. Repeat.
     """
-
-    SPEED_PROFILES = {
-        "slow": {
-            "px_per_sec": 280,
-            "dwell": (20.0, 45.0),
-            "curve_spread": 120,
-            "perturb": 30,
-        },
-        "normal": {
-            "px_per_sec": 550,
-            "dwell": (15.00, 30.0),
-            "curve_spread": 180,
-            "perturb": 45,
-        },
-        "fast": {
-            "px_per_sec": 1000,
-            "dwell": (0.08, 15.0),
-            "curve_spread": 220,
-            "perturb": 55,
-        },
-    }
 
     def __init__(
         self,
@@ -257,20 +486,25 @@ class NaturalMovementEngine:
             self.x_min, self.y_min = sx + 20, sy + 20
             self.x_max, self.y_max = sx + sw - 20, sy + sh - 20
 
-        profile = self.SPEED_PROFILES.get(speed, self.SPEED_PROFILES["normal"])
-        self.px_per_sec = profile["px_per_sec"]
-        self.dwell_range = profile["dwell"]
-        self.curve_spread = profile["curve_spread"]
-        self.perturb_amp = profile["perturb"]
+        self.profile = PROFILES.get(speed, PROFILES["normal"])
+        self.px_per_sec   = self.profile.px_per_sec
+        self.curve_spread = self.profile.curve_spread
+        self.perturb_amp  = self.profile.perturb_amp
 
         self.verbose = verbose
+        self._rng = random.Random()
+
+        # State shared with actions during run()
+        self._current_pos: tuple[float, float] = (0.0, 0.0)
+        self._run_start: float = 0.0
+        self._duration: float | None = None
 
         seed_base = random.randint(0, 100_000)
         self.noise_x_perturb = PerlinNoise(seed=seed_base)
         self.noise_y_perturb = PerlinNoise(seed=seed_base + 1)
-        self.noise_x_micro = PerlinNoise(seed=seed_base + 2)
-        self.noise_y_micro = PerlinNoise(seed=seed_base + 3)
-        self.noise_speed = PerlinNoise(seed=seed_base + 4)
+        self.noise_x_micro   = PerlinNoise(seed=seed_base + 2)
+        self.noise_y_micro   = PerlinNoise(seed=seed_base + 3)
+        self.noise_speed     = PerlinNoise(seed=seed_base + 4)
 
         self.t = random.uniform(0, 1000)  # random phase so each run is unique
 
@@ -280,7 +514,6 @@ class NaturalMovementEngine:
             random.uniform(self.x_min + margin, self.x_max - margin),
             random.uniform(self.y_min + margin, self.y_max - margin),
         )
-        self.leg_progress = 0.0  # 0 -> 1 over each leg
 
     def _clamp_pos(self, x: float, y: float) -> tuple[float, float]:
         return (
@@ -369,7 +602,7 @@ class NaturalMovementEngine:
         seconds: float,
         start_time: float,
         duration: float | None,
-    ):
+    ) -> tuple[float, float]:
         """
         Dwell at a position with live micro-tremor so cursor isn't frozen.
         Returns the final position after dwell.
@@ -387,47 +620,54 @@ class NaturalMovementEngine:
             time.sleep(0.025)
         return (x, y)
 
-    def run(self, duration: float | None = None):
-        """Main loop: pick waypoints, travel, dwell, repeat."""
-        run_start = time.monotonic()
-        current = get_current_mouse_pos()
+    def run(self, duration: float | None = None) -> None:
+        """Main loop: pick waypoints, travel, run action phase, repeat."""
+        self._run_start = time.monotonic()
+        self._duration = duration
+        self._current_pos = get_current_mouse_pos()
 
         print(
-            f"🖱  Natural mouse mover running  |  "
-            f"bounds=({self.x_min},{self.y_min})→({self.x_max},{self.y_max})  |  "
+            f"Natural mouse mover running  |  "
+            f"bounds=({self.x_min},{self.y_min})->({self.x_max},{self.y_max})  |  "
             f"Ctrl+C to stop"
         )
 
         try:
             while True:
                 target = self._pick_waypoint()
-                dist = math.hypot(target[0] - current[0], target[1] - current[1])
 
                 if self.verbose:
-                    elapsed = time.monotonic() - run_start
+                    elapsed = time.monotonic() - self._run_start
+                    dist = math.hypot(
+                        target[0] - self._current_pos[0],
+                        target[1] - self._current_pos[1],
+                    )
                     print(
-                        f"\n  🎯  t={elapsed:.1f}s  target=({target[0]:.0f}, {target[1]:.0f})"
-                        f"  dist={dist:.0f}px"
+                        f"\n  -> t={elapsed:.1f}s  "
+                        f"target=({target[0]:.0f},{target[1]:.0f})  dist={dist:.0f}px"
                     )
 
                 # --- Animate travel ---
-                for pos in self._travel_leg(current, target):
-                    if duration and (time.monotonic() - run_start) >= duration:
+                for pos in self._travel_leg(self._current_pos, target):
+                    if duration and (time.monotonic() - self._run_start) >= duration:
                         raise _DurationReached()
-                    move_mouse(pos[0], pos[1])
-                    current = pos
+                    move_mouse(*pos)
+                    self._current_pos = pos
 
-                # --- Dwell ---
-                dwell_secs = random.uniform(*self.dwell_range)
-                if self.verbose:
-                    print(f"  ⏸  dwell {dwell_secs:.2f}s")
-                current = self._dwell(current, dwell_secs, run_start, duration)
+                # --- Action phase ---
+                actions = self.profile.pick_actions(self._rng)
+                for action in actions:
+                    if self.verbose:
+                        print(f"  -> {action.describe()}")
+                    action.execute(self)
+                    if duration and (time.monotonic() - self._run_start) >= duration:
+                        raise _DurationReached()
 
         except (KeyboardInterrupt, _DurationReached):
             pass
 
-        elapsed = time.monotonic() - run_start
-        print(f"\n✓  Stopped after {elapsed:.1f}s")
+        elapsed = time.monotonic() - self._run_start
+        print(f"\nStopped after {elapsed:.1f}s")
 
 
 class _DurationReached(Exception):
@@ -450,7 +690,7 @@ def parse_bbox(s: str) -> tuple[int, int, int, int]:
     return (x1, y1, x2, y2)
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(
         description="Move the mouse cursor naturally using waypoints + Bézier curves.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -466,7 +706,7 @@ def main():
         "--bbox",
         type=parse_bbox,
         default=None,
-        help="Bounding box x1, y1, x2, y2 to constrain movement (default: full screen)",
+        help="Bounding box x1,y1,x2,y2 to constrain movement (default: full screen)",
     )
 
     parser.add_argument(
@@ -487,11 +727,11 @@ def main():
         "--verbose",
         "-v",
         action="store_true",
-        help="Print cursor coordinates as it moves",
+        help="Print actions as they occur",
     )
+
     args = parser.parse_args()
 
-    # Graceful Ctrl+C
     signal.signal(signal.SIGINT, lambda *_: sys.exit(0))
 
     mover = NaturalMovementEngine(
