@@ -20,6 +20,10 @@ local function ensure_parsers_installed(treesitter, parser_table)
   -- Get the installed parsers
   local installed_parsers = treesitter.get_installed()
 
+  local to_install = vim.iter(parser_table)
+      :filter(function(parser) return not vim.tbl_contains(installed_parsers, parser) end)
+      :totable()
+
   local to_uninstall = vim.iter(installed_parsers)
       :filter(function(parser) return not vim.tbl_contains(parser_table, parser) end)
       :totable()
@@ -57,6 +61,7 @@ return {
       'gitignore',
       'hcl',
       'html',
+      'hyprlang',
       'java',
       'javadoc',
       'jinja',
@@ -65,7 +70,6 @@ return {
       'jsdoc',
       'json',
       'json5',
-      'jsonc',
       'llvm',
       'lua',
       'luadoc',
@@ -85,12 +89,19 @@ return {
       'swift',
       'terraform',
       'tmux',
+      'toml',
       'typescript',
       'vim',
       'vimdoc'
     }
   },
   config = function(_, opts)
+    vim.filetype.add({
+      pattern = {
+        ['.*/hypr/.*%.conf'] = 'hyprlang',
+      },
+    })
+
     local ts = require('nvim-treesitter')
     ts.setup({})
 

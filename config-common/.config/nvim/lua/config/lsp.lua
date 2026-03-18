@@ -8,7 +8,9 @@
 -- so in ~/.config/lsp/lua_ls.lua for lua_ls, for example.
 vim.lsp.enable({
   'bashls',
-  'lua_ls'
+  'hyprls',
+  'lua_ls',
+  'taplo'
 })
 
 vim.api.nvim_create_autocmd('LspAttach', {
