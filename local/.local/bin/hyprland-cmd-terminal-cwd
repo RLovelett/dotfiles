@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# Returns the current working directory of the active terminal window,
+# so a new terminal window can be started in the same directory.
+
+# Go from current active terminal to its child shell process and run cwd there
+terminal_pid=$(hyprctl activewindow | awk '/pid:/ {print $2}')
+child_pid=$(pgrep -P "$terminal_pid" | tail -n1)
+
+if [[ -z "$child_pid" ]]; then
+  echo "$HOME"
+  exit
+fi
+
+# If the child is a tmux client, ask tmux for the active pane's shell PID
+child_exe=$(readlink -f "/proc/$child_pid/exe" 2>/dev/null)
+if [[ "$child_exe" == */tmux* ]]; then
+  shell_pid=$(tmux display-message -p '#{pane_pid}' 2>/dev/null)
+else
+  shell_pid="$child_pid"
+fi
+
+if [[ -z "$shell_pid" ]]; then
+  echo "$HOME"
+  exit
+fi
+
+# Prefer the cwd of the foreground process running inside the shell (e.g. nvim, git)
+fg_pid=$(pgrep -P "$shell_pid" | tail -n1)
+if [[ -n "$fg_pid" ]]; then
+  cwd=$(readlink -f "/proc/$fg_pid/cwd" 2>/dev/null)
+fi
+
+# Fall back to the shell's own cwd
+if [[ ! -d "$cwd" ]]; then
+  cwd=$(readlink -f "/proc/$shell_pid/cwd" 2>/dev/null)
+fi
+
+if [[ -d "$cwd" ]]; then
+  echo "$cwd"
+else
+  echo "$HOME"
+fi

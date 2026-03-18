@@ -64,7 +64,7 @@
 } /* }}} */
 
 /* Main bar defaults */ /* {{{ */
-#waybar.main {
+#waybar.waybar {
   background: @background;
   font-family: "MesloLGSDZ Nerd Font Mono";
   font-size: 14pt;
@@ -73,7 +73,7 @@
   border: 2px solid @border;
 }
 
-#waybar.main button {
+#waybar.waybar button {
   font-family: "MesloLGSDZ Nerd Font Mono";
   font-size: 14pt;
   font-weight: 500;
@@ -81,17 +81,17 @@
 } /* }}} */
 
 /* Main bar modules */ /* {{{ */
-#waybar.main #network,
-#waybar.main #clock,
-#waybar.main #cpu,
-#waybar.main #memory.swap,
-#waybar.main #memory.ram,
-#waybar.main #submap,
-#waybar.main #pulseaudio,
-#waybar.main #temperature,
-#waybar.main #tray,
-#waybar.main #window,
-#waybar.main #disk {
+#waybar.waybar #network,
+#waybar.waybar #clock,
+#waybar.waybar #cpu,
+#waybar.waybar #memory.swap,
+#waybar.waybar #memory.ram,
+#waybar.waybar #submap,
+#waybar.waybar #pulseaudio,
+#waybar.waybar #temperature,
+#waybar.waybar #tray,
+#waybar.waybar #window,
+#waybar.waybar #disk {
   padding-left: 8pt;
   padding-right: 8pt;
   padding-bottom: 4px;
@@ -99,55 +99,55 @@
   background: transparent;
 }
 
-#waybar.main #tray {
+#waybar.waybar #tray {
   padding-right: 6pt;
 }
 
 /* }}} */
 
 /* Module colors */ /* {{{ */
-#waybar.main #cpu,
-#waybar.main #temperature,
-#waybar.main #memory.ram,
-#waybar.main #memory.swap,
-#waybar.main #disk,
-#waybar.main #network {
+#waybar.waybar #cpu,
+#waybar.waybar #temperature,
+#waybar.waybar #memory.ram,
+#waybar.waybar #memory.swap,
+#waybar.waybar #disk,
+#waybar.waybar #network {
   color: @foreground;
 }
 
-#waybar.main #pulseaudio {
+#waybar.waybar #pulseaudio {
   color: @purple;
 }
 
-#waybar.main #clock {
+#waybar.waybar #clock {
   color: @yellow;
 }
 
-#waybar.main #window {
+#waybar.waybar #window {
   color: @purple;
   margin-top: -0px;
 }
 
-#waybar.main #network.info {
+#waybar.waybar #network.info {
   padding-right: 10px;
   padding-left: 10px;
   color: @selection;
   background: transparent;
 }
 
-#waybar.main #network.info.wifi.normal,
-#waybar.main #network.info.ethernet {
+#waybar.waybar #network.info.wifi.normal,
+#waybar.waybar #network.info.ethernet {
   color: @foreground;
   padding-right: 15px;
 }
 
-#waybar.main #network.info.wifi {
+#waybar.waybar #network.info.wifi {
   color: @red;
   padding-right: 15px;
 } /* }}} */
 
 /* Submap */ /* {{{ */
-#waybar.main #submap.󰲏 {
+#waybar.waybar #submap.󰲏 {
   color: @pink;
   animation-iteration-count: infinite;
   animation-direction: alternate;
@@ -156,7 +156,7 @@
   animation-timing-function: steps(15);
 }
 
-#waybar.main #submap. {
+#waybar.waybar #submap. {
   color: @yellow;
   animation-iteration-count: infinite;
   animation-direction: alternate;
@@ -167,12 +167,12 @@
 /* }}} */
 
 /* Main bar criticals */ /* {{{ */
-#waybar.main #workspaces button.urgent,
-#waybar.main #workspaces button.special.urgent,
-#waybar.main #memory.swap.critical,
-#waybar.main #memory.ram.critical,
-#waybar.main #cpu.critical,
-#waybar.main #temperature.critical {
+#waybar.waybar #workspaces button.urgent,
+#waybar.waybar #workspaces button.special.urgent,
+#waybar.waybar #memory.swap.critical,
+#waybar.waybar #memory.ram.critical,
+#waybar.waybar #cpu.critical,
+#waybar.waybar #temperature.critical {
   color: @selection;
   animation-iteration-count: infinite;
   animation-direction: alternate;
@@ -182,14 +182,14 @@
 } /* }}} */
 
 /* Main bar warnings */ /* {{{ */
-#waybar.main #pulseaudio.output.muted,
-#waybar.main #pulseaudio.input.source-muted {
+#waybar.waybar #pulseaudio.output.muted,
+#waybar.waybar #pulseaudio.input.source-muted {
   color: @selection;
 }
 
 /* Workspace */ /* {{{ */
 /* Default workspace settings */
-#waybar.main #workspaces button {
+#waybar.waybar #workspaces button {
   color: @selection;
   background: transparent;
   border: 1.5px solid transparent;
@@ -204,23 +204,23 @@
 }
 
 /* Focused workspace */
-#waybar.main #workspaces button.visible {
+#waybar.waybar #workspaces button.visible {
   color: @purple;
 }
 
 /* Focused workspace & monitor */
-#waybar.main #workspaces button.active {
+#waybar.waybar #workspaces button.active {
   color: @purple;
   border: 1.5px solid @selection;
 }
 
 /* Style when cursor is on the button */
-#waybar.main #workspaces button:hover {
+#waybar.waybar #workspaces button:hover {
   color: @purple;
 }
 
 /* Special workplace animation */
-#waybar.main #workspaces button.special.active {
+#waybar.waybar #workspaces button.special.active {
   border: 1.5px solid transparent;
   color: @purple;
   transition: all 0s ease;
@@ -232,9 +232,9 @@
 } /* }}} */
 
 /* Custom slashes as spacers */ /* {{{ */
-#waybar.main #custom-spacer1,
-#waybar.main #custom-spacer2,
-#waybar.main #custom-spacer3 {
+#waybar.waybar #custom-spacer1,
+#waybar.waybar #custom-spacer2,
+#waybar.waybar #custom-spacer3 {
   font-weight: bold;
   color: @comment;
   background: transparent;
@@ -242,7 +242,7 @@
 /* }}} */
 
 /* Custom tray icon */ /* {{{ */
-#waybar.main #custom-trayicon {
+#waybar.waybar #custom-trayicon {
   font-size: 20pt;
   font-weight: bold;
   font-style: italic;
@@ -262,7 +262,7 @@ tooltip {
   font-family: "MesloLGSDZ Nerd Font Mono";
 }
 
-#waybar.main #tray menu {
+#waybar.waybar #tray menu {
   background: @background;
   border: 3px solid @selection;
   border-radius: 8px;

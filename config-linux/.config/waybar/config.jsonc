@@ -3,7 +3,7 @@
     // MAIN BAR //
     "layer": "top", // Waybar at top layer
     "position": "top", // Waybar position (top|bottom|left|right)
-    "name": "main",
+    "name": "waybar",
     "mode": "dock",
     "reload_style_on_change": true,
     "exclusive": true,

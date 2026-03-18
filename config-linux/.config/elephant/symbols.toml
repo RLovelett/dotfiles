@@ -1,0 +1,2 @@
+#command = 'wl-copy %VALUE% && sleep 0.2 && wtype %VALUE%'
+command = 'wl-copy %VALUE% && hyprctl dispatch sendshortcut "SHIFT, Insert,"'
