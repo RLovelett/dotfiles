@@ -1,5 +1,5 @@
 return {
-  'norcalli/nvim-colorizer.lua',
+  'catgoose/nvim-colorizer.lua',
   ft = { 'css', 'scss', 'sass', 'less', 'html', 'javascript', 'typescript', 'sh', 'zsh', 'bash' },
   config = function()
     vim.opt.termguicolors = true
