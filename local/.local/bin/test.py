@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-test.py - Natural movement simulator for macOS Tahoe (26.x)
+test.py - Natural movement simulator for macOS
 
 Moves the mouse in a human-like way using layered Perlin noise, variable speed,
 micro-jitter, occasional pauses, scrolling, and app switching (Cmd+Tab).
@@ -11,10 +11,9 @@ Requirements:
 
 Usage:
   python3 test.py                         # Full screen, runs until Ctrl+C
-  python3 test.py --bbox 100,200,1400,900 # constrain to a bbox
+  python3 test.py --bbox 100,200,1400,900 # Constrain to a bounding box
   python3 test.py --duration 90           # Run for 90 seconds, then stop
-  python3 test.py --speed slow            # slow / normal / fast
-  python3 test.py --verbose               # print actions to stdout
+  python3 test.py --verbose               # Print actions to stdout
 
 Stop anytime with Ctrl+C - the cursor is yours again instantly
 """
@@ -56,6 +55,13 @@ except ImportError:
 # macOS virtual key codes
 _KEYCODE_TAB = 48
 _KEYCODE_COMMAND = 55  # Left Command — used to release the modifier after Cmd+Tab
+
+# Micro-pause lognormal params (between actions within a group, not CLI-exposed)
+_MICRO_PAUSE_MEDIAN = 1.2   # seconds
+_MICRO_PAUSE_SIGMA  = 0.55
+_MICRO_PAUSE_MIN    = 0.5   # seconds
+_MICRO_PAUSE_MAX    = 3.0   # seconds
+
 
 # ============================================================================
 # Perlin Noise - self-contained implementation (no external deps)
@@ -228,6 +234,30 @@ def random_control_points(
 
 
 # ============================================================================
+# Distributions
+# ============================================================================
+
+
+def lognormal_sample(
+    median: float,
+    sigma: float,
+    min_val: float,
+    max_val: float,
+    rng: random.Random,
+) -> float:
+    """
+    Sample from a lognormal distribution clamped to [min_val, max_val].
+
+    median: the median of the distribution in the original units (e.g. seconds)
+    sigma:  shape parameter — std dev of the underlying normal (dimensionless)
+            higher = more spread / heavier tail
+    """
+    mu = math.log(median)
+    value = math.exp(rng.gauss(mu, sigma))
+    return max(min_val, min(max_val, value))
+
+
+# ============================================================================
 # ScrollParams dataclass
 # ============================================================================
 
@@ -238,6 +268,18 @@ class ScrollParams:
     dx: int           # horizontal pixels total (0 = vertical only)
     ticks: int        # number of individual scroll events to spread across
     tick_delay: float # base seconds between ticks (Perlin-jittered at runtime)
+
+
+def random_scroll_params(rng: random.Random) -> ScrollParams:
+    direction = rng.choices([1, -1], weights=[35, 65])[0]  # bias downward
+    h_active = rng.choices([0, 1], weights=[85, 15])[0]
+    dx = h_active * rng.choice([-1, 1]) * rng.randint(40, 150)
+    return ScrollParams(
+        dy=direction * rng.randint(80, 400),
+        dx=dx,
+        ticks=rng.randint(5, 20),
+        tick_delay=0.025,
+    )
 
 
 # ============================================================================
@@ -251,6 +293,29 @@ class Action(ABC):
 
     @abstractmethod
     def describe(self) -> str: ...
+
+
+class TravelAction(Action):
+    def describe(self) -> str:
+        return "travel"
+
+    def execute(self, engine: "NaturalMovementEngine") -> None:
+        target = engine._pick_waypoint()
+        if engine.verbose:
+            elapsed = time.monotonic() - engine._run_start
+            dist = math.hypot(
+                target[0] - engine._current_pos[0],
+                target[1] - engine._current_pos[1],
+            )
+            print(
+                f"  -> t={elapsed:.1f}s  "
+                f"target=({target[0]:.0f},{target[1]:.0f})  dist={dist:.0f}px"
+            )
+        for pos in engine._travel_leg(engine._current_pos, target):
+            if engine._duration and (time.monotonic() - engine._run_start) >= engine._duration:
+                raise _DurationReached()
+            move_mouse(*pos)
+            engine._current_pos = pos
 
 
 class ScrollAction(Action):
@@ -314,7 +379,7 @@ class DwellAction(Action):
         self._seconds = seconds
 
     def describe(self) -> str:
-        return f"dwell {self._seconds:.2f}s"
+        return f"dwell {self._seconds:.1f}s"
 
     def execute(self, engine: "NaturalMovementEngine") -> None:
         engine._current_pos = engine._dwell(
@@ -326,131 +391,68 @@ class DwellAction(Action):
 
 
 # ============================================================================
-# Speed profiles
+# Action group builder
 # ============================================================================
 
-
-class SpeedProfile(ABC):
-    # Movement params — read directly by NaturalMovementEngine
-    px_per_sec: float
-    curve_spread: float
-    perturb_amp: float
-
-    # Independent per-action probabilities
-    p_scroll: float
-    p_cmd_tab: float
-    p_dwell: float
-
-    def pick_actions(self, rng: random.Random) -> list[Action]:
-        """
-        Independent Bernoulli roll for each action.
-        Order is fixed: scroll -> cmd_tab -> dwell (behaviorally sensible).
-        Result may be empty — that is a valid outcome.
-        """
-        actions: list[Action] = []
-        if rng.random() < self.p_scroll:
-            actions.append(ScrollAction(self.scroll_params(rng)))
-        if rng.random() < self.p_cmd_tab:
-            actions.append(CmdTabAction(self.cmd_tab_count(rng)))
-        if rng.random() < self.p_dwell:
-            actions.append(DwellAction(self.dwell_duration(rng)))
-        return actions
-
-    @abstractmethod
-    def dwell_duration(self, rng: random.Random) -> float: ...
-
-    @abstractmethod
-    def scroll_params(self, rng: random.Random) -> ScrollParams: ...
-
-    @abstractmethod
-    def cmd_tab_count(self, rng: random.Random) -> int: ...
+# Soft ordering: lower value = earlier in the group
+_ACTION_ORDER = {"travel": 0, "scroll": 1, "cmd_tab": 1, "dwell": 2}
 
 
-class SlowProfile(SpeedProfile):
-    """Reading / browsing behaviour: long dwells, frequent scrolling."""
+def build_action_group(
+    rng: random.Random,
+    weight_travel: float,
+    weight_scroll: float,
+    weight_dwell: float,
+    weight_cmd_tab: float,
+    group_weights: list[float],
+) -> list[Action]:
+    """
+    Pick 1–3 actions with weighted sampling, respecting max-count rules,
+    then apply soft ordering: travel first, dwell last, others shuffled between.
+    """
+    n = rng.choices([1, 2, 3], weights=group_weights)[0]
 
-    px_per_sec   = 280
-    curve_spread = 120
-    perturb_amp  = 30
-    p_scroll     = 0.50
-    p_cmd_tab    = 0.10
-    p_dwell      = 0.80
+    # max 2 occurrences for travel/scroll/cmd_tab, max 1 for dwell
+    pool_spec = [
+        ("travel",  weight_travel,  2),
+        ("scroll",  weight_scroll,  2),
+        ("cmd_tab", weight_cmd_tab, 2),
+        ("dwell",   weight_dwell,   1),
+    ]
+    weight_map  = {key: w  for key, w, _  in pool_spec}
+    remaining   = {key: mx for key, _, mx in pool_spec}
 
-    def dwell_duration(self, rng: random.Random) -> float:
-        return rng.uniform(20.0, 45.0)
+    chosen_keys: list[str] = []
+    for _ in range(n):
+        eligible = [k for k in weight_map if remaining[k] > 0]
+        if not eligible:
+            break
+        weights = [weight_map[k] for k in eligible]
+        key = rng.choices(eligible, weights=weights)[0]
+        chosen_keys.append(key)
+        remaining[key] -= 1
 
-    def scroll_params(self, rng: random.Random) -> ScrollParams:
-        direction = rng.choices([1, -1], weights=[30, 70])[0]  # bias downward
-        h_active = rng.choices([0, 1], weights=[85, 15])[0]
-        dx = h_active * rng.choice([-1, 1]) * rng.randint(40, 150)
-        return ScrollParams(
-            dy=direction * rng.randint(120, 600),
-            dx=dx,
-            ticks=rng.randint(8, 30),
-            tick_delay=0.035,
-        )
+    # Soft ordering: travel → [scroll/cmd_tab shuffled] → dwell
+    # Ties within the same order bucket are broken randomly.
+    chosen_keys.sort(key=lambda k: (_ACTION_ORDER[k], rng.random()))
 
-    def cmd_tab_count(self, rng: random.Random) -> int:
-        return rng.choices([1, 2, 3], weights=[70, 20, 10])[0]
+    # Instantiate
+    actions: list[Action] = []
+    for key in chosen_keys:
+        if key == "travel":
+            actions.append(TravelAction())
+        elif key == "scroll":
+            actions.append(ScrollAction(random_scroll_params(rng)))
+        elif key == "cmd_tab":
+            n_tabs = rng.choices([1, 2, 3], weights=[60, 30, 10])[0]
+            actions.append(CmdTabAction(n_tabs))
+        elif key == "dwell":
+            seconds = lognormal_sample(
+                median=20.0, sigma=0.8, min_val=5.0, max_val=60.0, rng=rng
+            )
+            actions.append(DwellAction(seconds))
 
-
-class NormalProfile(SpeedProfile):
-    """Balanced general-purpose behaviour."""
-
-    px_per_sec   = 550
-    curve_spread = 180
-    perturb_amp  = 45
-    p_scroll     = 0.35
-    p_cmd_tab    = 0.15
-    p_dwell      = 0.65
-
-    def dwell_duration(self, rng: random.Random) -> float:
-        return rng.uniform(15.0, 30.0)
-
-    def scroll_params(self, rng: random.Random) -> ScrollParams:
-        direction = rng.choices([1, -1], weights=[35, 65])[0]
-        return ScrollParams(
-            dy=direction * rng.randint(80, 400),
-            dx=0,
-            ticks=rng.randint(5, 20),
-            tick_delay=0.025,
-        )
-
-    def cmd_tab_count(self, rng: random.Random) -> int:
-        return rng.choices([1, 2, 3], weights=[60, 30, 10])[0]
-
-
-class FastProfile(SpeedProfile):
-    """Task-switching behaviour: quick moves, more Cmd+Tab, shorter dwells."""
-
-    px_per_sec   = 1000
-    curve_spread = 220
-    perturb_amp  = 55
-    p_scroll     = 0.20
-    p_cmd_tab    = 0.25
-    p_dwell      = 0.40
-
-    def dwell_duration(self, rng: random.Random) -> float:
-        return rng.uniform(0.08, 15.0)
-
-    def scroll_params(self, rng: random.Random) -> ScrollParams:
-        direction = rng.choices([1, -1], weights=[40, 60])[0]
-        return ScrollParams(
-            dy=direction * rng.randint(40, 200),
-            dx=0,
-            ticks=rng.randint(3, 10),
-            tick_delay=0.015,
-        )
-
-    def cmd_tab_count(self, rng: random.Random) -> int:
-        return rng.choices([1, 2, 3, 4], weights=[50, 25, 15, 10])[0]
-
-
-PROFILES: dict[str, SpeedProfile] = {
-    "slow":   SlowProfile(),
-    "normal": NormalProfile(),
-    "fast":   FastProfile(),
-}
+    return actions
 
 
 # ============================================================================
@@ -460,23 +462,30 @@ PROFILES: dict[str, SpeedProfile] = {
 
 class NaturalMovementEngine:
     """
-    Waypoint-based mouse mover.
+    Action-group-based mouse mover.
 
-    Each "leg" of travel:
-      1. Pick a random destination anywhere in the bounding box.
-      2. Build a cubic Bézier from current pos -> destination with
-         randomised control points (arced path, not a straight line).
-      3. Walk the Bézier with eased speed + Perlin speed jitter.
-      4. Layer Perlin perturbation that peaks mid-leg (organic wobble).
-      5. Layer constant micro-tremor (tiny hand-shake).
-      6. On arrival, run the action phase (scroll / Cmd+Tab / dwell / none).
-      7. Repeat.
+    Each iteration:
+      1. Build an action group (1–3 actions, weighted).
+      2. Execute each action in order; insert a lognormal micro-pause between them.
+      3. After the group completes, wait a lognormal inter-group delay (30s–5min).
+      4. Repeat.
     """
 
     def __init__(
         self,
         bbox: tuple[int, int, int, int] | None = None,
-        speed: str = "normal",
+        px_per_sec: float = 550,
+        curve_spread: float = 180,
+        perturb_amp: float = 45,
+        weight_travel: float = 0.6,
+        weight_scroll: float = 0.5,
+        weight_dwell: float = 0.4,
+        weight_cmd_tab: float = 0.2,
+        group_weights: list[float] | None = None,
+        wait_median: float = 60.0,
+        wait_sigma: float = 1.1,
+        wait_min: float = 30.0,
+        wait_max: float = 300.0,
         verbose: bool = False,
     ):
         sx, sy, sw, sh = get_screen_bounds()
@@ -486,10 +495,20 @@ class NaturalMovementEngine:
             self.x_min, self.y_min = sx + 20, sy + 20
             self.x_max, self.y_max = sx + sw - 20, sy + sh - 20
 
-        self.profile = PROFILES.get(speed, PROFILES["normal"])
-        self.px_per_sec   = self.profile.px_per_sec
-        self.curve_spread = self.profile.curve_spread
-        self.perturb_amp  = self.profile.perturb_amp
+        self.px_per_sec   = px_per_sec
+        self.curve_spread = curve_spread
+        self.perturb_amp  = perturb_amp
+
+        self.weight_travel  = weight_travel
+        self.weight_scroll  = weight_scroll
+        self.weight_dwell   = weight_dwell
+        self.weight_cmd_tab = weight_cmd_tab
+        self.group_weights  = group_weights if group_weights is not None else [0.6, 0.3, 0.1]
+
+        self.wait_median = wait_median
+        self.wait_sigma  = wait_sigma
+        self.wait_min    = wait_min
+        self.wait_max    = wait_max
 
         self.verbose = verbose
         self._rng = random.Random()
@@ -620,8 +639,16 @@ class NaturalMovementEngine:
             time.sleep(0.025)
         return (x, y)
 
+    def _interruptible_sleep(self, seconds: float) -> None:
+        """Sleep for `seconds`, waking every 0.5s to check --duration."""
+        deadline = time.monotonic() + seconds
+        while time.monotonic() < deadline:
+            if self._duration and (time.monotonic() - self._run_start) >= self._duration:
+                raise _DurationReached()
+            time.sleep(min(0.5, deadline - time.monotonic()))
+
     def run(self, duration: float | None = None) -> None:
-        """Main loop: pick waypoints, travel, run action phase, repeat."""
+        """Main loop: build action groups, execute, wait, repeat."""
         self._run_start = time.monotonic()
         self._duration = duration
         self._current_pos = get_current_mouse_pos()
@@ -634,34 +661,50 @@ class NaturalMovementEngine:
 
         try:
             while True:
-                target = self._pick_waypoint()
+                if duration and (time.monotonic() - self._run_start) >= duration:
+                    raise _DurationReached()
+
+                group = build_action_group(
+                    self._rng,
+                    self.weight_travel,
+                    self.weight_scroll,
+                    self.weight_dwell,
+                    self.weight_cmd_tab,
+                    self.group_weights,
+                )
 
                 if self.verbose:
-                    elapsed = time.monotonic() - self._run_start
-                    dist = math.hypot(
-                        target[0] - self._current_pos[0],
-                        target[1] - self._current_pos[1],
-                    )
-                    print(
-                        f"\n  -> t={elapsed:.1f}s  "
-                        f"target=({target[0]:.0f},{target[1]:.0f})  dist={dist:.0f}px"
-                    )
+                    names = " → ".join(a.describe() for a in group)
+                    print(f"\n[group] {names}")
 
-                # --- Animate travel ---
-                for pos in self._travel_leg(self._current_pos, target):
-                    if duration and (time.monotonic() - self._run_start) >= duration:
-                        raise _DurationReached()
-                    move_mouse(*pos)
-                    self._current_pos = pos
-
-                # --- Action phase ---
-                actions = self.profile.pick_actions(self._rng)
-                for action in actions:
+                for i, action in enumerate(group):
                     if self.verbose:
-                        print(f"  -> {action.describe()}")
+                        print(f"  [action] {action.describe()}")
                     action.execute(self)
                     if duration and (time.monotonic() - self._run_start) >= duration:
                         raise _DurationReached()
+                    if i < len(group) - 1:
+                        pause = lognormal_sample(
+                            median=_MICRO_PAUSE_MEDIAN,
+                            sigma=_MICRO_PAUSE_SIGMA,
+                            min_val=_MICRO_PAUSE_MIN,
+                            max_val=_MICRO_PAUSE_MAX,
+                            rng=self._rng,
+                        )
+                        if self.verbose:
+                            print(f"  [micro-pause {pause:.2f}s]")
+                        self._interruptible_sleep(pause)
+
+                wait = lognormal_sample(
+                    median=self.wait_median,
+                    sigma=self.wait_sigma,
+                    min_val=self.wait_min,
+                    max_val=self.wait_max,
+                    rng=self._rng,
+                )
+                if self.verbose:
+                    print(f"  [wait {wait:.1f}s]")
+                self._interruptible_sleep(wait)
 
         except (KeyboardInterrupt, _DurationReached):
             pass
@@ -690,44 +733,102 @@ def parse_bbox(s: str) -> tuple[int, int, int, int]:
     return (x1, y1, x2, y2)
 
 
+def parse_group_weights(s: str) -> list[float]:
+    """Parse '0.6,0.3,0.1' into a list of three floats."""
+    parts = [float(p.strip()) for p in s.split(",")]
+    if len(parts) != 3:
+        raise argparse.ArgumentTypeError(
+            "group-weights must be exactly 3 comma-separated values, e.g. 0.6,0.3,0.1"
+        )
+    if any(w < 0 for w in parts):
+        raise argparse.ArgumentTypeError("group-weights values must be non-negative")
+    return parts
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Move the mouse cursor naturally using waypoints + Bézier curves.",
+        description="Move the mouse cursor naturally using action groups + Bézier curves.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=(
             "Examples:\n"
             "   python3 test.py\n"
-            "   python3 test.py --bbox 100,200,1400,900 --speed slow\n"
+            "   python3 test.py --bbox 100,200,1400,900\n"
             "   python3 test.py --duration 30 --verbose\n"
+            "   python3 test.py --wait-median 120 --wait-sigma 0.8\n"
+            "   python3 test.py --weight-travel 0.8 --weight-cmd-tab 0.05\n"
         ),
     )
 
+    # General
     parser.add_argument(
-        "--bbox",
-        type=parse_bbox,
-        default=None,
+        "--bbox", type=parse_bbox, default=None,
         help="Bounding box x1,y1,x2,y2 to constrain movement (default: full screen)",
     )
-
     parser.add_argument(
-        "--duration",
-        type=float,
-        default=None,
+        "--duration", type=float, default=None,
         help="Run for N seconds then stop (default: run until Ctrl+C)",
     )
-
     parser.add_argument(
-        "--speed",
-        choices=["slow", "normal", "fast"],
-        default="normal",
-        help="Movement speed profile (default: normal)",
+        "--verbose", "-v", action="store_true",
+        help="Print actions as they occur",
     )
 
-    parser.add_argument(
-        "--verbose",
-        "-v",
-        action="store_true",
-        help="Print actions as they occur",
+    # Movement
+    mv = parser.add_argument_group("movement")
+    mv.add_argument(
+        "--px-per-sec", type=float, default=550, metavar="N",
+        help="Mouse speed in pixels/second (default: 550)",
+    )
+    mv.add_argument(
+        "--curve-spread", type=float, default=180, metavar="N",
+        help="Bézier control-point spread in pixels (default: 180)",
+    )
+    mv.add_argument(
+        "--perturb-amp", type=float, default=45, metavar="N",
+        help="Perlin perturbation amplitude in pixels (default: 45)",
+    )
+
+    # Wait timing
+    wt = parser.add_argument_group("wait timing (inter-group)")
+    wt.add_argument(
+        "--wait-median", type=float, default=60.0, metavar="S",
+        help="Median wait between groups in seconds (default: 60)",
+    )
+    wt.add_argument(
+        "--wait-sigma", type=float, default=1.1, metavar="S",
+        help="Lognormal shape — higher = more spread/heavier tail (default: 1.1)",
+    )
+    wt.add_argument(
+        "--wait-min", type=float, default=30.0, metavar="S",
+        help="Minimum wait in seconds (default: 30)",
+    )
+    wt.add_argument(
+        "--wait-max", type=float, default=300.0, metavar="S",
+        help="Maximum wait in seconds (default: 300)",
+    )
+
+    # Action weights and group size
+    aw = parser.add_argument_group("action selection")
+    aw.add_argument(
+        "--weight-travel", type=float, default=0.6, metavar="W",
+        help="Relative weight for travel (default: 0.6)",
+    )
+    aw.add_argument(
+        "--weight-scroll", type=float, default=0.5, metavar="W",
+        help="Relative weight for scroll (default: 0.5)",
+    )
+    aw.add_argument(
+        "--weight-dwell", type=float, default=0.4, metavar="W",
+        help="Relative weight for dwell (default: 0.4)",
+    )
+    aw.add_argument(
+        "--weight-cmd-tab", type=float, default=0.2, metavar="W",
+        help="Relative weight for Cmd+Tab (default: 0.2)",
+    )
+    aw.add_argument(
+        "--group-weights", type=parse_group_weights, default=[0.6, 0.3, 0.1],
+        metavar="W1,W2,W3",
+        help="Weights for group size 1, 2, 3 (default: 0.6,0.3,0.1)",
     )
 
     args = parser.parse_args()
@@ -736,7 +837,18 @@ def main() -> None:
 
     mover = NaturalMovementEngine(
         bbox=args.bbox,
-        speed=args.speed,
+        px_per_sec=args.px_per_sec,
+        curve_spread=args.curve_spread,
+        perturb_amp=args.perturb_amp,
+        weight_travel=args.weight_travel,
+        weight_scroll=args.weight_scroll,
+        weight_dwell=args.weight_dwell,
+        weight_cmd_tab=args.weight_cmd_tab,
+        group_weights=args.group_weights,
+        wait_median=args.wait_median,
+        wait_sigma=args.wait_sigma,
+        wait_min=args.wait_min,
+        wait_max=args.wait_max,
         verbose=args.verbose,
     )
     mover.run(duration=args.duration)
