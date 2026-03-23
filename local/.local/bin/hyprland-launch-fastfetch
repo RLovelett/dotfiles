@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Launch fastfetch in a terminal and wait for a keypress before closing.
+
+exec setsid uwsm-app -- xdg-terminal-exec --app-id=me.lovelett.hyprland.fastfetch -e bash -c "fastfetch; read -rsp $'\nPress any key to close...' -n1"

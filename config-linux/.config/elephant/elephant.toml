@@ -1,0 +1,7 @@
+ignored_providers = [
+  "bitwarden",
+  "dnfpackages",
+  "niriactions",
+  "nirisessions",
+  "todo",
+]

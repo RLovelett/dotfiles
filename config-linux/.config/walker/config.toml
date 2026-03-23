@@ -81,10 +81,6 @@ prefix = "."
 provider = "symbols"
 
 [[providers.prefixes]]
-prefix = "!"
-provider = "todo"
-
-[[providers.prefixes]]
 prefix = "%"
 provider = "bookmarks"
 
@@ -169,15 +165,6 @@ desktopapplications = [
   { action = "pindown", bind = "ctrl m", after = "AsyncReload" },
 ]
 
-dnfpackages = [
-  { action = "install", label = "Install Package", bind = "Return", default = true },
-  { action = "remove", label = "Remove Package", bind = "Return", default = true },
-  { action = "show_all", label = "Show All", bind = "ctrl i", after = "AsyncClearReload" },
-  { action = "show_installed", label = "Show Installed", bind = "ctrl i", after = "AsyncClearReload" },
-  { action = "refresh", label = "Refresh", bind = "ctrl r", after = "AsyncClearReload" },
-  { action = "visit_url", label = "Open URL", bind = "ctrl o" },
-]
-
 files = [
   { action = "open", default = true, bind = "Return" },
   { action = "opendir", label = "open dir", bind = "ctrl Return" },
@@ -193,29 +180,6 @@ files = [
   { action = "copy_2fa", label = "copy 2fa", bind = "ctrl Return" },
 ]
 
-bitwarden = [
-  { action = "copypassword", label = "copy password", default = true, bind = "Return" },
-  { action = "typepassword", label = "type password", default = true, bind = "ctrl p" },
-  { action = "copyusername", label = "copy username", bind = "shift Return" },
-  { action = "typeusername", label = "type username", bind = "ctrl u" },
-  { action = "copyotp", label = "copy 2fa", bind = "ctrl Return" },
-  { action = "typeotp", label = "type 2fa", bind = "ctrl t" },
-  { action = "syncvault", label = "sync", bind = "ctrl s" },
-]
-
-todo = [
-  { action = "save", default = true, bind = "Return", after = "AsyncClearReload" },
-  { action = "save_next", label = "save & new", bind = "shift Return", after = "AsyncClearReload" },
-  { action = "delete", bind = "ctrl d", after = "AsyncClearReload" },
-  { action = "active", default = true, bind = "Return", after = "Nothing" },
-  { action = "inactive", default = true, bind = "Return", after = "Nothing" },
-  { action = "done", bind = "ctrl f", after = "Nothing" },
-  { action = "change_category", bind = "ctrl y", label = "change category", after = "Nothing" },
-  { action = "clear", bind = "ctrl x", after = "AsyncClearReload" },
-  { action = "create", bind = "ctrl a", after = "AsyncClearReload" },
-  { action = "search", bind = "ctrl a", after = "AsyncClearReload" },
-]
-
 runner = [
   { action = "run", default = true, bind = "Return" },
   { action = "runterminal", label = "run in terminal", bind = "shift Return" },
@@ -227,11 +191,6 @@ symbols = [
 
 unicode = [
   { action = "run_cmd", label = "select", default = true, bind = "Return" },
-]
-
-nirisessions = [
-  { action = "start", label = "start", default = true, bind = "Return" },
-  { action = "start_new", label = "start blank", bind = "ctrl Return" },
 ]
 
 clipboard = [
@@ -267,5 +226,3 @@ wireplumber = [
   { action = "unmute", bind = "ctrl m", after = "Nothing" },
   { action = "set_default_device", label = "set default", bind = "ctrl d", after = "Nothing" },
 ]
-
-niriactions = [{ action = "execute", bind = "Return" }]

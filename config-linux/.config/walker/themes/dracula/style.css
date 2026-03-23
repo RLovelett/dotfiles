@@ -1,0 +1,128 @@
+@define-color window_bg_color #282A36;
+@define-color accent_bg_color #44475A;
+@define-color border_color rgba(68, 71, 90, 0.67);
+@define-color theme_fg_color #F8F8F2;
+@define-color error_bg_color #FF5555;
+@define-color error_fg_color #F8F8F2;
+@define-color purple #BD93F9;
+@define-color comment #6272A4;
+
+* {
+  all: unset;
+}
+
+popover {
+  background: @window_bg_color;
+  border: 2px solid @border_color;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.normal-icons {
+  -gtk-icon-size: 16px;
+}
+
+.large-icons {
+  -gtk-icon-size: 32px;
+}
+
+scrollbar {
+  opacity: 0;
+}
+
+.box-wrapper {
+  background: @window_bg_color;
+  padding: 20px;
+  border: 3px solid @purple;
+  border-radius: 10px;
+}
+
+.preview-box,
+.elephant-hint,
+.placeholder {
+  color: @theme_fg_color;
+}
+
+.search-container {
+  border-radius: 8px;
+}
+
+.input placeholder {
+  opacity: 0.5;
+}
+
+.input selection {
+  background: @accent_bg_color;
+}
+
+.input {
+  caret-color: @theme_fg_color;
+  background: transparent;
+  padding: 10px;
+  color: @theme_fg_color;
+  font-family: "MesloLGSDZ Nerd Font Mono";
+  font-size: 14pt;
+}
+
+.input:focus {
+  border-bottom: 1px solid @purple;
+}
+
+.list {
+  color: @theme_fg_color;
+  font-family: "MesloLGSDZ Nerd Font Mono";
+}
+
+.item-box {
+  border-radius: 8px;
+  padding: 10px;
+  transition: background 100ms ease;
+}
+
+/* child:hover .item-box, */
+child:selected .item-box {
+  background: alpha(@accent_bg_color, 0.5);
+}
+
+.item-subtext {
+  font-size: 11px;
+  opacity: 0.5;
+}
+
+.providerlist .item-subtext {
+  font-size: unset;
+  opacity: 0.75;
+}
+
+.item-image-text {
+  font-size: 28px;
+}
+
+.preview {
+  border: 1px solid @border_color;
+  /* padding: 10px; */
+  border-radius: 8px;
+  color: @theme_fg_color;
+}
+
+.calc .item-text {
+  font-size: 24px;
+}
+
+.symbols .item-image {
+  font-size: 24px;
+}
+
+.preview .large-icons {
+  -gtk-icon-size: 64px;
+}
+
+.error {
+  padding: 10px;
+  background: @error_bg_color;
+  color: @error_fg_color;
+}
+
+:not(.calc).current {
+  font-style: italic;
+}
