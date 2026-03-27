@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=X-GNOME-Metatheme
+Name=Colloid-Pink-Light-Dracula
+Comment=An Flat Gtk+ theme based on Elegant Design
+Encoding=UTF-8
+
+[X-GNOME-Metatheme]
+GtkTheme=Colloid-Pink-Light-Dracula
+MetacityTheme=Colloid-Pink-Light-Dracula
+IconTheme=Colloid-Pink-Dracula-Light
+CursorTheme=Colloid-cursors
+ButtonLayout=close,minimize,maximize:menu

@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=X-GNOME-Metatheme
+Name=Colloid-Yellow-Light-Dracula
+Comment=An Flat Gtk+ theme based on Elegant Design
+Encoding=UTF-8
+
+[X-GNOME-Metatheme]
+GtkTheme=Colloid-Yellow-Light-Dracula
+MetacityTheme=Colloid-Yellow-Light-Dracula
+IconTheme=Colloid-Yellow-Dracula-Light
+CursorTheme=Colloid-cursors
+ButtonLayout=close,minimize,maximize:menu
