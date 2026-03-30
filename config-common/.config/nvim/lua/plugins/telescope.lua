@@ -48,91 +48,91 @@ return { -- Fuzzy Finder (files, lsp, etc)
       --  All the info you're looking for is in `:help telescope.setup()`
       --
       -- defaults = {
-        --   mappings = {
-          --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-          --   },
-          -- },
-          -- pickers = {}
-          extensions = {
-            ['ui-select'] = {
-              require('telescope.themes').get_dropdown(),
-            },
-          },
-        }
-
-        -- Enable Telescope extensions if they are installed
-        pcall(require('telescope').load_extension, 'fzf')
-        pcall(require('telescope').load_extension, 'ui-select')
-
-        -- See `:help telescope.builtin`
-        local builtin = require 'telescope.builtin'
-        local actions = require 'telescope.actions'
-        local action_state = require 'telescope.actions.state'
-
-        -- find_files with <M-h> to toggle hidden files
-        local function find_files(opts)
-          opts = opts or {}
-          opts.attach_mappings = function(_, map)
-            map({ 'n', 'i' }, '<M-h>', function(prompt_bufnr)
-              local prompt = action_state.get_current_picker(prompt_bufnr):_get_prompt()
-              actions.close(prompt_bufnr)
-              find_files { hidden = not opts.hidden, default_text = prompt }
-            end)
-            return true
-          end
-          builtin.find_files(opts)
-        end
-
-        -- live_grep with <M-h> to toggle searching hidden files
-        local function live_grep(opts)
-          opts = opts or {}
-          opts.attach_mappings = function(_, map)
-            map({ 'n', 'i' }, '<M-h>', function(prompt_bufnr)
-              local prompt = action_state.get_current_picker(prompt_bufnr):_get_prompt()
-              actions.close(prompt_bufnr)
-              live_grep {
-                hidden = not opts.hidden,
-                additional_args = not opts.hidden and { '--hidden', '--glob', '!**/.git/*' } or nil,
-                default_text = prompt,
-              }
-            end)
-            return true
-          end
-          builtin.live_grep(opts)
-        end
-
-        vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
-        vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
-        vim.keymap.set('n', '<leader>sf', find_files, { desc = '[S]earch [F]iles' })
-        vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
-        vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
-        vim.keymap.set('n', '<leader>sg', live_grep, { desc = '[S]earch by [G]rep' })
-        vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
-        vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
-        vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
-        vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
-
-        -- Slightly advanced example of overriding default behavior and theme
-        vim.keymap.set('n', '<leader>/', function()
-          -- You can pass additional configuration to Telescope to change the theme, layout, etc.
-          builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
-            winblend = 10,
-            previewer = false,
-          })
-        end, { desc = '[/] Fuzzily search in current buffer' })
-
-        -- It's also possible to pass additional configuration options.
-        --  See `:help telescope.builtin.live_grep()` for information about particular keys
-        vim.keymap.set('n', '<leader>s/', function()
-          builtin.live_grep {
-            grep_open_files = true,
-            prompt_title = 'Live Grep in Open Files',
-          }
-        end, { desc = '[S]earch [/] in Open Files' })
-
-        -- Shortcut for searching your Neovim configuration files
-        vim.keymap.set('n', '<leader>sn', function()
-          builtin.find_files { cwd = vim.fn.stdpath 'config' }
-        end, { desc = '[S]earch [N]eovim files' })
-      end,
+      --   mappings = {
+      --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
+      --   },
+      -- },
+      -- pickers = {}
+      extensions = {
+        ['ui-select'] = {
+          require('telescope.themes').get_dropdown(),
+        },
+      },
     }
+
+    -- Enable Telescope extensions if they are installed
+    pcall(require('telescope').load_extension, 'fzf')
+    pcall(require('telescope').load_extension, 'ui-select')
+
+    -- See `:help telescope.builtin`
+    local builtin = require 'telescope.builtin'
+    local actions = require 'telescope.actions'
+    local action_state = require 'telescope.actions.state'
+
+    -- find_files with <M-h> to toggle hidden files
+    local function find_files(opts)
+      opts = opts or {}
+      opts.attach_mappings = function(_, map)
+        map({ 'n', 'i' }, '<M-h>', function(prompt_bufnr)
+          local prompt = action_state.get_current_picker(prompt_bufnr):_get_prompt()
+          actions.close(prompt_bufnr)
+          find_files { hidden = not opts.hidden, default_text = prompt }
+        end)
+        return true
+      end
+      builtin.find_files(opts)
+    end
+
+    -- live_grep with <M-h> to toggle searching hidden files
+    local function live_grep(opts)
+      opts = opts or {}
+      opts.attach_mappings = function(_, map)
+        map({ 'n', 'i' }, '<M-h>', function(prompt_bufnr)
+          local prompt = action_state.get_current_picker(prompt_bufnr):_get_prompt()
+          actions.close(prompt_bufnr)
+          live_grep {
+            hidden = not opts.hidden,
+            additional_args = not opts.hidden and { '--hidden', '--glob', '!**/.git/*' } or nil,
+            default_text = prompt,
+          }
+        end)
+        return true
+      end
+      builtin.live_grep(opts)
+    end
+
+    vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
+    vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
+    vim.keymap.set('n', '<leader>sf', find_files, { desc = '[S]earch [F]iles' })
+    vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
+    vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
+    vim.keymap.set('n', '<leader>sg', live_grep, { desc = '[S]earch by [G]rep' })
+    vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
+    vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
+    vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
+    vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+
+    -- Slightly advanced example of overriding default behavior and theme
+    vim.keymap.set('n', '<leader>/', function()
+      -- You can pass additional configuration to Telescope to change the theme, layout, etc.
+      builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
+        winblend = 10,
+        previewer = false,
+      })
+    end, { desc = '[/] Fuzzily search in current buffer' })
+
+    -- It's also possible to pass additional configuration options.
+    --  See `:help telescope.builtin.live_grep()` for information about particular keys
+    vim.keymap.set('n', '<leader>s/', function()
+      builtin.live_grep {
+        grep_open_files = true,
+        prompt_title = 'Live Grep in Open Files',
+      }
+    end, { desc = '[S]earch [/] in Open Files' })
+
+    -- Shortcut for searching your Neovim configuration files
+    vim.keymap.set('n', '<leader>sn', function()
+      builtin.find_files { cwd = vim.fn.stdpath 'config' }
+    end, { desc = '[S]earch [N]eovim files' })
+  end,
+}
