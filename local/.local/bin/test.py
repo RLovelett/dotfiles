@@ -57,10 +57,10 @@ _KEYCODE_TAB = 48
 _KEYCODE_COMMAND = 55  # Left Command — used to release the modifier after Cmd+Tab
 
 # Micro-pause lognormal params (between actions within a group, not CLI-exposed)
-_MICRO_PAUSE_MEDIAN = 1.2   # seconds
-_MICRO_PAUSE_SIGMA  = 0.55
-_MICRO_PAUSE_MIN    = 0.5   # seconds
-_MICRO_PAUSE_MAX    = 3.0   # seconds
+_MICRO_PAUSE_MEDIAN = 1.2  # seconds
+_MICRO_PAUSE_SIGMA = 0.55
+_MICRO_PAUSE_MIN = 0.5  # seconds
+_MICRO_PAUSE_MAX = 3.0  # seconds
 
 
 # ============================================================================
@@ -151,13 +151,9 @@ def move_mouse(x: float, y: float) -> None:
 def post_scroll(dy: int, dx: int = 0) -> None:
     """Post a single scroll wheel event. dy > 0 = up, dy < 0 = down."""
     if dx != 0:
-        event = CGEventCreateScrollWheelEvent(
-            None, kCGScrollEventUnitPixel, 2, dy, dx
-        )
+        event = CGEventCreateScrollWheelEvent(None, kCGScrollEventUnitPixel, 2, dy, dx)
     else:
-        event = CGEventCreateScrollWheelEvent(
-            None, kCGScrollEventUnitPixel, 1, dy
-        )
+        event = CGEventCreateScrollWheelEvent(None, kCGScrollEventUnitPixel, 1, dy)
     CGEventPost(kCGHIDEventTap, event)
 
 
@@ -264,10 +260,10 @@ def lognormal_sample(
 
 @dataclass
 class ScrollParams:
-    dy: int           # vertical pixels total (positive = up, negative = down)
-    dx: int           # horizontal pixels total (0 = vertical only)
-    ticks: int        # number of individual scroll events to spread across
-    tick_delay: float # base seconds between ticks (Perlin-jittered at runtime)
+    dy: int  # vertical pixels total (positive = up, negative = down)
+    dx: int  # horizontal pixels total (0 = vertical only)
+    ticks: int  # number of individual scroll events to spread across
+    tick_delay: float  # base seconds between ticks (Perlin-jittered at runtime)
 
 
 def random_scroll_params(rng: random.Random) -> ScrollParams:
@@ -312,7 +308,10 @@ class TravelAction(Action):
                 f"target=({target[0]:.0f},{target[1]:.0f})  dist={dist:.0f}px"
             )
         for pos in engine._travel_leg(engine._current_pos, target):
-            if engine._duration and (time.monotonic() - engine._run_start) >= engine._duration:
+            if (
+                engine._duration
+                and (time.monotonic() - engine._run_start) >= engine._duration
+            ):
                 raise _DurationReached()
             move_mouse(*pos)
             engine._current_pos = pos
@@ -414,13 +413,13 @@ def build_action_group(
 
     # max 2 occurrences for travel/scroll/cmd_tab, max 1 for dwell
     pool_spec = [
-        ("travel",  weight_travel,  2),
-        ("scroll",  weight_scroll,  2),
+        ("travel", weight_travel, 2),
+        ("scroll", weight_scroll, 2),
         ("cmd_tab", weight_cmd_tab, 2),
-        ("dwell",   weight_dwell,   1),
+        ("dwell", weight_dwell, 1),
     ]
-    weight_map  = {key: w  for key, w, _  in pool_spec}
-    remaining   = {key: mx for key, _, mx in pool_spec}
+    weight_map = {key: w for key, w, _ in pool_spec}
+    remaining = {key: mx for key, _, mx in pool_spec}
 
     chosen_keys: list[str] = []
     for _ in range(n):
@@ -495,20 +494,22 @@ class NaturalMovementEngine:
             self.x_min, self.y_min = sx + 20, sy + 20
             self.x_max, self.y_max = sx + sw - 20, sy + sh - 20
 
-        self.px_per_sec   = px_per_sec
+        self.px_per_sec = px_per_sec
         self.curve_spread = curve_spread
-        self.perturb_amp  = perturb_amp
+        self.perturb_amp = perturb_amp
 
-        self.weight_travel  = weight_travel
-        self.weight_scroll  = weight_scroll
-        self.weight_dwell   = weight_dwell
+        self.weight_travel = weight_travel
+        self.weight_scroll = weight_scroll
+        self.weight_dwell = weight_dwell
         self.weight_cmd_tab = weight_cmd_tab
-        self.group_weights  = group_weights if group_weights is not None else [0.6, 0.3, 0.1]
+        self.group_weights = (
+            group_weights if group_weights is not None else [0.6, 0.3, 0.1]
+        )
 
         self.wait_median = wait_median
-        self.wait_sigma  = wait_sigma
-        self.wait_min    = wait_min
-        self.wait_max    = wait_max
+        self.wait_sigma = wait_sigma
+        self.wait_min = wait_min
+        self.wait_max = wait_max
 
         self.verbose = verbose
         self._rng = random.Random()
@@ -521,9 +522,9 @@ class NaturalMovementEngine:
         seed_base = random.randint(0, 100_000)
         self.noise_x_perturb = PerlinNoise(seed=seed_base)
         self.noise_y_perturb = PerlinNoise(seed=seed_base + 1)
-        self.noise_x_micro   = PerlinNoise(seed=seed_base + 2)
-        self.noise_y_micro   = PerlinNoise(seed=seed_base + 3)
-        self.noise_speed     = PerlinNoise(seed=seed_base + 4)
+        self.noise_x_micro = PerlinNoise(seed=seed_base + 2)
+        self.noise_y_micro = PerlinNoise(seed=seed_base + 3)
+        self.noise_speed = PerlinNoise(seed=seed_base + 4)
 
         self.t = random.uniform(0, 1000)  # random phase so each run is unique
 
@@ -643,7 +644,10 @@ class NaturalMovementEngine:
         """Sleep for `seconds`, waking every 0.5s to check --duration."""
         deadline = time.monotonic() + seconds
         while time.monotonic() < deadline:
-            if self._duration and (time.monotonic() - self._run_start) >= self._duration:
+            if (
+                self._duration
+                and (time.monotonic() - self._run_start) >= self._duration
+            ):
                 raise _DurationReached()
             time.sleep(min(0.5, deadline - time.monotonic()))
 
@@ -761,72 +765,113 @@ def main() -> None:
 
     # General
     parser.add_argument(
-        "--bbox", type=parse_bbox, default=None,
+        "--bbox",
+        type=parse_bbox,
+        default=None,
         help="Bounding box x1,y1,x2,y2 to constrain movement (default: full screen)",
     )
     parser.add_argument(
-        "--duration", type=float, default=None,
+        "--duration",
+        type=float,
+        default=None,
         help="Run for N seconds then stop (default: run until Ctrl+C)",
     )
     parser.add_argument(
-        "--verbose", "-v", action="store_true",
+        "--verbose",
+        "-v",
+        action="store_true",
         help="Print actions as they occur",
     )
 
     # Movement
     mv = parser.add_argument_group("movement")
     mv.add_argument(
-        "--px-per-sec", type=float, default=550, metavar="N",
+        "--px-per-sec",
+        type=float,
+        default=550,
+        metavar="N",
         help="Mouse speed in pixels/second (default: 550)",
     )
     mv.add_argument(
-        "--curve-spread", type=float, default=180, metavar="N",
+        "--curve-spread",
+        type=float,
+        default=180,
+        metavar="N",
         help="Bézier control-point spread in pixels (default: 180)",
     )
     mv.add_argument(
-        "--perturb-amp", type=float, default=45, metavar="N",
+        "--perturb-amp",
+        type=float,
+        default=45,
+        metavar="N",
         help="Perlin perturbation amplitude in pixels (default: 45)",
     )
 
     # Wait timing
     wt = parser.add_argument_group("wait timing (inter-group)")
     wt.add_argument(
-        "--wait-median", type=float, default=60.0, metavar="S",
+        "--wait-median",
+        type=float,
+        default=60.0,
+        metavar="S",
         help="Median wait between groups in seconds (default: 60)",
     )
     wt.add_argument(
-        "--wait-sigma", type=float, default=1.1, metavar="S",
+        "--wait-sigma",
+        type=float,
+        default=1.1,
+        metavar="S",
         help="Lognormal shape — higher = more spread/heavier tail (default: 1.1)",
     )
     wt.add_argument(
-        "--wait-min", type=float, default=30.0, metavar="S",
+        "--wait-min",
+        type=float,
+        default=30.0,
+        metavar="S",
         help="Minimum wait in seconds (default: 30)",
     )
     wt.add_argument(
-        "--wait-max", type=float, default=300.0, metavar="S",
+        "--wait-max",
+        type=float,
+        default=300.0,
+        metavar="S",
         help="Maximum wait in seconds (default: 300)",
     )
 
     # Action weights and group size
     aw = parser.add_argument_group("action selection")
     aw.add_argument(
-        "--weight-travel", type=float, default=0.6, metavar="W",
+        "--weight-travel",
+        type=float,
+        default=0.6,
+        metavar="W",
         help="Relative weight for travel (default: 0.6)",
     )
     aw.add_argument(
-        "--weight-scroll", type=float, default=0.5, metavar="W",
+        "--weight-scroll",
+        type=float,
+        default=0.5,
+        metavar="W",
         help="Relative weight for scroll (default: 0.5)",
     )
     aw.add_argument(
-        "--weight-dwell", type=float, default=0.4, metavar="W",
+        "--weight-dwell",
+        type=float,
+        default=0.4,
+        metavar="W",
         help="Relative weight for dwell (default: 0.4)",
     )
     aw.add_argument(
-        "--weight-cmd-tab", type=float, default=0.2, metavar="W",
+        "--weight-cmd-tab",
+        type=float,
+        default=0.2,
+        metavar="W",
         help="Relative weight for Cmd+Tab (default: 0.2)",
     )
     aw.add_argument(
-        "--group-weights", type=parse_group_weights, default=[0.6, 0.3, 0.1],
+        "--group-weights",
+        type=parse_group_weights,
+        default=[0.6, 0.3, 0.1],
         metavar="W1,W2,W3",
         help="Weights for group size 1, 2, 3 (default: 0.6,0.3,0.1)",
     )
