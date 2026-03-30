@@ -11,6 +11,7 @@ vim.lsp.enable {
   'bashls',
   'cssls',
   'hyprls',
+  'jsonls',
   'lua_ls',
   'taplo',
   'ruff',

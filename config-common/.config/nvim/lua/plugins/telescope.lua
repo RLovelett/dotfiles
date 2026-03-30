@@ -69,11 +69,11 @@ return { -- Fuzzy Finder (files, lsp, etc)
         local actions = require 'telescope.actions'
         local action_state = require 'telescope.actions.state'
 
-        -- find_files with <C-h> to toggle hidden files
+        -- find_files with <M-h> to toggle hidden files
         local function find_files(opts)
           opts = opts or {}
           opts.attach_mappings = function(_, map)
-            map({ 'n', 'i' }, '<C-h>', function(prompt_bufnr)
+            map({ 'n', 'i' }, '<M-h>', function(prompt_bufnr)
               local prompt = action_state.get_current_picker(prompt_bufnr):_get_prompt()
               actions.close(prompt_bufnr)
               find_files { hidden = not opts.hidden, default_text = prompt }
@@ -83,11 +83,11 @@ return { -- Fuzzy Finder (files, lsp, etc)
           builtin.find_files(opts)
         end
 
-        -- live_grep with <C-h> to toggle searching hidden files
+        -- live_grep with <M-h> to toggle searching hidden files
         local function live_grep(opts)
           opts = opts or {}
           opts.attach_mappings = function(_, map)
-            map({ 'n', 'i' }, '<C-h>', function(prompt_bufnr)
+            map({ 'n', 'i' }, '<M-h>', function(prompt_bufnr)
               local prompt = action_state.get_current_picker(prompt_bufnr):_get_prompt()
               actions.close(prompt_bufnr)
               live_grep {

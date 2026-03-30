@@ -31,6 +31,7 @@ return {
         'bash-language-server',
         'css-lsp',
         'hyprls',
+        'json-lsp',
         'lua-language-server',
         'pyright',
         'ruff',
