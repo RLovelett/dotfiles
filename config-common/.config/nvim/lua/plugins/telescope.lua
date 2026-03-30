@@ -72,6 +72,7 @@ return { -- Fuzzy Finder (files, lsp, etc)
     -- find_files with <M-h> to toggle hidden files
     local function find_files(opts)
       opts = opts or {}
+      opts.file_ignore_patterns = { '%.git$', '%.git/' }
       opts.attach_mappings = function(_, map)
         map({ 'n', 'i' }, '<M-h>', function(prompt_bufnr)
           local prompt = action_state.get_current_picker(prompt_bufnr):_get_prompt()
