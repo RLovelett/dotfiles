@@ -7,6 +7,16 @@ return {
     transparent_bg = true,
     lualine_bg_color = '#44475a',
     italic_comment = true,
+    overrides = function(colors)
+      return {
+        GitConflictCurrent = { bg = colors.selection, fg = colors.cyan },
+        GitConflictIncoming = { bg = colors.selection, fg = colors.green },
+        GitConflictAncestor = { bg = colors.selection, fg = colors.orange },
+        GitConflictCurrentLabel = { bg = colors.visual, fg = colors.cyan, bold = true },
+        GitConflictIncomingLabel = { bg = colors.visual, fg = colors.green, bold = true },
+        GitConflictAncestorLabel = { bg = colors.visual, fg = colors.orange, bold = true },
+      }
+    end,
   },
   init = function()
     -- Load the colorscheme here.
