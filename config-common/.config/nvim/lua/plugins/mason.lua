@@ -28,6 +28,7 @@ return {
     require('mason-tool-installer').setup {
       ensure_installed = {
         -- LSP servers
+        'ansible-language-server',
         'bash-language-server',
         'css-lsp',
         'hyprls',
@@ -36,6 +37,9 @@ return {
         'pyright',
         'ruff',
         'taplo',
+        'yaml-language-server',
+        -- Linters
+        'ansible-lint',
         -- Formatters
         'stylua',
       },

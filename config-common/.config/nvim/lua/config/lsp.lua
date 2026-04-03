@@ -8,6 +8,7 @@
 
 -- Enable all LSP servers.
 vim.lsp.enable {
+  'ansiblels',
   'bashls',
   'cssls',
   'hyprls',
@@ -16,6 +17,7 @@ vim.lsp.enable {
   'taplo',
   'ruff',
   'pyright',
+  'yamlls',
 }
 
 vim.api.nvim_create_autocmd('LspAttach', {
