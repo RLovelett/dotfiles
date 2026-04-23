@@ -98,7 +98,14 @@ return {
   },
   config = function(_, opts)
     vim.filetype.add({
+      filename = {
+        ['docker-compose.yml'] = 'yaml.docker-compose',
+        ['docker-compose.yaml'] = 'yaml.docker-compose',
+        ['compose.yml'] = 'yaml.docker-compose',
+        ['compose.yaml'] = 'yaml.docker-compose',
+      },
       pattern = {
+        ['docker%-compose%..*%.ya?ml'] = 'yaml.docker-compose',
         ['.*/hypr/.*%.conf'] = 'hyprlang',
         ['.*/playbooks/.*%.ya?ml'] = 'yaml.ansible',
         ['.*/roles/.*/tasks/.*%.ya?ml'] = 'yaml.ansible',
@@ -109,6 +116,9 @@ return {
         ['.*/host_vars/.*%.ya?ml'] = 'yaml.ansible',
       },
     })
+
+    -- Use the yaml treesitter parser for docker-compose files.
+    vim.treesitter.language.register('yaml', 'yaml.docker-compose')
 
     local ts = require('nvim-treesitter')
     ts.setup({})

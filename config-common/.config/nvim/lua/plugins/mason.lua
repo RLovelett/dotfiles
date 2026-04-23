@@ -31,6 +31,7 @@ return {
         'ansible-language-server',
         'bash-language-server',
         'css-lsp',
+        'docker-language-server',
         'hyprls',
         'json-lsp',
         'lua-language-server',
@@ -40,6 +41,7 @@ return {
         'yaml-language-server',
         -- Linters
         'ansible-lint',
+        'hadolint',
         -- Formatters
         'stylua',
       },

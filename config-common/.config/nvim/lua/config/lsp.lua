@@ -11,6 +11,7 @@ vim.lsp.enable {
   'ansiblels',
   'bashls',
   'cssls',
+  'docker_language_server',
   'hyprls',
   'jsonls',
   'lua_ls',
