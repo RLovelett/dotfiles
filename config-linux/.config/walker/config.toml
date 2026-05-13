@@ -226,3 +226,8 @@ wireplumber = [
   { action = "unmute", bind = "ctrl m", after = "Nothing" },
   { action = "set_default_device", label = "set default", bind = "ctrl d", after = "Nothing" },
 ]
+
+"menus:vigil-cameras" = [
+  { action = "mpv", label = "MPV", default = true, bind = "Return", after = "Close" },
+  { action = "browser", label = "Browser", bind = "ctrl Return", after = "Close" },
+]
