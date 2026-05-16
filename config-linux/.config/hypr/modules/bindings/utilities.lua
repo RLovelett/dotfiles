@@ -7,7 +7,7 @@
 -- Special keys (intentional exceptions to the letter convention):
 --   SUPER + SPACE             Launch apps (walker)
 --   SUPER + ESCAPE            System menu (walker)
-local launch_or_focus = require("modules.utils.launch_or_focus")
+local launcher = require("modules.utils.launcher")
 local terminal_cwd = require("modules.utils.terminal-cwd")
 
 -- Application launchers
@@ -21,22 +21,24 @@ end, { description = "Terminal" })
 hl.bind("SUPER + SHIFT + ALT + Return", function()
   hl.dispatch(hl.dsp.exec_cmd('uwsm app -- xdg-terminal-exec --dir="' .. terminal_cwd.get() .. '" -e tmux new-session'))
 end, { description = "Terminal (new session)" })
-hl.bind("SUPER + SHIFT + B", hl.dsp.exec_cmd("hyprland-launch-browser"), { description = "Browser" })
-hl.bind(
-  "SUPER + SHIFT + ALT + B",
-  hl.dsp.exec_cmd("hyprland-launch-browser --private"),
-  { description = "Browser (private)" }
-)
-hl.bind("SUPER + SHIFT + E", hl.dsp.exec_cmd('hyprland-launch-tui "nvim"'), { description = "Neovim" })
+hl.bind("SUPER + SHIFT + B", function()
+  launcher.browser()
+end, { description = "Browser" })
+hl.bind("SUPER + SHIFT + ALT + B", function()
+  launcher.browser({ private = true })
+end, { description = "Browser (private)" })
+hl.bind("SUPER + SHIFT + E", function()
+  launcher.tui("nvim")
+end, { description = "Neovim" })
 hl.bind("SUPER + SHIFT + F", hl.dsp.exec_cmd("uwsm app -- nautilus --new-window"), { description = "File manager" })
 hl.bind("SUPER + ALT + SHIFT + F", function()
   hl.dispatch(hl.dsp.exec_cmd('uwsm app -- nautilus --new-window "' .. terminal_cwd.get() .. '"'))
 end, { description = "File manager (cwd)" })
 hl.bind("SUPER + SHIFT + G", function()
-  launch_or_focus("class:^signal$", "uwsm-app -- signal-desktop --password-store=gnome-libsecret")
+  launcher.launch_or_focus("class:^signal$", "uwsm-app -- signal-desktop --password-store=gnome-libsecret")
 end, { description = "Signal" })
 hl.bind("SUPER + SHIFT + O", function()
-  launch_or_focus("class:^obsidian$", "uwsm-app -- obsidian -disable-gpu --enable-wayland-ime")
+  launcher.launch_or_focus("class:^obsidian$", "uwsm-app -- obsidian -disable-gpu --enable-wayland-ime")
 end, { description = "Obsidian" })
 hl.bind("SUPER + SHIFT + W", hl.dsp.exec_cmd("uwsm app -- typora --enable-wayland-ime"), { description = "Typora" })
 hl.bind("SUPER + SHIFT + slash", hl.dsp.exec_cmd("uwsm app -- 1password"), { description = "1Password" })
@@ -111,11 +113,25 @@ hl.bind(
 )
 
 -- Control panels
-hl.bind("SUPER + CTRL + A", hl.dsp.exec_cmd("hyprland-launch-audio"), { description = "Audio controls" })
-hl.bind("SUPER + CTRL + B", hl.dsp.exec_cmd("hyprland-launch-bluetooth"), { description = "Bluetooth" })
-hl.bind("SUPER + CTRL + I", hl.dsp.exec_cmd("hyprland-launch-fastfetch"), { description = "System info" })
-hl.bind("SUPER + CTRL + T", hl.dsp.exec_cmd("hyprland-launch-tui btop"), { description = "Activity" })
-hl.bind("SUPER + CTRL + W", hl.dsp.exec_cmd("hyprland-launch-wifi"), { description = "Wifi controls" })
+hl.bind("SUPER + CTRL + A", function()
+  launcher.tui("wiremix")
+end, { description = "Audio controls" })
+hl.bind("SUPER + CTRL + B", function()
+  hl.dispatch(hl.dsp.exec_cmd("rfkill unblock bluetooth"))
+  launcher.tui("bluetui")
+end, { description = "Bluetooth" })
+hl.bind("SUPER + CTRL + I", function()
+  launcher.tui("fastfetch", {
+    cmd = "bash -c \"fastfetch; read -rsp $'\\nPress any key to close...' -n1\"",
+  })
+end, { description = "System info" })
+hl.bind("SUPER + CTRL + T", function()
+  launcher.tui("btop")
+end, { description = "Activity" })
+hl.bind("SUPER + CTRL + W", function()
+  hl.dispatch(hl.dsp.exec_cmd("rfkill unblock wifi"))
+  launcher.tui("impala")
+end, { description = "Wifi controls" })
 
 -- Zoom
 hl.bind(
