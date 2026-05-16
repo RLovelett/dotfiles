@@ -134,13 +134,11 @@ hl.bind("SUPER + CTRL + W", function()
 end, { description = "Wifi controls" })
 
 -- Zoom
-hl.bind(
-  "SUPER + CTRL + Z",
-  hl.dsp.exec_cmd("hyprctl keyword cursor:zoom_factor $(hyprctl getoption cursor:zoom_factor -j | jq '.float + 1')"),
-  { description = "Zoom in" }
-)
-hl.bind(
-  "SUPER + CTRL + ALT + Z",
-  hl.dsp.exec_cmd("hyprctl keyword cursor:zoom_factor 1"),
-  { description = "Reset zoom" }
-)
+hl.bind("SUPER + CTRL + Z", function()
+  local current = hl.get_config("cursor:zoom_factor")
+  hl.config({ cursor = { zoom_factor = current + 1 } })
+end, { description = "Zoom in" })
+
+hl.bind("SUPER + CTRL + ALT + Z", function()
+  hl.config({ cursor = { zoom_factor = 1 } })
+end, { description = "Reset zoom" })
