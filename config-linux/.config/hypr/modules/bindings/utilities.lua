@@ -8,20 +8,19 @@
 --   SUPER + SPACE             Launch apps (walker)
 --   SUPER + ESCAPE            System menu (walker)
 local launch_or_focus = require("modules.utils.launch_or_focus")
+local terminal_cwd = require("modules.utils.terminal-cwd")
 
 -- Application launchers
-hl.bind(
-  "SUPER + SHIFT + Return",
-  hl.dsp.exec_cmd(
-    'uwsm app -- xdg-terminal-exec --dir="$(hyprland-cmd-terminal-cwd)" -e tmux new-session -A -s default -n default'
-  ),
-  { description = "Terminal" }
-)
-hl.bind(
-  "SUPER + SHIFT + ALT + Return",
-  hl.dsp.exec_cmd('uwsm app -- xdg-terminal-exec --dir="$(hyprland-cmd-terminal-cwd)" -e tmux new-session'),
-  { description = "Terminal (new session)" }
-)
+hl.bind("SUPER + SHIFT + Return", function()
+  hl.dispatch(
+    hl.dsp.exec_cmd(
+      'uwsm app -- xdg-terminal-exec --dir="' .. terminal_cwd.get() .. '" -e tmux new-session -A -s default -n default'
+    )
+  )
+end, { description = "Terminal" })
+hl.bind("SUPER + SHIFT + ALT + Return", function()
+  hl.dispatch(hl.dsp.exec_cmd('uwsm app -- xdg-terminal-exec --dir="' .. terminal_cwd.get() .. '" -e tmux new-session'))
+end, { description = "Terminal (new session)" })
 hl.bind("SUPER + SHIFT + B", hl.dsp.exec_cmd("hyprland-launch-browser"), { description = "Browser" })
 hl.bind(
   "SUPER + SHIFT + ALT + B",
@@ -30,11 +29,9 @@ hl.bind(
 )
 hl.bind("SUPER + SHIFT + E", hl.dsp.exec_cmd('hyprland-launch-tui "nvim"'), { description = "Neovim" })
 hl.bind("SUPER + SHIFT + F", hl.dsp.exec_cmd("uwsm app -- nautilus --new-window"), { description = "File manager" })
-hl.bind(
-  "SUPER + ALT + SHIFT + F",
-  hl.dsp.exec_cmd('uwsm app -- nautilus --new-window "$(hyprland-cmd-terminal-cwd)"'),
-  { description = "File manager (cwd)" }
-)
+hl.bind("SUPER + ALT + SHIFT + F", function()
+  hl.dispatch(hl.dsp.exec_cmd('uwsm app -- nautilus --new-window "' .. terminal_cwd.get() .. '"'))
+end, { description = "File manager (cwd)" })
 hl.bind("SUPER + SHIFT + G", function()
   launch_or_focus("class:^signal$", "uwsm-app -- signal-desktop --password-store=gnome-libsecret")
 end, { description = "Signal" })
