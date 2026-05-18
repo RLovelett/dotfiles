@@ -3,10 +3,10 @@ require("modules.animations")
 
 local colors = require("modules.colors")
 local active_border_color = {
-  colors = { "rgba(33ccffee)", "rgba(00ff99ee)" },
+  colors = { "rgba(" .. colors.purpleRaw .. "ee)", "rgba(" .. colors.pinkRaw .. "ee)" },
   angle = 45,
 }
-local inactive_border_color = "rgba(595959aa)"
+local inactive_border_color = colors.selection_translucent
 
 hl.config({
   -- https://wiki.hypr.land/Configuring/Basics/Variables/#general
@@ -100,11 +100,11 @@ hl.config({
       gaps_in = 5,
       gaps_out = 0,
 
-      text_color = "rgb(ffffff)",
-      text_color_inactive = "rgba(ffffff90)",
+      text_color = colors.foreground,
+      text_color_inactive = "rgba(" .. colors.foregroundRaw .. "90)",
       col = {
-        active = "rgba(00000040)",
-        inactive = "rgba(00000020)",
+        active = "rgba(" .. colors.backgroundRaw .. "40)",
+        inactive = "rgba(" .. colors.backgroundRaw .. "20)",
       },
 
       gradients = true,
