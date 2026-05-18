@@ -1,3 +1,12 @@
+local cache = os.getenv("XDG_CACHE_HOME")
+if cache == nil then
+  hl.notification.create({ text = "XDG_CACHE_HOME is not set — skipping color conf generation", timeout = 5000, icon = 3 })
+else
+  local conf_gen = require("modules.utils.conf_gen")
+  local colors   = require("modules.colors")
+  conf_gen.write(cache .. "/hypr/colors.conf", colors)
+end
+
 require("modules.monitors")
 require("modules.workspaces")
 require("modules.input")
