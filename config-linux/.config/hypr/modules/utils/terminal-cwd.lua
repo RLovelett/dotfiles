@@ -12,36 +12,34 @@
 local M = {}
 
 --- Returns a list of PIDs whose parent matches the given PID.
---- Scans /proc/<pid>/status for each running process and checks the PPid field.
---- This is equivalent to `pgrep -P <parent_pid>`.
+--- Unions the kernel-maintained children lists across all threads in
+--- /proc/<pid>/task/*/children. Reading per-thread children files is
+--- O(threads) and handles multithreaded terminals (e.g. Ghostty) that
+--- fork the shell from a worker thread rather than the main thread.
 --- @param parent_pid number The parent PID to search for.
 --- @return table A (possibly empty) list of child PIDs as numbers.
 local function pgrep_ppid(parent_pid)
-  local children = {}
-  local target = tostring(parent_pid)
-
-  local handle = io.popen("ls /proc")
+  local task_dir = "/proc/" .. parent_pid .. "/task"
+  local handle = io.popen("ls " .. task_dir .. " 2>/dev/null")
   if handle == nil then
     return {}
   end
-
-  for entry in handle:lines() do
-    local pid = tonumber(entry)
-    if pid then
-      local f = io.open("/proc/" .. entry .. "/status", "r")
-      if f then
-        for line in f:lines() do
-          local ppid = line:match("^PPid:%s*(%d+)")
-          if ppid == target then
-            table.insert(children, pid)
-            break
-          end
+  local children = {}
+  local seen = {}
+  for tid in handle:lines() do
+    local f = io.open(task_dir .. "/" .. tid .. "/children", "r")
+    if f then
+      local contents = f:read("*a")
+      f:close()
+      for pid_str in contents:gmatch("%d+") do
+        local pid = tonumber(pid_str)
+        if pid and not seen[pid] then
+          seen[pid] = true
+          table.insert(children, pid)
         end
-        f:close()
       end
     end
   end
-
   handle:close()
   return children
 end
@@ -51,7 +49,7 @@ end
 --- @param pid number The PID to query.
 --- @return string|nil The resolved executable path, or nil if unreadable.
 local function get_exe(pid)
-  local handle = io.popen("readlink -f /proc/" .. pid .. "/exe 2>/dev/null")
+  local handle = io.popen("readlink /proc/" .. pid .. "/exe 2>/dev/null")
   if handle == nil then
     return nil
   end
@@ -65,7 +63,7 @@ end
 --- @param pid number The PID to query.
 --- @return string|nil The resolved cwd path, or nil if unreadable.
 local function get_cwd(pid)
-  local handle = io.popen("readlink -f /proc/" .. pid .. "/cwd 2>/dev/null")
+  local handle = io.popen("readlink /proc/" .. pid .. "/cwd 2>/dev/null")
   if handle == nil then
     return nil
   end
