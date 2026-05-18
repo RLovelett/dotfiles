@@ -44,29 +44,30 @@ hl.bind("SUPER + SHIFT + W", hl.dsp.exec_cmd("uwsm app -- typora --enable-waylan
 hl.bind("SUPER + SHIFT + slash", hl.dsp.exec_cmd("uwsm app -- 1password"), { description = "1Password" })
 
 -- Menus (SUPER CTRL + letter)
+local walker = "walker --width 644 --maxheight 300 --minheight 300"
 hl.bind(
   "SUPER + space",
-  hl.dsp.exec_cmd("walker --width 644 --maxheight 300 --minheight 300"),
+  hl.dsp.exec_cmd(walker),
   { description = "Launch apps" }
 )
 hl.bind(
   "SUPER + Escape",
-  hl.dsp.exec_cmd('walker --width 644 --maxheight 300 --minheight 300 --provider "menus:system"'),
+  hl.dsp.exec_cmd(walker .. ' --provider "menus:system"'),
   { description = "System menu" }
 )
 hl.bind(
   "SUPER + CTRL + E",
-  hl.dsp.exec_cmd("walker --width 644 --maxheight 300 --minheight 300 --provider symbols"),
+  hl.dsp.exec_cmd(walker .. " --provider symbols"),
   { description = "Emoji picker" }
 )
 hl.bind(
   "SUPER + CTRL + S",
-  hl.dsp.exec_cmd("walker --width 644 --maxheight 300 --minheight 300 --provider snippets"),
+  hl.dsp.exec_cmd(walker .. " --provider snippets"),
   { description = "Snippets" }
 )
 hl.bind(
   "SUPER + CTRL + V",
-  hl.dsp.exec_cmd("walker --width 644 --maxheight 300 --minheight 300 --provider clipboard"),
+  hl.dsp.exec_cmd(walker .. " --provider clipboard"),
   { description = "Clipboard manager" }
 )
 hl.bind(
