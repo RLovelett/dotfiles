@@ -117,20 +117,17 @@ local function resolve_browser_exec()
   return nil
 end
 
---- Detects the private browsing flag for the given browser executable.
---- Uses `--help` output to detect Gecko-based browsers (Firefox, LibreWolf)
---- via the presence of MOZ_LOG, then falls back to Edge detection by name,
---- and finally defaults to --incognito for Chromium-based browsers.
+--- Detects the private browsing flag for the given browser executable by name.
+--- Gecko-based browsers (Firefox, LibreWolf, Zen) use --private-window,
+--- Edge uses --inprivate, and everything else (Chromium, Chrome, Brave)
+--- defaults to --incognito.
 --- @param browser_exec string The resolved browser executable path.
 --- @return string The appropriate private browsing flag.
 local function resolve_private_flag(browser_exec)
-  local handle = io.popen(browser_exec .. " --help 2>&1")
-  if handle then
-    local help_output = handle:read("*a")
-    handle:close()
-    if help_output and help_output:find("MOZ_LOG", 1, true) then
-      return "--private-window"
-    end
+  if browser_exec:find("firefox", 1, true)
+  or browser_exec:find("librewolf", 1, true)
+  or browser_exec:find("zen", 1, true) then
+    return "--private-window"
   end
 
   if browser_exec:find("edge", 1, true) then
