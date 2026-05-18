@@ -1,0 +1,16 @@
+{
+  "$schema": "https://raw.githubusercontent.com/LuaLS/lua-language-server/main/meta/EmmyLua.Schema.json",
+  "runtime": {
+    "version": "LuaJIT"
+  },
+  "workspace": {
+    "library": [
+      "/usr/share/hypr/stubs"
+    ]
+  },
+  "diagnostics": {
+    "globals": [
+      "hl"
+    ]
+  }
+}
