@@ -1,12 +1,12 @@
 local animations = {
   -- Windows
-  { leaf = "windows", enabled = true, speed = 5, bezier = "overshot", style = "popin 80%" },
-  { leaf = "windowsIn", enabled = true, speed = 5, bezier = "overshot", style = "popin 80%" },
-  { leaf = "windowsOut", enabled = true, speed = 4, bezier = "smoothOut", style = "popin 95%" },
-  { leaf = "windowsMove", enabled = true, speed = 4, bezier = "softSnap" },
+  { leaf = "windows", enabled = true, speed = 5, bezier = "overshot", style = "slide" },
+  { leaf = "windowsIn", enabled = true, speed = 2, bezier = "overshot", style = "slide" },
+  { leaf = "windowsOut", enabled = true, speed = 1, bezier = "smoothOut", style = "slide" },
+  { leaf = "windowsMove", enabled = true, speed = 3, bezier = "softSnap" },
   -- Layers
-  { leaf = "layersIn", enabled = true, speed = 3, bezier = "smoothIn", style = "slide right" },
-  { leaf = "layersOut", enabled = true, speed = 2, bezier = "softSnap", style = "slide right" },
+  { leaf = "layersIn", enabled = true, speed = 5, spring = "spring_relaxed", style = "slide right" },
+  { leaf = "layersOut", enabled = true, speed = 5, spring = "spring_relaxed", style = "slide right" },
   -- Fade
   { leaf = "fade", enabled = true, speed = 4, bezier = "smoothIn" },
   { leaf = "fadeIn", enabled = true, speed = 4, bezier = "smoothIn" },

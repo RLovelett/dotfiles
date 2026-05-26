@@ -52,12 +52,6 @@ hl.window_rule({
   tag = "+floating-window",
 })
 
--- Calculator
-hl.window_rule({
-  match = { class = "org\\.gnome\\.Calculator" },
-  float = true,
-})
-
 -- Fullscreen screensaver
 hl.window_rule({
   match = { class = reverse_dns .. ".screensaver" },

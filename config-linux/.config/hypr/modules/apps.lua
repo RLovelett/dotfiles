@@ -13,6 +13,7 @@ require("modules.apps.qemu")
 -- source = ~/.local/share/omarchy/default/hypr/apps/steam.conf
 -- source = ~/.local/share/omarchy/default/hypr/apps/geforce.conf
 -- source = ~/.local/share/omarchy/default/hypr/apps/moonlight.conf
+require("modules.apps.swayosd")
 require("modules.apps.system")
 -- source = ~/.local/share/omarchy/default/hypr/apps/telegram.conf
 require("modules.apps.terminals")
