@@ -1,0 +1,26 @@
+{
+  "$schema": "https://raw.githubusercontent.com/LuaLS/lua-language-server/main/meta/EmmyLua.Schema.json",
+  "runtime": {
+    "version": "LuaJIT",
+    "special": {
+      "reload": "require"
+    }
+  },
+  "workspace": {
+    "checkThirdParty": false,
+    "library": [
+      "$VIMRUNTIME/lua"
+    ]
+  },
+  "diagnostics": {
+    "globals": [
+      "vim"
+    ],
+    "disable": [
+      "missing-fields"
+    ]
+  },
+  "telemetry": {
+    "enable": false
+  }
+}

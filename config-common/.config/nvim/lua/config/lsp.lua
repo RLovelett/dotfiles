@@ -15,6 +15,7 @@ vim.lsp.enable {
   'hyprls',
   'jsonls',
   'lua_ls',
+  'marksman',
   'taplo',
   'ruff',
   'pyright',

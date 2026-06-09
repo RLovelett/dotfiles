@@ -35,6 +35,7 @@ return {
         'hyprls',
         'json-lsp',
         'lua-language-server',
+        'marksman',
         'pyright',
         'ruff',
         'taplo',
