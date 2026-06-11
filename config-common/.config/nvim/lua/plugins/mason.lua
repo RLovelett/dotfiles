@@ -34,6 +34,7 @@ return {
         'docker-language-server',
         'hyprls',
         'json-lsp',
+        'lemminx',
         'lua-language-server',
         'marksman',
         'pyright',
