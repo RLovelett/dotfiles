@@ -16,3 +16,14 @@ Wallpapers stored in this directory.
 - `nova-cite-sunset-canyon_5504x3072.png`: AI-generated
 - `nova-cite-sunset-monorail-canyon_5504x3072.png`: AI-generated
 - `nova-cite-twilight-6336x2688.png`: AI-generated
+- `21stCentury-WIDE.png`: From [E82: The EPCOT Legacy - Art](https://www.epcotlegacy.com/art)
+- `Futureprobe-WIDE.png`: From [E82: The EPCOT Legacy - Art](https://www.epcotlegacy.com/art)
+- `LP_Azure-WIDE.png`: From [E82: The EPCOT Legacy - Art](https://www.epcotlegacy.com/art)
+- `LS_SeaBaseAlphaV2-WIDE.png`: From [E82: The EPCOT Legacy - Art](https://www.epcotlegacy.com/art)
+- `PC_50th-WIDE.png`: From [E82: The EPCOT Legacy - Art](https://www.epcotlegacy.com/art)
+- `PC_Christmas-WIDE.png`: From [E82: The EPCOT Legacy - Art](https://www.epcotlegacy.com/art)
+- `PC_RymanCampbell-WIDE.png`: From [E82: The EPCOT Legacy - Art](https://www.epcotlegacy.com/art)
+- `SS_Seas-WIDE.png`: From [E82: The EPCOT Legacy - Art](https://www.epcotlegacy.com/art)
+- `Searise-WIDE.png`: From [E82: The EPCOT Legacy - Art](https://www.epcotlegacy.com/art)
+- `Seaset-WIDE.png`: From [E82: The EPCOT Legacy - Art](https://www.epcotlegacy.com/art)
+- `TRON_Geosphere-WIDE.png`: From [E82: The EPCOT Legacy - Art](https://www.epcotlegacy.com/art)
