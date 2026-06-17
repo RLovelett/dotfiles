@@ -6,3 +6,5 @@ Documentation=man:find(1)
 Type=oneshot
 ExecStart=/usr/bin/find %h/Downloads -type f -mtime +30 -delete
 ExecStart=/usr/bin/find %h/Pictures/screenshots -type f -mtime +30 -delete
+ExecStart=/usr/bin/find %h/Downloads -mindepth 1 -type d -empty -delete
+ExecStart=/usr/bin/find %h/Pictures/screenshots -mindepth 1 -type d -empty -delete
