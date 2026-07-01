@@ -1,0 +1,196 @@
+#!/usr/bin/env bash
+# hyprdbg — Hyprland introspection & debugging helper
+#
+# One tool for the recurring "why did this window/layer land there?" problem.
+# Everything here is documented hyprctl output plus the socket2 event stream.
+#
+# Deps: hyprctl (Hyprland), jq; socat (only for `watch`).
+
+set -uo pipefail
+
+# --- preflight ---------------------------------------------------------------
+die() { printf 'hyprdbg: %s\n' "$1" >&2; exit 1; }
+need() { command -v "$1" >/dev/null 2>&1 || die "missing dependency: $1"; }
+
+need hyprctl
+need jq
+[ -n "${HYPRLAND_INSTANCE_SIGNATURE:-}" ] || \
+  die "not inside a Hyprland session (HYPRLAND_INSTANCE_SIGNATURE unset)"
+
+SOCK="${XDG_RUNTIME_DIR}/hypr/${HYPRLAND_INSTANCE_SIGNATURE}/.socket2.sock"
+
+# --- color (only on a tty) ---------------------------------------------------
+if [ -t 1 ]; then
+  c_hdr=$'\e[1;36m'; c_dim=$'\e[2m'; c_rst=$'\e[0m'
+  c_open=$'\e[1;32m'; c_close=$'\e[1;31m'; c_layer=$'\e[1;35m'
+else
+  c_hdr=''; c_dim=''; c_rst=''; c_open=''; c_close=''; c_layer=''
+fi
+hdr() { printf '\n%s== %s ==%s\n' "$c_hdr" "$1" "$c_rst"; }
+
+# --- static views ------------------------------------------------------------
+cmd_windows() {
+  hdr "WINDOWS (clients)"
+  hyprctl clients -j | jq -r '
+    sort_by(.monitor, (.workspace.id))[] |
+    "• \(.class)   [\(.address)]",
+    "    initClass=\(.initialClass)   initTitle=\"\(.initialTitle)\"",
+    "    title=\"\(.title)\"",
+    "    float=\(.floating)  pseudo=\(.pseudo)  fs=\(.fullscreen)  pinned=\(.pinned)  xwayland=\(.xwayland)",
+    "    at=\(.at[0]),\(.at[1])  size=\(.size[0])x\(.size[1])  mon=\(.monitor)  ws=\(.workspace.id):\(.workspace.name)  pid=\(.pid)",
+    ""'
+}
+
+cmd_layers() {
+  hdr "LAYERS (layer-shell surfaces)"
+  # levels: 0=background 1=bottom 2=top 3=overlay
+  hyprctl layers -j | jq -r '
+    to_entries[] |
+    "monitor \(.key):",
+    ( .value.levels | to_entries[] |
+      "  level \(.key):",
+      ( .value[]? |
+        "    ns=\(.namespace)  at=\(.x),\(.y)  size=\(.w)x\(.h)  [\(.address)]" ) )'
+}
+
+cmd_monitors() {
+  hdr "MONITORS"
+  # reserved is [top, bottom, left, right] of usable-area insets in px
+  hyprctl monitors -j | jq -r '
+    .[] |
+    "• \(.name)  \(.width)x\(.height)@\(.refreshRate|floor)Hz  scale=\(.scale)  pos=\(.x),\(.y)  transform=\(.transform)  focused=\(.focused)",
+    "    activeWorkspace=\(.activeWorkspace.id):\(.activeWorkspace.name)",
+    "    reserved(top,bottom,left,right)=\(.reserved | map(tostring) | join(\",\"))",
+    ""'
+}
+
+cmd_workspaces() {
+  hdr "WORKSPACES"
+  hyprctl workspaces -j | jq -r '
+    sort_by(.id)[] |
+    "ws \(.id):\(.name)  mon=\(.monitor)  windows=\(.windows)  lastTitle=\"\(.lastwindowtitle)\""'
+}
+
+cmd_active() {
+  hdr "ACTIVE WINDOW"
+  local j; j=$(hyprctl activewindow -j 2>/dev/null)
+  if [ -z "$j" ] || [ "$j" = "{}" ]; then
+    echo "  (no focused window)"; return
+  fi
+  printf '%s' "$j" | jq -r '
+    "• \(.class)   [\(.address)]",
+    "    initClass=\(.initialClass)   initTitle=\"\(.initialTitle)\"",
+    "    title=\"\(.title)\"",
+    "    float=\(.floating)  at=\(.at[0]),\(.at[1])  size=\(.size[0])x\(.size[1])  ws=\(.workspace.id):\(.workspace.name)"'
+}
+
+cmd_log() {
+  hdr "ROLLING LOG (error / rule / lua / config)"
+  hyprctl rollinglog | grep -iE 'error|rule|lua|config' | tail -n 40 \
+    || echo "  (nothing matched)"
+}
+
+cmd_version() { hdr "VERSION"; hyprctl version; }
+
+cmd_all() {
+  cmd_version; cmd_monitors; cmd_workspaces; cmd_windows; cmd_layers; cmd_active
+}
+
+# --- live event stream -------------------------------------------------------
+cmd_watch() {
+  need socat
+  [ -S "$SOCK" ] || die "event socket not found: $SOCK"
+  hdr "EVENT STREAM  ($SOCK)"
+  echo "  Ctrl-C to stop.  Pipe to tee to capture, e.g. hyprdbg watch | tee ~/open.log"
+  echo
+  socat - "UNIX-CONNECT:$SOCK" | while IFS= read -r line; do
+    ev=${line%%>>*}; data=${line#*>>}
+    ts=$(date '+%H:%M:%S.%3N')
+    case "$ev" in
+      openwindow)
+        # class/title come from the event (authoritative initial values, no race);
+        # geometry is joined from hyprctl by this exact address.
+        addr=${data%%,*}; r=${data#*,}; ws=${r%%,*}; r=${r#*,}; cls=${r%%,*}; ttl=${r#*,}
+        geo=$(hyprctl clients -j 2>/dev/null | jq -r --arg a "0x$addr" '
+          .[] | select(.address==$a) |
+          "at=\(.at[0]),\(.at[1])  size=\(.size[0])x\(.size[1])  float=\(.floating)  mon=\(.monitor)"')
+        [ -n "$geo" ] || geo="(closed before geometry could be read)"
+        printf '%s %sOPEN %s 0x%s  ws=%s  initClass="%s"  initTitle="%s"\n        %s\n' \
+          "$ts" "$c_open" "$c_rst" "$addr" "$ws" "$cls" "$ttl" "$geo" ;;
+      closewindow)
+        printf '%s %sCLOSE%s 0x%s\n' "$ts" "$c_close" "$c_rst" "$data" ;;
+      movewindowv2)
+        addr=${data%%,*}; r=${data#*,}; wsid=${r%%,*}; wsn=${r#*,}
+        printf '%s MOVE  0x%s -> ws=%s:%s\n' "$ts" "$addr" "$wsid" "$wsn" ;;
+      changefloatingmode)
+        addr=${data%%,*}; fl=${data#*,}
+        printf '%s FLOAT 0x%s floating=%s\n' "$ts" "$addr" "$fl" ;;
+      windowtitlev2)
+        addr=${data%%,*}; ttl=${data#*,}
+        printf '%s %stitle 0x%s "%s"%s\n' "$ts" "$c_dim" "$addr" "$ttl" "$c_rst" ;;
+      openlayer)
+        printf '%s %sLAYER+%s %s\n' "$ts" "$c_layer" "$c_rst" "$data" ;;
+      closelayer)
+        printf '%s %sLAYER-%s %s\n' "$ts" "$c_layer" "$c_rst" "$data" ;;
+      activewindowv2)
+        printf '%s %sfocus 0x%s%s\n' "$ts" "$c_dim" "$data" "$c_rst" ;;
+      workspacev2)
+        printf '%s %sws %s%s\n' "$ts" "$c_dim" "$data" "$c_rst" ;;
+      fullscreen)
+        printf '%s FULL  %s\n' "$ts" "$data" ;;
+      *)
+        printf '%s %s· %s%s\n' "$ts" "$c_dim" "$line" "$c_rst" ;;
+    esac
+  done
+}
+
+# --- snapshot everything to a file ------------------------------------------
+cmd_snapshot() {
+  local dir="${1:-$HOME/.cache/hyprdbg}"
+  mkdir -p "$dir"
+  local f="$dir/snapshot-$(date '+%Y%m%d-%H%M%S').txt"
+  (
+    c_hdr=''; c_dim=''; c_rst=''; c_open=''; c_close=''; c_layer=''
+    echo "### hyprdbg snapshot $(date -Is)"
+    cmd_version; cmd_monitors; cmd_workspaces; cmd_windows; cmd_layers; cmd_active; cmd_log
+  ) >"$f" 2>&1
+  echo "wrote $f"
+}
+
+usage() {
+  cat <<'EOF'
+hyprdbg — Hyprland introspection & debugging helper
+
+usage: hyprdbg <command>
+
+  windows        clients with class/initClass/title/initTitle/float/geometry
+  layers         layer-shell surfaces (waybar, launchers, notifications) per monitor+level
+  monitors       monitors, scale, position, reserved areas, active workspace
+  workspaces     workspaces and window counts
+  active         the currently focused window (full match fields)
+  log            recent rolling-log lines mentioning error/rule/lua/config
+  version        hyprctl version
+  watch          live, parsed event stream; openwindow shows initClass/initTitle  [needs socat]
+  snapshot [dir] dump version+monitors+workspaces+windows+layers+active+log to a timestamped file
+  all            everything static, no watch (default)
+
+examples:
+  hyprdbg watch | tee ~/steam-open.log   # catch transient windows as they map
+  hyprdbg snapshot                       # archive full state to ~/.cache/hyprdbg/
+EOF
+}
+
+case "${1:-all}" in
+  windows|win)     cmd_windows ;;
+  layers|lay)      cmd_layers ;;
+  monitors|mon)    cmd_monitors ;;
+  workspaces|ws)   cmd_workspaces ;;
+  active|act)      cmd_active ;;
+  log|rules)       cmd_log ;;
+  version|ver)     cmd_version ;;
+  watch|events|ev) cmd_watch ;;
+  snapshot|snap)   shift || true; cmd_snapshot "${1:-}" ;;
+  all|"")          cmd_all ;;
+  -h|--help|help)  usage ;;
+  *)               die "unknown command: $1  (try: hyprdbg --help)" ;;
+esac
