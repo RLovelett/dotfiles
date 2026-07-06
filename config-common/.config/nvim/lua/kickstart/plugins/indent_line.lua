@@ -7,13 +7,15 @@ return {
     opts = function(_, opts)
       opts = vim.tbl_deep_extend('force', opts or {}, {
         indent = {
-          'RainbowRed',
-          'RainbowYellow',
-          'RainbowBlue',
-          'RainbowOrange',
-          'RainbowGreen',
-          'RainbowViolet',
-          'RainbowCyan',
+          highlight = {
+            'RainbowRed',
+            'RainbowYellow',
+            'RainbowBlue',
+            'RainbowOrange',
+            'RainbowGreen',
+            'RainbowViolet',
+            'RainbowCyan',
+          },
         },
       })
       local colors = require('dracula').colors()
