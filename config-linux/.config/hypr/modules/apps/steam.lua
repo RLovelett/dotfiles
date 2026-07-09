@@ -18,7 +18,7 @@ steam_rule({}, {
   opacity = "1.0 override 1.0 override",
 })
 
-steam_rule({ title = "^(Steam)$", float = true }, {
+steam_rule({ title = "^(Steam)$", float = true, class = "^([sS]team)?$" }, {
   center = true,
   no_focus = true,
 })
