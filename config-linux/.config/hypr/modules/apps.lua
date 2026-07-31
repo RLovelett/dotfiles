@@ -8,6 +8,7 @@ require("modules.apps.hyprshot")
 -- source = ~/.local/share/omarchy/default/hypr/apps/jetbrains.conf
 -- source = ~/.local/share/omarchy/default/hypr/apps/localsend.conf
 require("modules.apps.pip")
+require("modules.apps.quickshell")
 require("modules.apps.qemu")
 -- source = ~/.local/share/omarchy/default/hypr/apps/retroarch.conf
 -- source = ~/.local/share/omarchy/default/hypr/apps/steam.conf

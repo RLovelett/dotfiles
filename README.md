@@ -11,7 +11,7 @@ The repository is organized into the following packages:
 
 - **base/** - Core shell configurations (`.aliases`, `.zshrc`, `.zshenv`, `.gitconfig`, etc.)
 - **config-common/** - Cross-platform XDG configurations (`.config/nvim/`, `.config/tmux/`, `.config/pyenv/`, `.config/Code/`, etc.)
-- **config-linux/** - Linux-specific configurations (Hyprland, Waybar, Rofi, Tilix, `.gitconfig.local`)
+- **config-linux/** - Linux-specific configurations (Hyprland, Quickshell, Rofi, Tilix, `.gitconfig.local`)
 - **config-macos/** - macOS-specific configurations (iTerm2, `.gitconfig.local`)
 - **vscode-macos/** - macOS VS Code path (`Library/Application Support/Code/`)
 - **macos-services/** - macOS system services (`Library/LaunchAgents/`)
@@ -26,6 +26,8 @@ The repository uses GNU Stow to manage configuration files. Before installing th
 - `git`
 - `stow`
 - `zsh`
+
+The Linux desktop configuration also requires `quickshell` for the Signal Rail panel. It is launched as the named configuration `qs -c signal-rail` by Hyprland.
 
 Install them with:
 
