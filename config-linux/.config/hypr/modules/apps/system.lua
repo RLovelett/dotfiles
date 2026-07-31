@@ -5,7 +5,6 @@ hl.window_rule({
   center = true,
   size = { 1600, 900 },
   animation = "slide",
-  stay_focused = true,
 })
 
 local reverse_dns = "me.lovelett.hyprland"

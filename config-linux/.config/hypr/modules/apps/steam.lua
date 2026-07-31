@@ -18,6 +18,8 @@ steam_rule({}, {
   opacity = "1.0 override 1.0 override",
 })
 
+-- Steam's loader maps before WM_CLASS is populated, so this rule also
+-- accepts an empty initial class without broadening the other Steam rules.
 steam_rule({ title = "^(Steam)$", float = true, class = "^([sS]team)?$" }, {
   center = true,
   no_focus = true,
