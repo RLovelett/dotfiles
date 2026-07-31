@@ -1,0 +1,3 @@
+module qs.features.clock
+CalendarContent 1.0 CalendarContent.qml
+ClockCapsule 1.0 ClockCapsule.qml

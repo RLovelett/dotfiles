@@ -4,6 +4,7 @@ import Quickshell.Io
 QtObject {
   id: root
 
+  readonly property int refreshInterval: 2000
   property real cpuUsage: 0
   property real memoryUsage: 0
   property double previousIdle: 0
@@ -19,10 +20,8 @@ QtObject {
     const total = fields.reduce((sum, value) => sum + value, 0)
     const totalDelta = total - previousTotal
     const idleDelta = idle - previousIdle
-
     if (previousTotal > 0 && totalDelta > 0)
       cpuUsage = Math.max(0, Math.min(100, 100 * (totalDelta - idleDelta) / totalDelta))
-
     previousIdle = idle
     previousTotal = total
   }
@@ -54,7 +53,8 @@ QtObject {
   }
 
   property Timer refreshTimer: Timer {
-    interval: 2000
+    // /proc has no change notification suitable for these aggregate counters.
+    interval: root.refreshInterval
     running: true
     repeat: true
     triggeredOnStart: true

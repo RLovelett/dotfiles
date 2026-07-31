@@ -29,6 +29,19 @@ The repository uses GNU Stow to manage configuration files. Before installing th
 
 The Linux desktop configuration also requires `quickshell` for the Signal Rail panel. It is launched as the named configuration `qs -c signal-rail` by Hyprland.
 
+To preview the Signal Rail's urgent-workspace state without waiting for an
+application to request attention, use the ID of any currently visible
+workspace:
+
+```bash
+qs -c signal-rail ipc call workspaces previewUrgent 2
+qs -c signal-rail ipc call workspaces clearUrgentPreview
+```
+
+The preview uses the same rendering path as Hyprland's real
+`workspace.urgent` property. It changes only the visual state and does not mark
+an application window urgent.
+
 Install them with:
 
 **Ubuntu/Debian:**

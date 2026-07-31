@@ -1,0 +1,3 @@
+module qs.features.workspaces
+WorkspaceCapsule 1.0 WorkspaceCapsule.qml
+WorkspaceIndicator 1.0 WorkspaceIndicator.qml

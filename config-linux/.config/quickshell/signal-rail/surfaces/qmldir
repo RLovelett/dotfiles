@@ -1,0 +1,5 @@
+module qs.surfaces
+BarSurface 1.0 BarSurface.qml
+NotificationSurface 1.0 NotificationSurface.qml
+RailSurface 1.0 RailSurface.qml
+ReservationSurface 1.0 ReservationSurface.qml

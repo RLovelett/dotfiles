@@ -1,0 +1,16 @@
+module qs.components
+Capsule 1.0 Capsule.qml
+Card 1.0 Card.qml
+Divider 1.0 Divider.qml
+ActionButton 1.0 ActionButton.qml
+IconGlyphs 1.0 IconGlyphs.qml
+IconButton 1.0 IconButton.qml
+InteractiveItem 1.0 InteractiveItem.qml
+InteractiveRegion 1.0 InteractiveRegion.qml
+Metric 1.0 Metric.qml
+MorphingCapsule 1.0 MorphingCapsule.qml
+MotionAnimation 1.0 MotionAnimation.qml
+StyledText 1.0 StyledText.qml
+Surface 1.0 Surface.qml
+Symbol 1.0 Symbol.qml
+VerticalReveal 1.0 VerticalReveal.qml

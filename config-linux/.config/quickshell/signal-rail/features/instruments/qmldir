@@ -1,0 +1,4 @@
+module qs.features.instruments
+BluetoothStatus 1.0 BluetoothStatus.qml
+InstrumentsCapsule 1.0 InstrumentsCapsule.qml
+NetworkStatus 1.0 NetworkStatus.qml

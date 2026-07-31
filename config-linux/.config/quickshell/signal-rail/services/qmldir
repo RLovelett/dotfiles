@@ -1,0 +1,9 @@
+module qs.services
+AppService 1.0 AppService.qml
+AudioService 1.0 AudioService.qml
+ConnectivityService 1.0 ConnectivityService.qml
+NetworkInfo 1.0 NetworkInfo.qml
+NotificationEntry 1.0 NotificationEntry.qml
+NotificationService 1.0 NotificationService.qml
+SystemStats 1.0 SystemStats.qml
+WorkspacePreviewService 1.0 WorkspacePreviewService.qml

@@ -4,6 +4,7 @@ import Quickshell.Io
 QtObject {
   id: root
 
+  readonly property int refreshInterval: 10000
   property string address: "No address"
 
   property Process addressProcess: Process {
@@ -23,7 +24,8 @@ QtObject {
   }
 
   property Timer refreshTimer: Timer {
-    interval: 10000
+    // Route changes are cheap to sample and this avoids a long-lived socket helper.
+    interval: root.refreshInterval
     repeat: true
     running: true
     onTriggered: if (!addressProcess.running) addressProcess.running = true

@@ -81,24 +81,18 @@ hl.bind(
   { description = "Show key bindings" }
 )
 
--- Notifications
-hl.bind(
-  "SUPER + CTRL + N",
-  hl.dsp.exec_cmd("swaync-client --toggle-panel"),
-  { description = "Toggle notifications panel" }
-)
-hl.bind("SUPER + SHIFT + N", hl.dsp.exec_cmd("swaync-client --toggle-dnd"), { description = "Toggle do not disturb" })
+-- Notification history and DND intentionally remain unbound until Signal Rail
+-- implements those features instead of exposing placeholder behavior.
 hl.bind(
   "SUPER + ALT + N",
-  hl.dsp.exec_cmd("swaync-client --close-latest"),
+  hl.dsp.exec_cmd("qs -c signal-rail ipc call notifications dismissLatest"),
   { description = "Dismiss last notification" }
 )
 hl.bind(
   "SUPER + SHIFT + ALT + N",
-  hl.dsp.exec_cmd("swaync-client --close-all"),
+  hl.dsp.exec_cmd("qs -c signal-rail ipc call notifications clear"),
   { description = "Dismiss all notifications" }
 )
--- hl.bind("SUPER + CTRL + N",     hl.dsp.exec_cmd("swaync-client --action 0"),      { description = "Invoke last notification" })
 
 -- Captures
 hl.bind("Print", hl.dsp.exec_cmd("hyprshot -m region"), { description = "Screenshot (region)" })

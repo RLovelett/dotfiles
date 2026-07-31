@@ -4,8 +4,20 @@
 
 import QtQuick
 import Quickshell
+import qs.components
+import qs.services
+import qs.surfaces
+import qs.theme
 
 ShellRoot {
+  id: root
+
+  property bool reducedMotion: false
+
+  Theme { id: rootTheme; reducedMotion: root.reducedMotion }
+  IconGlyphs { id: rootGlyphs }
+  WorkspacePreviewService { id: rootWorkspacePreview }
+
   SystemStats {
     id: rootStats
   }
@@ -13,6 +25,13 @@ ShellRoot {
   NetworkInfo {
     id: rootNetworkInfo
   }
+  ConnectivityService {
+    id: rootConnectivity
+    networkInfo: rootNetworkInfo
+  }
+  AudioService { id: rootAudio }
+  AppService { id: rootAppService }
+  NotificationService { id: rootNotifications; theme: rootTheme }
 
   Variants {
     model: Quickshell.screens
@@ -21,18 +40,32 @@ ShellRoot {
       id: screenScope
       required property var modelData
 
-      Rail {
+      RailSurface {
         modelData: screenScope.modelData
+        theme: rootTheme
       }
 
-      Reservation {
+      ReservationSurface {
         modelData: screenScope.modelData
+        theme: rootTheme
       }
 
-      Bar {
+      BarSurface {
         modelData: screenScope.modelData
+        theme: rootTheme
         stats: rootStats
-        networkInfo: rootNetworkInfo
+        connectivity: rootConnectivity
+        audio: rootAudio
+        appService: rootAppService
+        workspacePreview: rootWorkspacePreview
+        glyphs: rootGlyphs
+      }
+
+      NotificationSurface {
+        modelData: screenScope.modelData
+        theme: rootTheme
+        notificationService: rootNotifications
+        closeGlyph: rootGlyphs.close
       }
     }
   }
