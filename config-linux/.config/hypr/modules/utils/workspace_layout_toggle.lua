@@ -1,12 +1,8 @@
---- Toggles the tiling layout of the active workspace between dwindle and scrolling.
+--- Toggles the tiling layout of the active workspace between dwindle and master.
 ---
 --- Reads the current layout of the active workspace and switches to the other. Any layout
 --- other than dwindle is treated as "not dwindle" and will toggle to dwindle. A notification
 --- is displayed confirming the new layout.
----
---- Intended to be bound directly to a key:
----   local workspace_layout_toggle = require("modules.utils.workspace_layout_toggle")
----   hl.bind("SUPER + L", workspace_layout_toggle, { description = "Toggle workspace layout" })
 ---
 ---@return nil
 local function workspace_layout_toggle()

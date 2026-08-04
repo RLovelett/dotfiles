@@ -1,179 +1,173 @@
+local bind = require("modules.bindings.bind").add
 local window_pop = require("modules.utils.window_pop")
 local workspace_layout_toggle = require("modules.utils.workspace_layout_toggle")
 
--- Close windows
-hl.bind("SUPER + W", hl.dsp.window.close(), { description = "Close window" })
--- hl.bind("CTRL + ALT + Delete", hl.dsp.exec_cmd("omarchy-hyprland-window-close-all"), { description = "Close all windows" })
+-- Desktop grammar:
+--   SUPER                  compositor/window action
+--   SUPER + SHIFT          application launch (defined in utilities.lua)
+--   SUPER + CTRL           utility or control surface
+--   SUPER + ALT            move or alternate the current desktop object
+--   H/J/K/L                left/down/up/right
+--   number row             workspace target
 
--- Control tiling
-hl.bind("SUPER + J", hl.dsp.layout("togglesplit"), { description = "Toggle window split" }) -- dwindle only
-hl.bind("SUPER + P", hl.dsp.window.pseudo(), { description = "Pseudo window" }) -- dwindle
-hl.bind("SUPER + T", hl.dsp.window.float({ action = "toggle" }), { description = "Toggle window floating/tiling" })
-hl.bind("SUPER + F", hl.dsp.window.fullscreen({ mode = "fullscreen" }), { description = "Full screen" })
-hl.bind(
-  "SUPER + CTRL + F",
-  hl.dsp.window.fullscreen_state({ internal = 0, client = 2 }),
-  { description = "Tiled full screen" }
-)
-hl.bind("SUPER + ALT + F", hl.dsp.window.fullscreen({ mode = "maximized" }), { description = "Full width" })
-hl.bind("SUPER + O", window_pop, { description = "Pop window out (float & pin)" })
-hl.bind("SUPER + L", workspace_layout_toggle, { description = "Toggle workspace layout" })
+bind("SUPER + W", hl.dsp.window.close(), { category = "Windows", label = "Close window" })
+bind("SUPER + P", hl.dsp.window.pseudo(), { category = "Windows", label = "Toggle pseudotiling" })
+bind("SUPER + T", hl.dsp.window.float({ action = "toggle" }), {
+  category = "Windows",
+  label = "Toggle floating",
+})
+bind("SUPER + F", hl.dsp.window.fullscreen({ mode = "fullscreen" }), {
+  category = "Windows",
+  label = "Toggle fullscreen",
+})
+bind("SUPER + ALT + F", hl.dsp.window.fullscreen({ mode = "maximized" }), {
+  category = "Windows",
+  label = "Toggle maximized",
+})
+bind("SUPER + O", window_pop, { category = "Windows", label = "Pop out and pin window" })
+bind("SUPER + backslash", hl.dsp.layout("togglesplit"), {
+  category = "Layout",
+  label = "Rotate current split",
+})
+bind("SUPER + ALT + backslash", workspace_layout_toggle, {
+  category = "Layout",
+  label = "Toggle dwindle/master layout",
+})
 
--- Move focus with SUPER + arrow keys
-hl.bind("SUPER + left", hl.dsp.focus({ direction = "left" }), { description = "Move window focus left" })
-hl.bind("SUPER + right", hl.dsp.focus({ direction = "right" }), { description = "Move window focus right" })
-hl.bind("SUPER + up", hl.dsp.focus({ direction = "up" }), { description = "Move window focus up" })
-hl.bind("SUPER + down", hl.dsp.focus({ direction = "down" }), { description = "Move window focus down" })
+local directions = {
+  { key = "H", arrow = "left", direction = "l", label = "left" },
+  { key = "J", arrow = "down", direction = "d", label = "down" },
+  { key = "K", arrow = "up", direction = "u", label = "up" },
+  { key = "L", arrow = "right", direction = "r", label = "right" },
+}
 
--- Switch / move / move-silently workspaces with SUPER + [1-0], collapsed into loops
-for i = 1, 10 do
-  hl.bind("SUPER + code:" .. (9 + i), hl.dsp.focus({ workspace = i }), { description = "Switch to workspace " .. i })
-  hl.bind(
-    "SUPER + SHIFT + code:" .. (9 + i),
-    hl.dsp.window.move({ workspace = i }),
-    { description = "Move window to workspace " .. i }
-  )
-  hl.bind(
-    "SUPER + SHIFT + ALT + code:" .. (9 + i),
-    hl.dsp.window.move({ workspace = i, follow = false }),
-    { description = "Move window silently to workspace " .. i }
-  )
+for _, direction in ipairs(directions) do
+  local focus = hl.dsp.focus({ direction = direction.direction })
+  local swap = hl.dsp.window.swap({ direction = direction.direction })
+
+  bind("SUPER + " .. direction.key, focus, {
+    category = "Navigation",
+    label = "Focus " .. direction.label,
+  })
+  bind("SUPER + " .. direction.arrow, focus, { guide = false })
+
+  bind("SUPER + ALT + " .. direction.key, swap, {
+    category = "Windows",
+    label = "Swap window " .. direction.label,
+  })
+  bind("SUPER + ALT + " .. direction.arrow, swap, { guide = false })
 end
 
--- Control scratchpad
-hl.bind("SUPER + S", hl.dsp.workspace.toggle_special("scratchpad"), { description = "Toggle scratchpad" })
-hl.bind(
-  "SUPER + ALT + S",
-  hl.dsp.window.move({ workspace = "special:scratchpad", follow = false }),
-  { description = "Move window to scratchpad" }
-)
-
--- TAB between workspaces
-hl.bind("SUPER + Tab", hl.dsp.focus({ workspace = "e+1" }), { description = "Next workspace" })
-hl.bind("SUPER + SHIFT + Tab", hl.dsp.focus({ workspace = "e-1" }), { description = "Previous workspace" })
-hl.bind("SUPER + CTRL + Tab", hl.dsp.focus({ workspace = "previous" }), { description = "Former workspace" })
-
--- Move workspaces to other monitors
-hl.bind(
-  "SUPER + SHIFT + ALT + left",
-  hl.dsp.workspace.move({ monitor = "l" }),
-  { description = "Move workspace to left monitor" }
-)
-hl.bind(
-  "SUPER + SHIFT + ALT + right",
-  hl.dsp.workspace.move({ monitor = "r" }),
-  { description = "Move workspace to right monitor" }
-)
-hl.bind(
-  "SUPER + SHIFT + ALT + up",
-  hl.dsp.workspace.move({ monitor = "u" }),
-  { description = "Move workspace to up monitor" }
-)
-hl.bind(
-  "SUPER + SHIFT + ALT + down",
-  hl.dsp.workspace.move({ monitor = "d" }),
-  { description = "Move workspace to down monitor" }
-)
-
--- Focus and move windows between monitors
-hl.bind("SUPER + comma", hl.dsp.focus({ monitor = "l" }), { description = "Focus left monitor" })
-hl.bind("SUPER + period", hl.dsp.focus({ monitor = "r" }), { description = "Focus right monitor" })
-hl.bind("SUPER + SHIFT + comma", hl.dsp.window.move({ monitor = "l" }), { description = "Move window to left monitor" })
-hl.bind(
-  "SUPER + SHIFT + period",
-  hl.dsp.window.move({ monitor = "r" }),
-  { description = "Move window to right monitor" }
-)
-
--- Swap active window with the one next to it with SUPER + SHIFT + arrow keys
-hl.bind("SUPER + SHIFT + left", hl.dsp.window.swap({ direction = "l" }), { description = "Swap window to the left" })
-hl.bind("SUPER + SHIFT + right", hl.dsp.window.swap({ direction = "r" }), { description = "Swap window to the right" })
-hl.bind("SUPER + SHIFT + up", hl.dsp.window.swap({ direction = "u" }), { description = "Swap window up" })
-hl.bind("SUPER + SHIFT + down", hl.dsp.window.swap({ direction = "d" }), { description = "Swap window down" })
-
--- Cycle through applications on active workspace
--- Two dispatchers on the same key: bind them back-to-back (executed in order)
-hl.bind("ALT + Tab", hl.dsp.window.cycle_next(), { description = "Cycle to next window" })
-hl.bind("ALT + Tab", hl.dsp.window.bring_to_top(), { description = "Reveal active window on top" })
-hl.bind("ALT + SHIFT + Tab", hl.dsp.window.cycle_next({ next = false }), { description = "Cycle to prev window" })
-hl.bind("ALT + SHIFT + Tab", hl.dsp.window.bring_to_top(), { description = "Reveal active window on top" })
-
--- Resize active window (code:20 = minus, code:21 = equals)
-hl.bind(
-  "SUPER + code:20",
-  hl.dsp.window.resize({ x = -100, y = 0, relative = true }),
-  { description = "Expand window left" }
-)
-hl.bind(
-  "SUPER + code:21",
-  hl.dsp.window.resize({ x = 100, y = 0, relative = true }),
-  { description = "Shrink window left" }
-)
-hl.bind(
-  "SUPER + SHIFT + code:20",
-  hl.dsp.window.resize({ x = 0, y = -100, relative = true }),
-  { description = "Shrink window up" }
-)
-hl.bind(
-  "SUPER + SHIFT + code:21",
-  hl.dsp.window.resize({ x = 0, y = 100, relative = true }),
-  { description = "Expand window down" }
-)
-
--- Scroll through existing workspaces with SUPER + scroll
-hl.bind("SUPER + mouse_down", hl.dsp.focus({ workspace = "e+1" }), { description = "Scroll active workspace forward" })
-hl.bind("SUPER + mouse_up", hl.dsp.focus({ workspace = "e-1" }), { description = "Scroll active workspace backward" })
-
--- Move/resize windows with SUPER + LMB/RMB and dragging
-hl.bind("SUPER + mouse:272", hl.dsp.window.drag(), { mouse = true, description = "Move window" })
-hl.bind("SUPER + mouse:273", hl.dsp.window.resize(), { mouse = true, description = "Resize window" })
-
--- Toggle groups
-hl.bind("SUPER + G", hl.dsp.group.toggle(), { description = "Toggle window grouping" })
-hl.bind(
-  "SUPER + ALT + G",
-  hl.dsp.window.move({ out_of_group = true }),
-  { description = "Move active window out of group" }
-)
-
--- Join groups
-hl.bind(
-  "SUPER + ALT + left",
-  hl.dsp.window.move({ into_group = "l" }),
-  { description = "Move window to group on left" }
-)
-hl.bind(
-  "SUPER + ALT + right",
-  hl.dsp.window.move({ into_group = "r" }),
-  { description = "Move window to group on right" }
-)
-hl.bind("SUPER + ALT + up", hl.dsp.window.move({ into_group = "u" }), { description = "Move window to group on top" })
-hl.bind(
-  "SUPER + ALT + down",
-  hl.dsp.window.move({ into_group = "d" }),
-  { description = "Move window to group on bottom" }
-)
-
--- Navigate a single set of grouped windows
-hl.bind("SUPER + ALT + Tab", hl.dsp.group.next(), { description = "Next window in group" })
-hl.bind("SUPER + ALT + SHIFT + Tab", hl.dsp.group.prev(), { description = "Previous window in group" })
-
--- Window navigation for grouped windows
-hl.bind("SUPER + CTRL + left", hl.dsp.group.prev(), { description = "Move grouped window focus left" })
-hl.bind("SUPER + CTRL + right", hl.dsp.group.next(), { description = "Move grouped window focus right" })
-
--- Scroll through a set of grouped windows with SUPER + ALT + scroll
-hl.bind("SUPER + ALT + mouse_down", hl.dsp.group.next(), { description = "Next window in group" })
-hl.bind("SUPER + ALT + mouse_up", hl.dsp.group.prev(), { description = "Previous window in group" })
-
--- Activate window in a group by number (1-5), collapsed into a loop
-for i = 1, 5 do
-  hl.bind(
-    "SUPER + ALT + code:" .. (9 + i),
-    hl.dsp.group.active({ index = i }),
-    { description = "Switch to group window " .. i }
-  )
+local workspace_keys = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0" }
+for index, key in ipairs(workspace_keys) do
+  bind("SUPER + " .. key, hl.dsp.focus({ workspace = index }), {
+    category = "Workspaces",
+    label = "Switch to workspace " .. index,
+  })
+  bind("SUPER + ALT + " .. key, hl.dsp.window.move({ workspace = index }), {
+    category = "Workspaces",
+    label = "Move window to workspace " .. index,
+  })
+  bind("SUPER + CTRL + ALT + " .. key, hl.dsp.window.move({ workspace = index, follow = false }), {
+    category = "Workspaces",
+    label = "Move window silently to workspace " .. index,
+  })
 end
 
--- Cycle monitor scaling
--- hl.bind("SUPER + slash", hl.dsp.exec_cmd("omarchy-hyprland-monitor-scaling-cycle"), { description = "Cycle monitor scaling" })
+bind("SUPER + Tab", hl.dsp.focus({ workspace = "e+1" }), {
+  category = "Workspaces",
+  label = "Next workspace",
+})
+bind("SUPER + ALT + Tab", hl.dsp.focus({ workspace = "e-1" }), {
+  category = "Workspaces",
+  label = "Previous workspace",
+})
+bind("SUPER + CTRL + Tab", hl.dsp.focus({ workspace = "previous" }), {
+  category = "Workspaces",
+  label = "Former workspace",
+})
+bind("SUPER + mouse_down", hl.dsp.focus({ workspace = "e+1" }), {
+  category = "Workspaces",
+  label = "Next workspace by scrolling",
+})
+bind("SUPER + mouse_up", hl.dsp.focus({ workspace = "e-1" }), {
+  category = "Workspaces",
+  label = "Previous workspace by scrolling",
+})
+
+bind("SUPER + comma", hl.dsp.focus({ monitor = "l" }), {
+  category = "Monitors",
+  label = "Focus left monitor",
+})
+bind("SUPER + period", hl.dsp.focus({ monitor = "r" }), {
+  category = "Monitors",
+  label = "Focus right monitor",
+})
+bind("SUPER + ALT + comma", hl.dsp.window.move({ monitor = "l" }), {
+  category = "Monitors",
+  label = "Move window to left monitor",
+})
+bind("SUPER + ALT + period", hl.dsp.window.move({ monitor = "r" }), {
+  category = "Monitors",
+  label = "Move window to right monitor",
+})
+bind("SUPER + CTRL + ALT + comma", hl.dsp.workspace.move({ monitor = "l" }), {
+  category = "Monitors",
+  label = "Move workspace to left monitor",
+})
+bind("SUPER + CTRL + ALT + period", hl.dsp.workspace.move({ monitor = "r" }), {
+  category = "Monitors",
+  label = "Move workspace to right monitor",
+})
+
+bind("SUPER + minus", hl.dsp.window.resize({ x = -100, y = -100, relative = true }), {
+  category = "Windows",
+  label = "Shrink window",
+  options = { repeating = true },
+})
+bind("SUPER + equal", hl.dsp.window.resize({ x = 100, y = 100, relative = true }), {
+  category = "Windows",
+  label = "Grow window",
+  options = { repeating = true },
+})
+
+bind("ALT + Tab", hl.dsp.window.cycle_next(), {
+  category = "Navigation",
+  label = "Cycle to next window",
+})
+-- The companion dispatcher raises the newly focused floating window; it is an
+-- implementation detail of the Alt-Tab action, not a second user-facing bind.
+bind("ALT + Tab", hl.dsp.window.bring_to_top(), { guide = false })
+bind("ALT + SHIFT + Tab", hl.dsp.window.cycle_next({ next = false }), {
+  category = "Navigation",
+  label = "Cycle to previous window",
+})
+bind("ALT + SHIFT + Tab", hl.dsp.window.bring_to_top(), { guide = false })
+
+bind("SUPER + mouse:272", hl.dsp.window.drag(), {
+  category = "Windows",
+  label = "Drag window",
+  options = { mouse = true },
+})
+bind("SUPER + mouse:273", hl.dsp.window.resize(), {
+  category = "Windows",
+  label = "Resize window with mouse",
+  options = { mouse = true },
+})
+
+bind("SUPER + S", hl.dsp.workspace.toggle_special("scratchpad"), {
+  category = "Scratchpad",
+  label = "Toggle scratchpad",
+})
+bind("SUPER + ALT + S", hl.dsp.window.move({ workspace = "special:scratchpad", follow = false }), {
+  category = "Scratchpad",
+  label = "Move window to scratchpad",
+})
+
+bind("SUPER + G", hl.dsp.group.toggle(), { category = "Groups", label = "Toggle window group" })
+bind("SUPER + ALT + G", hl.dsp.window.move({ out_of_group = true }), {
+  category = "Groups",
+  label = "Leave window group",
+})
+bind("SUPER + ALT + N", hl.dsp.group.next(), { category = "Groups", label = "Next grouped window" })
+bind("SUPER + ALT + P", hl.dsp.group.prev(), { category = "Groups", label = "Previous grouped window" })

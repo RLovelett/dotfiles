@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+tmux list-keys -F $'#{key_table}\t#{key_string}\t#{key_note}\t#{key_command}' \
+  | awk -F '\t' 'length($3) { printf "%-14s  %-14s  %-38s  %s\n", "[" $1 "]", $2, $3, $4 }' \
+  | fzf \
+      --no-sort \
+      --no-multi \
+      --layout=reverse \
+      --border=rounded \
+      --prompt='tmux keys > ' \
+      --header='Search by key, description, table, or command · Enter/Esc closes'

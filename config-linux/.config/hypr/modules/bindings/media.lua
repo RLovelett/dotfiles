@@ -14,22 +14,22 @@ end
 hl.bind(
   "XF86AudioRaiseVolume",
   osdclient("--output-volume raise"),
-  { repeating = true, locked = true, description = "Volume up" }
+  { repeating = true, locked = true, description = "Media: Volume up" }
 )
 hl.bind(
   "XF86AudioLowerVolume",
   osdclient("--output-volume lower"),
-  { repeating = true, locked = true, description = "Volume down" }
+  { repeating = true, locked = true, description = "Media: Volume down" }
 )
 hl.bind(
   "XF86AudioMute",
   osdclient("--output-volume mute-toggle"),
-  { repeating = true, locked = true, description = "Mute" }
+  { repeating = true, locked = true, description = "Media: Mute" }
 )
 hl.bind(
   "XF86AudioMicMute",
   osdclient("--input-volume mute-toggle"),
-  { repeating = true, locked = true, description = "Mute microphone" }
+  { repeating = true, locked = true, description = "Media: Mute microphone" }
 )
 -- hl.bind("XF86MonBrightnessUp",   hl.dsp.exec_cmd("omarchy-brightness-display +5%"),            { repeating = true, locked = true, description = "Brightness up" })
 -- hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("omarchy-brightness-display 5%-"),            { repeating = true, locked = true, description = "Brightness down" })
@@ -41,21 +41,21 @@ hl.bind(
 hl.bind(
   "ALT + XF86AudioRaiseVolume",
   osdclient("--output-volume +1"),
-  { repeating = true, locked = true, description = "Volume up precise" }
+  { repeating = true, locked = true, description = "Media: Volume up precise" }
 )
 hl.bind(
   "ALT + XF86AudioLowerVolume",
   osdclient("--output-volume -1"),
-  { repeating = true, locked = true, description = "Volume down precise" }
+  { repeating = true, locked = true, description = "Media: Volume down precise" }
 )
 -- hl.bind("ALT + XF86MonBrightnessUp",   hl.dsp.exec_cmd("omarchy-brightness-display +1%"),    { repeating = true, locked = true, description = "Brightness up precise" })
 -- hl.bind("ALT + XF86MonBrightnessDown", hl.dsp.exec_cmd("omarchy-brightness-display 1%-"),    { repeating = true, locked = true, description = "Brightness down precise" })
 
 -- Playerctl (locked, no repeat)
-hl.bind("XF86AudioNext", osdclient("--playerctl next"), { locked = true, description = "Next track" })
-hl.bind("XF86AudioPause", osdclient("--playerctl play-pause"), { locked = true, description = "Pause" })
-hl.bind("XF86AudioPlay", osdclient("--playerctl play-pause"), { locked = true, description = "Play" })
-hl.bind("XF86AudioPrev", osdclient("--playerctl previous"), { locked = true, description = "Previous track" })
+hl.bind("XF86AudioNext", osdclient("--playerctl next"), { locked = true, description = "Media: Next track" })
+hl.bind("XF86AudioPause", osdclient("--playerctl play-pause"), { locked = true, description = "Media: Pause" })
+hl.bind("XF86AudioPlay", osdclient("--playerctl play-pause"), { locked = true, description = "Media: Play" })
+hl.bind("XF86AudioPrev", osdclient("--playerctl previous"), { locked = true, description = "Media: Previous track" })
 
 -- Switch audio output with Super + Mute
 -- hl.bind("SUPER + XF86AudioMute", hl.dsp.exec_cmd("omarchy-cmd-audio-switch"), { locked = true, description = "Switch audio output" })

@@ -1,0 +1,98 @@
+#!/usr/bin/env lua
+
+local mode = arg[1]
+if mode ~= "shrink" and mode ~= "grow" then
+  io.stderr:write("usage: tmux-resize-parent shrink|grow\n")
+  os.exit(2)
+end
+
+local pane = arg[2] or os.getenv("TMUX_PANE")
+if not pane or not pane:match("^%%%d+$") then
+  io.stderr:write("pane id is not valid\n")
+  os.exit(1)
+end
+
+local handle = io.popen("tmux display-message -p -t '" .. pane .. "' '#{window_layout}'")
+if not handle then os.exit(1) end
+local layout = handle:read("*l")
+handle:close()
+if not layout then os.exit(1) end
+
+-- window_layout is a recursive tree. Braces contain side-by-side children,
+-- brackets contain stacked children, and leaf nodes end with their numeric id.
+local position = assert(layout:find(",")) + 1
+
+local function number()
+  local start = position
+  while layout:sub(position, position):match("%d") do position = position + 1 end
+  assert(position > start, "invalid tmux layout")
+  return tonumber(layout:sub(start, position - 1))
+end
+
+local function literal(value)
+  assert(layout:sub(position, position + #value - 1) == value, "invalid tmux layout")
+  position = position + #value
+end
+
+local function node()
+  number()
+  literal("x")
+  number()
+  literal(",")
+  number()
+  literal(",")
+  number()
+
+  local marker = layout:sub(position, position)
+  if marker ~= "{" and marker ~= "[" then
+    literal(",")
+    return { pane = number() }
+  end
+
+  position = position + 1
+  local result = { orientation = marker, children = {} }
+  while true do
+    table.insert(result.children, node())
+    local separator = layout:sub(position, position)
+    if separator == "," then
+      position = position + 1
+    else
+      local closing = marker == "{" and "}" or "]"
+      assert(separator == closing, "invalid tmux layout")
+      position = position + 1
+      break
+    end
+  end
+  return result
+end
+
+local root = node()
+local target = tonumber(pane:sub(2))
+
+local function parent_of(current)
+  if current.pane then return nil end
+  for index, child in ipairs(current.children) do
+    if child.pane == target then return current, index end
+    local parent, child_index = parent_of(child)
+    if parent then return parent, child_index end
+  end
+  return nil
+end
+
+local parent, index = parent_of(root)
+if not parent then
+  os.execute("tmux display-message 'No parent split to resize'")
+  os.exit(0)
+end
+
+local has_later_sibling = index < #parent.children
+local grow_direction
+if parent.orientation == "{" then
+  grow_direction = has_later_sibling and "R" or "L"
+else
+  grow_direction = has_later_sibling and "D" or "U"
+end
+
+local opposite = { L = "R", R = "L", U = "D", D = "U" }
+local direction = mode == "grow" and grow_direction or opposite[grow_direction]
+os.exit(os.execute("tmux resize-pane -t '" .. pane .. "' -" .. direction .. " 5"))
