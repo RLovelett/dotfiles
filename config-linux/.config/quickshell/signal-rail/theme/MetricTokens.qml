@@ -1,11 +1,14 @@
 import QtQuick
 
 QtObject {
+  // Canonical screen-edge spacing. Hyprland reads this token as well.
+  readonly property int edgeGap: 8
+
   readonly property int capsuleHeight: 32
   readonly property int capsulePadding: 12
   readonly property int capsuleGap: 12
-  readonly property int capsuleTopMargin: 8
-  readonly property int capsuleHorizontalMargin: 20
+  readonly property int capsuleTopMargin: edgeGap
+  readonly property int capsuleHorizontalMargin: edgeGap
   readonly property int capsuleBorderWidth: 2
   readonly property int railHeight: 40
   readonly property int railLineTopMargin: 24
@@ -41,7 +44,7 @@ QtObject {
   readonly property int calendarDayDiameter: 19
   readonly property int notificationWidth: 360
   readonly property int notificationIconSize: 40
-  readonly property int notificationStackGap: 8
+  readonly property int notificationStackGap: edgeGap
   readonly property int notificationStackLimit: 3
   readonly property int notificationEnterOffset: 16
   readonly property int notificationExitOffset: 12

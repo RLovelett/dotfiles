@@ -2,6 +2,7 @@ require("modules.curves")
 require("modules.animations")
 
 local colors = require("modules.colors")
+local ui_metrics = require("modules.ui_metrics")
 local active_border_color = {
   colors = { "rgba(" .. colors.purpleRaw .. "ee)", "rgba(" .. colors.pinkRaw .. "ee)" },
   angle = 45,
@@ -12,7 +13,7 @@ hl.config({
   -- https://wiki.hypr.land/Configuring/Basics/Variables/#general
   general = {
     gaps_in = 4,
-    gaps_out = 8,
+    gaps_out = ui_metrics.edge_gap,
 
     border_size = 2,
 

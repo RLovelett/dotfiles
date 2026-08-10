@@ -42,6 +42,13 @@ TestCase {
     verify(rootTheme.metrics.calendarDayDiameter <= rootTheme.metrics.calendarCellHeight)
   }
 
+  function test_edgeSpacingUsesCanonicalGap() {
+    compare(rootTheme.metrics.capsuleTopMargin, rootTheme.metrics.edgeGap)
+    compare(rootTheme.metrics.capsuleHorizontalMargin, rootTheme.metrics.edgeGap)
+    compare(rootTheme.metrics.notificationStackGap, rootTheme.metrics.edgeGap)
+    compare(rootTheme.metrics.railHeight - rootTheme.metrics.capsuleHeight, rootTheme.metrics.edgeGap)
+  }
+
   Component {
     id: capsuleComponent
     Capsule {
