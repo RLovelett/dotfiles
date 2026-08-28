@@ -1,0 +1,16 @@
+[Unit]
+Description=Hyprland Polkit Authentication Agent
+PartOf=graphical-session.target
+After=graphical-session.target
+ConditionEnvironment=WAYLAND_DISPLAY
+
+[Service]
+ExecStart=/usr/lib/hyprpolkitagent/hyprpolkitagent
+Environment=QT_QPA_PLATFORMTHEME=hyprqt6engine
+Environment=QT_QUICK_CONTROLS_STYLE=org.hyprland.style
+Slice=session.slice
+TimeoutStopSec=5sec
+Restart=on-failure
+
+[Install]
+WantedBy=graphical-session.target

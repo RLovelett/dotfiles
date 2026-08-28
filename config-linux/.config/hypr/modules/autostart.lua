@@ -1,8 +1,6 @@
 -- https://wiki.hypr.land/Configuration/Basics/Autostart/
 hl.on("hyprland.start", function()
-  hl.exec_cmd("uwsm app -- hypridle")
   hl.exec_cmd("uwsm app -- qs -c signal-rail")
-  hl.exec_cmd("uwsm app -- 1password --silent")
   hl.exec_cmd("uwsm app -- hyprpaper")
   hl.exec_cmd("uwsm app -- walker --gapplication-service")
   hl.exec_cmd("uwsm app -- swayosd-server")
