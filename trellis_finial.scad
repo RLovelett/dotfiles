@@ -49,8 +49,8 @@ body_height = 2 * inch;
 skirt_height = 0.5 * inch;
 socket_depth = 0.75 * inch;
 socket_offset = 0.4 * inch;
-body_corner_radius = 0.06 * inch;
-top_side = 0.125 * inch;
+body_edge_radius = 0.175 * inch;
+base_inradius = body_side * sqrt(3) / 6;
 
 // Hook envelope measured from the attached STEP model and simplified into
 // printable, self-supporting L brackets.
@@ -60,6 +60,14 @@ hook_thickness = 0.063 * inch;
 hook_lip_height = 0.21 * inch;
 hook_bottom = 0.99 * inch;
 hook_edge_radius = 0.03125 * inch;
+
+// The rounded shell is the Minkowski sum of a smaller triangular pyramid and
+// a sphere. These dimensions preserve the original 1.75-by-2-inch envelope.
+pyramid_core_height = body_height - skirt_height - body_edge_radius;
+pyramid_core_inradius = base_inradius
+    - body_edge_radius / cos(14);
+pyramid_core_side = 2 * sqrt(3) * pyramid_core_inradius;
+body_face_slope = atan(pyramid_core_inradius / pyramid_core_height);
 
 tower_height_mm = tower_height * inch;
 footprint_radius = footprint_diameter * inch / 2;
@@ -80,7 +88,6 @@ required_pole_length = exposed_pole_length + socket_depth;
 // Conservative material checks at the socket opening and blind end. Socket
 // centers point toward the triangle vertices, so their distance toward either
 // neighboring face is half their radial offset.
-base_inradius = body_side * sqrt(3) / 6;
 socket_radius = socket_diameter / 2;
 blind_z = socket_depth * cos(socket_angle);
 blind_center_radius = socket_offset - socket_depth * sin(socket_angle);
@@ -115,9 +122,12 @@ if (show_assembly_preview)
 function profile_side_at(z) =
     z <= skirt_height
         ? body_side
-        : body_side
-            + (top_side - body_side)
-            * min(1, (z - skirt_height) / (body_height - skirt_height));
+        : max(
+            0,
+            2 * sqrt(3)
+                * (base_inradius
+                    - (z - skirt_height) * tan(body_face_slope))
+        );
 
 
 module trellis_finial() {
@@ -141,37 +151,38 @@ module finial_body() {
         linear_extrude(height = skirt_height + epsilon)
             polygon(points = equilateral_triangle_points(body_side));
 
-        // Closely spaced terminal profiles soften the apex while hull() keeps
-        // the three broad faces and edges characteristic of the STEP model.
-        hull() {
-            profile_slice(skirt_height, body_side, body_corner_radius);
-            profile_slice(
-                body_height - 2 * body_corner_radius,
-                top_side + 2 * body_corner_radius,
-                body_corner_radius
-            );
-            profile_slice(body_height - epsilon, top_side, top_side / 2);
-        }
+        // A spherical offset produces the cylindrical edge fillets, domed
+        // peak, and curved intersections with the triangular base seen in the
+        // source STEP model.
+        translate([0, 0, skirt_height])
+            minkowski() {
+                triangular_pyramid(
+                    pyramid_core_side,
+                    pyramid_core_height
+                );
+                sphere(r = body_edge_radius);
+            }
     }
 }
 
 
-module profile_slice(z, side, radius) {
-    translate([0, 0, z])
-        linear_extrude(height = epsilon)
-            rounded_triangle(side, min(radius, side / 3));
-}
+module triangular_pyramid(side, height) {
+    points = concat(
+        [for (point = equilateral_triangle_points(side))
+            [point[0], point[1], 0]],
+        [[0, 0, height]]
+    );
 
-
-module rounded_triangle(side, radius) {
-    // The double offset rounds corners without changing the nominal envelope.
-    // Limit the radius below the triangle's inradius so very small loft
-    // profiles cannot collapse to an empty shape.
-    safe_radius = min(radius, side * sqrt(3) / 6 * 0.9);
-
-    offset(r = safe_radius)
-        offset(delta = -safe_radius)
-            polygon(points = equilateral_triangle_points(side));
+    polyhedron(
+        points = points,
+        faces = [
+            [0, 2, 1],
+            [0, 1, 3],
+            [1, 2, 3],
+            [2, 0, 3]
+        ],
+        convexity = 4
+    );
 }
 
 
@@ -183,45 +194,54 @@ function equilateral_triangle_points(side) = [
 
 
 module pole_socket(azimuth) {
+    // A tilted cutter must begin far enough below the base for its complete
+    // cross-section to pass through z=0. Starting at the opening itself leaves
+    // the characteristic (and incorrect) semicircular notch.
+    cutter_lead = socket_diameter;
+
     translate([
         socket_offset * cos(azimuth),
         socket_offset * sin(azimuth),
-        -epsilon
+        0
     ])
         rotate([0, socket_angle, azimuth + 180])
+            translate([0, 0, -cutter_lead])
             cylinder(
-                h = socket_depth + 2 * epsilon,
+                h = socket_depth + cutter_lead,
                 d = socket_diameter
             );
 }
 
 
 module string_hook() {
-    hook_face_radius = face_inradius_at(hook_bottom + hook_thickness / 2);
+    hook_face_radius = face_inradius_at(hook_bottom);
 
-    // Local +Y points away from the corresponding triangular face.
-    translate([
-        -hook_width / 2,
-        hook_face_radius - hook_thickness,
-        hook_bottom
-    ])
-        rounded_xy_prism(
-            [hook_width, hook_projection + 2 * hook_thickness],
-            hook_thickness,
-            hook_edge_radius
-        );
+    // Local +Y points away from the face. Rotating the whole L bracket makes
+    // its shelf and upturned lip follow the pyramid's face slope.
+    translate([0, hook_face_radius, hook_bottom])
+        rotate([body_face_slope, 0, 0]) {
+            translate([-hook_width / 2, -hook_thickness, 0])
+                rounded_xy_prism(
+                    [
+                        hook_width,
+                        hook_projection + 2 * hook_thickness
+                    ],
+                    hook_thickness,
+                    hook_edge_radius
+                );
 
-    translate([
-        -hook_width / 2,
-        hook_face_radius + hook_projection,
-        hook_bottom
-    ])
-        rotate([90, 0, 0])
-            rounded_xy_prism(
-                [hook_width, hook_lip_height],
-                hook_thickness,
-                hook_edge_radius
-            );
+            translate([
+                -hook_width / 2,
+                hook_projection,
+                0
+            ])
+                rotate([90, 0, 0])
+                    rounded_xy_prism(
+                        [hook_width, hook_lip_height],
+                        hook_thickness,
+                        hook_edge_radius
+                    );
+        }
 }
 
 
