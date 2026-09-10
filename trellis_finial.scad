@@ -11,20 +11,37 @@
  * internally because STL files and slicers conventionally use millimeters.
  */
 
-/* [Tower] */
+/*
+ * USING THE CUSTOMIZER
+ *
+ * All editable dimensions in this file are INCHES. They are converted to
+ * millimeters internally so exported STL files have the expected print scale.
+ *
+ * A comment such as "[4:0.1:144]" defines an OpenSCAD Customizer control:
+ *     [minimum value : step size : maximum value]
+ * It does not replace or alter the value before it. For example, the default
+ * tower_height below is 72.4 inches, and its Customizer slider allows values
+ * from 4 through 144 inches in 0.1-inch increments.
+ *
+ * Press F5 (Preview) or F6 (Render) after changing a value. Calculated socket
+ * angle and pole lengths are printed in the OpenSCAD Console. If the Console
+ * is hidden, open it with View -> Console.
+ */
 
-// Overall height from the ground to the tip of the finial.
+/* [Tower dimensions (inches)] */
+
+// Overall assembled height, in inches, from ground to the finial tip.
 tower_height = 72.4; // [4:0.1:144]
 
-// Diameter through the pole centerlines at ground level.
+// Ground footprint diameter, in inches, through the pole centerlines.
 footprint_diameter = 23.5; // [1:0.1:72]
 
-/* [Pole sockets] */
+/* [Pole sockets (inches)] */
 
-// Nominal pole diameter.
+// Nominal outside diameter of each pole, in inches.
 pole_diameter = 7 / 16; // [0.125:0.001:0.75]
 
-// Added to the pole diameter to produce a practical slip fit.
+// Diametral clearance, in inches, added to produce a practical slip fit.
 socket_clearance = 0.016; // [0:0.001:0.05]
 
 /* [Preview] */
@@ -110,10 +127,31 @@ assert(socket_clearance >= 0, "socket_clearance cannot be negative");
 assert(entry_wall > 0 && blind_wall > 0,
     "socket diameter or tower angle breaks through the fixed finial body");
 
-echo(socket_angle_degrees = socket_angle);
-echo(exposed_pole_length_inches = exposed_pole_length / inch);
-echo(required_pole_length_inches = required_pole_length / inch);
-echo(minimum_estimated_socket_wall_mm = min(entry_wall, blind_wall));
+echo("============================================================");
+echo(str("SOCKET ANGLE: ", socket_angle, " degrees from vertical"));
+echo(str(
+    "EXPOSED POLE LENGTH: ",
+    exposed_pole_length / inch,
+    " inches (",
+    exposed_pole_length / inch / 12,
+    " feet)"
+));
+echo(str(
+    "REQUIRED POLE LENGTH: ",
+    required_pole_length / inch,
+    " inches (",
+    required_pole_length / inch / 12,
+    " feet), including ",
+    socket_depth / inch,
+    " inch inserted into the socket"
+));
+echo(str(
+    "MINIMUM ESTIMATED SOCKET WALL: ",
+    min(entry_wall, blind_wall),
+    " mm"
+));
+echo("OpenSCAD displays these results in View -> Console.");
+echo("============================================================");
 
 $fn = facet_count;
 
