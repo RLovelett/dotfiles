@@ -68,6 +68,11 @@ pyramid_core_inradius = base_inradius
     - body_edge_radius / cos(14);
 pyramid_core_side = 2 * sqrt(3) * pyramid_core_inradius;
 body_face_slope = atan(pyramid_core_inradius / pyramid_core_height);
+pyramid_core_apex_z = body_height - body_edge_radius;
+pyramid_core_base_z = -body_edge_radius;
+pyramid_core_base_inradius = pyramid_core_inradius
+    + (skirt_height - pyramid_core_base_z) * tan(body_face_slope);
+pyramid_core_base_side = 2 * sqrt(3) * pyramid_core_base_inradius;
 
 tower_height_mm = tower_height * inch;
 footprint_radius = footprint_diameter * inch / 2;
@@ -147,21 +152,22 @@ module trellis_finial() {
 
 
 module finial_body() {
-    union() {
-        linear_extrude(height = skirt_height + epsilon)
-            polygon(points = equilateral_triangle_points(body_side));
-
-        // A spherical offset produces the cylindrical edge fillets, domed
-        // peak, and curved intersections with the triangular base seen in the
-        // source STEP model.
-        translate([0, 0, skirt_height])
-            minkowski() {
+    // Start with the complete rounded tetrahedral shell. A triangular prism
+    // then acts as three vertical clipping planes parallel to the footprint
+    // faces. The planar lower truncations and their sloped/curved boundaries
+    // are therefore cuts in one continuous shell, not an added base skirt.
+    intersection() {
+        minkowski() {
+            translate([0, 0, pyramid_core_base_z])
                 triangular_pyramid(
-                    pyramid_core_side,
-                    pyramid_core_height
+                    pyramid_core_base_side,
+                    pyramid_core_apex_z - pyramid_core_base_z
                 );
-                sphere(r = body_edge_radius);
-            }
+            sphere(r = body_edge_radius);
+        }
+
+        linear_extrude(height = body_height + epsilon)
+            polygon(points = equilateral_triangle_points(body_side));
     }
 }
 
