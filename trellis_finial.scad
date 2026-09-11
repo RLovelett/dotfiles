@@ -77,6 +77,7 @@ hook_thickness = 0.063 * inch;
 hook_lip_height = 0.21 * inch;
 hook_bottom = 0.99 * inch;
 hook_edge_radius = 0.03125 * inch;
+hook_under_fillet_radius = 0.12 * inch;
 
 // The rounded shell is the Minkowski sum of a smaller triangular pyramid and
 // a sphere. These dimensions preserve the original 1.75-by-2-inch envelope.
@@ -124,6 +125,8 @@ assert(footprint_radius > socket_offset,
     "footprint_diameter must exceed twice the socket offset (0.8 inches)");
 assert(pole_diameter > 0, "pole_diameter must be positive");
 assert(socket_clearance >= 0, "socket_clearance cannot be negative");
+assert(hook_under_fillet_radius <= hook_projection,
+    "hook_under_fillet_radius cannot exceed hook_projection");
 assert(entry_wall > 0 && blind_wall > 0,
     "socket diameter or tower angle breaks through the fixed finial body");
 
@@ -274,6 +277,10 @@ module string_hook() {
                     hook_edge_radius
                 );
 
+            // Quarter-round gusset beneath the shelf. It removes the abrupt
+            // cantilever at the face while preserving the original hook above.
+            hook_under_fillet();
+
             translate([
                 -hook_width / 2,
                 hook_projection,
@@ -286,6 +293,34 @@ module string_hook() {
                         hook_edge_radius
                     );
         }
+}
+
+
+module hook_under_fillet() {
+    difference() {
+        translate([
+            -hook_width / 2 - epsilon,
+            -epsilon,
+            -hook_under_fillet_radius
+        ])
+            cube([
+                hook_width + 2 * epsilon,
+                hook_under_fillet_radius + epsilon,
+                hook_under_fillet_radius + epsilon
+            ]);
+
+        translate([
+            0,
+            hook_under_fillet_radius,
+            -hook_under_fillet_radius
+        ])
+            rotate([0, 90, 0])
+                cylinder(
+                    h = hook_width + 4 * epsilon,
+                    r = hook_under_fillet_radius,
+                    center = true
+                );
+    }
 }
 
 
