@@ -40,6 +40,11 @@ steam_rule({ title = "^(Shutdown)$" }, {
   center = true,
 })
 
+steam_rule({ title = "^(Steam Big Picture Mode)$" }, {
+  fullscreen = true,
+  suppress_event = "fullscreen",
+})
+
 steam_rule({ title = "^(Friends List)$" }, {
   float = true,
   size = { "monitor_w*0.14", "monitor_h*0.70" },

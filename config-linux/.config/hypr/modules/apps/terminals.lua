@@ -1,5 +1,5 @@
 hl.window_rule({
-  match = { class = "(Alacritty|kitty|com\\.mitchellh\\.ghostty)" },
+  match = { class = "com\\.mitchellh\\.ghostty" },
   tag = "+terminal",
 })
 
