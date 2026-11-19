@@ -118,13 +118,17 @@ hl.config({
   misc = {
     disable_hyprland_logo = true,
     disable_splash_rendering = true,
-    layers_hog_keyboard_focus = true,
     focus_on_activate = true,
     anr_missed_pings = 3,
     on_focus_under_fullscreen = 1,
     force_default_wallpaper = 0, -- Set to 0 or 1 to disable the anime mascot wallpapers
     mouse_move_enables_dpms = true,
     key_press_enables_dpms = true,
+  },
+
+  -- https://wiki.hypr.land/Configuring/Basics/Variables/#layers
+  layers = {
+    layers_hog_keyboard_focus = true,
   },
 
   -- https://wiki.hypr.land/Configuring/Basics/Variables/#binds
